@@ -1,0 +1,30 @@
+.dating-description-container {
+	width: 100%;
+	padding-top: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.dating-resume {
+	color: #1c1e4f;
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.dating-location {
+	color: #8F90AD;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.dating-name {
+	color: #1c1e4f;
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+
+.dating-card-description-location-icon {
+	font-size: 18px;
+	color: #8F90AD;
+}

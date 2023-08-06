@@ -1,0 +1,56 @@
+.matcha-conversation-container {
+    background-color: white;
+    width: 49vw;
+    height: 93vh;
+    overflow: scroll;
+	-ms-overflow-style: none;
+	scrollbar-width: none; 
+}
+
+.matcha-conversation-container::-webkit-scrollbar {
+	display: none;
+}
+
+.matcha-conversation-messages-container {
+	width: 100%;
+	margin-bottom: 12vh;
+    padding-top: 2vh;
+    gap: 5px;
+}
+
+.matcha-conversation-input-container {
+    width: 46vw;
+    height: 4vh;
+    padding: 20px;
+    gap: 20px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(30px);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.matcha-conversation-input {
+    width: 40vw;
+    height: 30px;
+	border-radius: 10px;
+	border: 0px;
+	padding-left: 1vw;
+	padding-right: 1vw;
+    background-color: #F7F7FF;
+}
+
+.matcha-conversation-input-button {
+    height: 30px;
+    width: 30px;
+    background-color: #F7F7FF;
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+}
+
+.matcha-conversation-input-icon {
+    font-size: 20px;
+    color: #5D5FEF;
+}

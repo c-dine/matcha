@@ -1,0 +1,10 @@
+<div (click)="onContinue()" [ngClass]="router.url === navigationButton.path ? 'navigation-element-container-current' : 'navigation-element-container'">
+	<mat-icon
+		[ngClass]="{'navigation-element-icon-color-purple': router.url === navigationButton.path}"
+		class="navigation-element-icon">
+		{{ navigationButton.iconName }}
+	</mat-icon>
+	<p class="navigation-element-text">
+		{{ navigationButton.title }}
+	</p>
+<div>

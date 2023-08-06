@@ -8,8 +8,6 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-RUN npm run build
-
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+CMD ["ng", "serve", "--host", "0.0.0.0", "--poll=2000", "--port", "4200", "--disable-host-check"]
 
 EXPOSE 8080

@@ -1,0 +1,12 @@
+<div [ngClass]="currentUser === true ? 'matcha-flex-row-reverse' : 'matcha-flex-row'"
+	 class="matcha-conversation-message-container">
+	<img class="matcha-conversation-message-image" [src]="userProfilePictureSrc">
+	<div
+		[ngClass]="currentUser ? 'matcha-conversation-message-current' : 'matcha-conversation-message'"
+		class="matcha-flex-row matcha-flex-align-center matcha-flex-justify-center"
+	>
+		<p class="matcha-conversation-message-text">
+			{{ message }}
+		</p>
+	</div>
+</div>

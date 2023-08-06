@@ -1,0 +1,16 @@
+.navigation-list-container {
+	width: 100%;
+	margin-top: 20px;
+}
+.navigation-list-margin {
+	margin-left: 2vw;
+	margin-right: 2vw;
+}
+
+.navigation-list-divider {
+	margin-bottom: 2vh;
+}
+
+.navigation-list-margin-bottom {
+	margin-bottom: 5vh;
+}

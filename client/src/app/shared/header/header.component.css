@@ -1,0 +1,17 @@
+.header-container {
+	width: 100%;
+	height: 6vh;
+	background-color: white;
+	border-bottom: 0.5px solid #F7F7FF;
+	display: flex;
+    align-items: center;
+
+}
+
+.header-flex-container {
+	display: flex;
+    align-items: center;
+	height: 100%;
+	margin-left: 20px;
+	margin-right: 20px;
+}

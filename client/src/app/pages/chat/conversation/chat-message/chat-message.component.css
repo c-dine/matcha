@@ -1,0 +1,38 @@
+.matcha-conversation-message-container {
+	width: 47vw;
+	gap: 15px;
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.matcha-conversation-message {
+	font-size: 12px;
+	background-color: #5D5FEF;
+	border-radius: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 10px;
+	color: white;
+}
+
+.matcha-conversation-message-current {
+	font-size: 12px;
+	background-color: #F7F7FF;
+	border-radius: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 10px;
+}
+
+.matcha-conversation-message-text {
+	margin-bottom: 10px;
+	max-width: 20vw;
+}
+
+
+.matcha-conversation-message-image {
+	height: 4vh;
+	width: 4vh;
+	border-radius: 500px;
+}
+

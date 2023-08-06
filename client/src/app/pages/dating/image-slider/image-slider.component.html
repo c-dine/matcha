@@ -1,0 +1,13 @@
+<div class="image-slider-carousel">
+	<div class="image-slider-container">
+		<div class="image-slider-slide" [style.transform]="'translateX(' + slideOffset + 'px)'">
+			<div class="image-slider-item" *ngFor="let slide of slides">
+				<img class="image-slider-img" [src]="slide.image" [alt]="slide.altText" />
+			</div>
+		</div>
+	</div>
+	<div class="image-slider-lines">
+		<div class="image-slider-line" *ngFor="let slide of slides; let i = index"
+			[class.image-slider-active]="i === activeSlideIndex" (click)="goToSlide(i)"></div>
+	</div>
+</div>

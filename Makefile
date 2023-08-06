@@ -15,7 +15,10 @@ build:
 
 # Up target
 up:
-	$(COMPOSE) up -d
+	$(COMPOSE) up
+
+force-recreate:
+	$(COMPOSE) up --force-recreate
 
 # Down target
 down:
@@ -48,8 +51,4 @@ logs:
 # Ps target
 ps:
 	$(COMPOSE) ps
-
-# Set environment variables
-include $(ENV_FILE)
-export $(shell sed 's/=.*//' $(ENV_FILE))
 

@@ -1,0 +1,12 @@
+.matcha-chat-search-container {
+	height: 50px;
+}
+
+.matcha-chat-search {
+	height: 30px;
+	border-radius: 10px;
+	border: 0px;
+	padding-left: 1vw;
+	padding-right: 1vw;
+	max-width: 12vw;
+}

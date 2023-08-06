@@ -1,0 +1,13 @@
+<div class="dating-page-container">
+	<div class="dating-card-container">
+		<app-image-slider></app-image-slider>
+		<app-dating-card-description
+			(clicked)="onDatingButtonClick()"
+			[firstName]="firstName"
+			[lastName]="lastName"
+			[location]="location"
+			[resume]="resume"
+		/>
+		<app-dating-card-passions/>
+	</div>
+</div>

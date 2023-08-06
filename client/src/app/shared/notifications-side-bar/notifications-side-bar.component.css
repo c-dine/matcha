@@ -1,0 +1,9 @@
+.notifications-side-bar-container {
+	width: 15vw;
+	height: 100%;
+}
+
+.notifications-side-bar-container-padding {
+	margin-right: 1vw;
+	padding-top: 1vw;
+}

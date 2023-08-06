@@ -1,59 +1,77 @@
 version: '3.8'
 services:
   socket:
-    build: ./socket
-    ports:
-      - "${SOCKET_PORT}:3002"
+    container_name: matcha_socket
+    build:
+      context: ./socket
+      dockerfile: Dockerfile
     depends_on:
       - api
     networks:
       - app-network
 
-
   client:
-    build: 
+    container_name: matcha_client
+    build:
       context: ./client
       dockerfile: Dockerfile
-    ports:
-      - "${CLIENT_PORT}:4200"
     networks:
       - app-network
+    volumes:
+      - client_node_modules:/app/node_modules
+      - ./client/src/:/app/src/
 
   api:
+    container_name: matcha_api
     build: 
       context: ./api
       dockerfile: Dockerfile
-    ports:
-      - "${API_PORT}:3000"
     networks:
       - app-network
     depends_on:
-      - mariadb
+      - postgres
     env_file:
       - .db.env
 
-  mariadb:
-    image: mariadb:10.6.4
+  postgres:
+    container_name: matcha_postgres
+    image: postgres:15.3
+    tty: true
     volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - app-network
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     env_file:
       - .db.env
+
+  pgadmin:
+    container_name: matcha_pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - .pgadmin.env
+    ports:
+      - "5050:80"
 
   nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+    container_name: matcha_nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     ports:
-      - "${NGINX_PORT}:80"
+      - "80:80"
     networks:
       - app-network
     depends_on:
       - client
       - api
+      - socket
+
 networks:
   app-network:
     driver: bridge
+
 volumes:
-  mariadb_data:
+  postgres_data:
+  client_node_modules:

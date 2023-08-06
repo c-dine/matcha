@@ -1,0 +1,39 @@
+.notifications-side-bar-box-container {
+	height: 40vh;
+	padding-left: 1vw;
+	padding-right: 1vw;
+	padding-top: 1vh;
+	padding-bottom: 1vh;
+	background-color: white;
+	border-radius: 10px;
+	margin-bottom: 2vh;
+	overflow-y: scroll;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.notifications-side-bar-box-container::-webkit-scrollbar {
+	display: none;
+}
+
+.notifications-side-bar-box-header {
+	display: flex;
+	justify-content: center;
+	gap: 5vw;
+	border-bottom: dotted 1px #8F90AD;
+	margin-bottom: 1vh;
+}
+
+.notifications-side-bar-box-title {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1c1e4f;
+	margin-bottom: 0px;
+}
+
+.notifications-side-bar-box-link {
+	font-size: 12px;
+	color: #5d5fef;
+	margin-bottom: 0px;
+	cursor: pointer;
+}

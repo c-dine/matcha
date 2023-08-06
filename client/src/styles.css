@@ -1,1 +1,73 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+	height: 100%;
+	scroll-behavior:smooth;
+}
+
+body {
+	margin: 0;
+	background-color: #F7F7FF;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+	background-color: transparent;
+}
+
+::-webkit-scrollbar
+{
+	width: 6px;
+	height: 6px;
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #5D5FEF;
+	max-height: 10%;
+	border-radius: 10px;
+}
+
+.matcha-flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.matcha-flex-row-reverse {
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.matcha-flex-column {
+	display: flex;
+	flex-direction: column;
+}
+
+.matcha-flex-column-reverse {
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.matcha-gap-10px {
+	gap: 10px;
+}
+
+.matcha-object-fit-cover {
+	object-fit: cover;
+}
+
+.matcha-flex-align-center {
+	align-items: center;
+}
+
+.matcha-flex-justify-center {
+	justify-content: center;
+}
+
+.matcha-width100 {
+	width: 100%;
+}

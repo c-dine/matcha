@@ -1,0 +1,9 @@
+<div class="navigation-list-container">
+	<div class="navigation-list-margin">
+		<div class="navigation-list-margin-bottom">
+			<app-navigation-element *ngFor="let navLink of navLinks" [navigationButton]="navLink"/>
+		</div>
+		<mat-divider class="navigation-list-divider"/>
+		<app-navigation-element [navigationButton]="settingsNav"></app-navigation-element>
+	</div>
+</div>

@@ -1,0 +1,18 @@
+<div class="dating-description-container">
+    <div class="dating-flex-row gap-10 dating-width-90">
+        <div class="dating-flex-column dating-width-80">
+            <h3 class="dating-name">{{ firstName }} {{ lastName }}</h3>
+            <div class="dating-flex-row">
+                <mat-icon class="dating-card-description-location-icon">location_on</mat-icon>
+                <p class="dating-location">{{ location }}</p>
+            </div>
+        </div>
+        <div class="dating-flex-row-reversed gap-10 dating-width-90">
+            <app-dating-button (clicked)="receiveClickEvent()" [isHighlighted]="true" iconName="favorite"></app-dating-button>
+            <app-dating-button (clicked)="receiveClickEvent()" [isHighlighted]="false" iconName="close"></app-dating-button>	
+        </div>
+    </div>
+    <div class="dating-width-80">
+        <p class="dating-resume">{{ resume }}</p>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+.matcha-contact-card-container {
+	height: 7vh;
+	width: 15vw;
+}
+
+.matcha-contact-card-activated {
+	background-color: white;
+	border-radius: 10px;
+}
+
+.matcha-contact-card-image {
+	height: 4vh;
+	width: 4vh;
+	border-radius: 500px;
+}
+
+.matcha-contact-card-padding-sides {
+	padding-left: 1vw;
+}
+
+.matcha-contact-card-overflow-ellispis {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+    text-overflow: ellipsis;
+	width: 5vw;
+    display: block;
+    overflow: hidden;
+}
+
+.matcha-contact-card-name {
+	color: #1c1e4f;
+	font-size: 12px;
+	font-weight: 500;
+	margin-bottom: 0px;
+	height: 15px;
+}
+
+.matcha-contact-card-message {
+	color: #8F90AD;
+	font-size: 10px;
+	margin-bottom: 0px;
+	height: 15px;
+}
+
+.matcha-contact-card-time-container {
+	width: 4vw;
+}

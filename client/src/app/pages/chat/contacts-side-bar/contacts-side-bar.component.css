@@ -1,0 +1,10 @@
+.matcha-contacts-side-bar-container {
+    width: 16vw;
+    height: 93vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    overflow: scroll;
+    padding-left: 5px;
+}

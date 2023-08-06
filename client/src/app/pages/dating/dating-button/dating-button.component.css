@@ -1,0 +1,22 @@
+.dating-button-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 15px;
+}
+
+.dating-button-icon-highlighted {
+	color: #3FC3BA;
+}
+
+.dating-button-container-color {
+	background-color: #F7F7FF;
+	border: solid 1px #D9C5FF;
+}
+
+.dating-button-container-highlighted {
+	background-color: #E3F5F4;
+	border: solid 1px #3FC3BA;
+}
