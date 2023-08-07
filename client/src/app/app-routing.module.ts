@@ -1,13 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DatingComponent } from './pages/dating/dating.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { ChatComponent } from './pages/chat/chat.component';
+import { HomeComponent } from './pages/home/home.component';
+import { DatingPlatformComponent } from './pages/dating-platform/dating-platform.component';
 
 const routes: Routes = [
-  { path: '', component: DatingComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'chat', component: ChatComponent },
+  { path: '', component: HomeComponent },
+  { path: 'app', component: DatingPlatformComponent, outlet: 'app' },
 ];
 
 @NgModule({

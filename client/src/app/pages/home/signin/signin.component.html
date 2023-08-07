@@ -1,0 +1,55 @@
+<div class="dialog">
+    <h1  class="dialog-title">SIGN IN</h1>
+    <div>
+        <form [formGroup]="newUserForm" (ngSubmit)="onSubmit()">
+
+            <div class="form-field">
+                <label for="username">Username</label>
+                <input type="text" id="username" formControlName="username" required>
+            </div>
+
+            <div class="form-field">
+                <label for="firstName">First name</label>
+                <input type="text" id="firstName" formControlName="firstName" required>
+            </div>
+
+            <div class="form-field">
+                <label for="lastName">Last name</label>
+                <input type="text" id="lastName" formControlName="lastName" required>
+            </div>
+        
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" formControlName="email" required>
+            </div>
+        
+            <div class="form-field">
+                <label for="password">Password</label>
+                <input type="password" id="password" formControlName="password" required>
+            </div>
+
+            <div class="form-error" *ngIf="newUserForm.get('password')?.invalid && newUserForm.get('password')?.touched" class="form-error">
+                Password must be at least 6 characters.
+            </div>
+            <div class="form-error" *ngIf="newUserForm.get('email')?.invalid && newUserForm.get('email')?.touched">
+                Please enter a valid email address.
+            </div>
+            <div class="form-error" *ngIf="newUserForm.get('lastName')?.invalid && newUserForm.get('lastName')?.touched">
+                Please enter a valid last name.
+            </div>
+            <div class="form-error" *ngIf="newUserForm.get('firstName')?.invalid && newUserForm.get('firstName')?.touched">
+                Please enter a valid first name.
+            </div>
+            <div class="form-error" *ngIf="newUserForm.get('username')?.invalid && newUserForm.get('username')?.touched">
+                Please enter a valid username.
+            </div>
+        
+        </form>
+  
+    </div>
+    <div class="button-group">
+        <button mat-dialog-close class="button cancel-button">Cancel</button>
+        <button (click)="onSubmit()" class="button submit-button">Sign in</button>
+    </div>
+
+</div>

@@ -3,18 +3,27 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SharedModule } from './shared/shared.module';
-import { PagesModule } from './pages/pages.module';
+import { HomeComponent } from './pages/home/home.component';
+import { LoginComponent } from './pages/home/login/login.component';
+import { SigninComponent } from './pages/home/signin/signin.component';
+import { DatingPlatformModule } from './pages/dating-platform/dating-platform.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent,
+    LoginComponent,
+    SigninComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    SharedModule,
-    PagesModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatDialogModule,
+    DatingPlatformModule
   ],
   providers: [],
   bootstrap: [AppComponent]
