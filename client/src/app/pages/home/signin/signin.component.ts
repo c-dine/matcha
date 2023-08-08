@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
     selector: 'app-signin',
     templateUrl: './signin.component.html',
-    styleUrls: ['./signin.component.css', '../../../styles/dialog.css']
+    styleUrls: ['./signin.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
   })
   export class SigninComponent {
 
