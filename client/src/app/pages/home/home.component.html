@@ -1,11 +1,13 @@
 <div class="home-page">
     <div class="home-navbar">
         <div class="company-name">MATCHA</div>
-        <div class="buttons-container">
-            <div class="button signin-button" (click)="onSignInClick()">Sign in</div>
-            <div class="button login-button" (click)="onLogInClick()">Log in</div>
-        </div>
+        <div class="button login-button" (click)="onLogInClick()">Log in</div>
     </div>
 
-    <div class="catch-phrase">Find your matcha today</div>
+    <div class="catch-phrase-container">
+        <div class="catch-phrase">Find your matcha today</div>
+        <div class="signin-button-container">
+            <div class="button signin-button" (click)="onSignInClick()">Create account</div>
+        </div>
+    </div>
 </div>
