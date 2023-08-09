@@ -1,110 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@900&display=swap');
 
-.home-page {
-    font-family: 'Montserrat', sans-serif;
-    color: white;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 00)), url('https://images.pexels.com/photos/5364783/pexels-photo-5364783.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-    background-size: 100% 100px, cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-  }
-  
-
-.home-navbar {
-    display: inline-flex;
-    height: 100px;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.company-name {
-    margin-left: 50px;
-    font-size: 50px;
-    font-weight: bolder;
-}
-
-.buttons-container {
-    display: inline-flex;
-    justify-content: space-between;
-    width: 180px;
-    margin-right: 50px;
-}
-
-.button {
-    cursor: pointer;
-    border: solid white;
-    border-radius: 35px;
-    padding: 9px;
-    width: 60px;
-    display: flex;
-    justify-content: center;
-    font-weight: 500;
-
-}
-
-.login-button {
-    background-color: white;
-    color: black;
-}
-
-.signin-button {
-    background-color: black;
-    color: white;
-}
-
-.catch-phrase {
-    font-size: 5vw;
-    font-weight: 700;
-    width: 100%;
-    height: 50%;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-}
-
-
-.mdc-dialog__title {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.mat-mdc-dialog-actions {
-    justify-content: center;
-}
-
 ::ng-deep .cdk-overlay-pane {
-    width: 350px !important;
-}
-
-.form-field {
-    display: inline-flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.submit-button {
-    border: solid white;
-    border-radius: 7px;
-    padding: 9px;
-    width: 90px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    font-weight: 500;
-    background-color: black;
-    color: white !important;
-}
-
-.form-error {
-    font-size: 10px;
-    color: rgb(151, 20, 20);
+    max-width: 350px !important;
 }
 
 .home-page {
@@ -178,7 +75,12 @@
 }
 
 .catch-phrase {
-    max-height: 120px;
     font-size: 5vw;
     font-weight: 700;
+    width: 100%;
+    max-height: 120px;
+    height: 50%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
 }
