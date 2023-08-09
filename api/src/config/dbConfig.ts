@@ -1,6 +1,7 @@
-import { Pool, PoolConfig } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const dbConfig: PoolConfig = {
+const dbConfig = {
     user: process.env.POSTGRES_USER,
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DB,
