@@ -2,12 +2,12 @@ FROM node:18
 
 WORKDIR /app
 
-COPY *.json ./
+COPY . .
+RUN sed -i 's/"@shared-models\/\*": \["..\/shared-models\/\*"\]/"@shared-models\/\*": \[".\/src\/shared-models\/\*"\]/' ./tsconfig.json
 
 RUN npm install
 RUN npm install typescript nodemon
 
-COPY . .
 
 EXPOSE 3000
 

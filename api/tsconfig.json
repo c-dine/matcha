@@ -8,8 +8,10 @@
     "skipLibCheck": true,   
 		"skipDefaultLibCheck": true,                              /* Skip type checking all .d.ts files. */
     "outDir": "./dist",
-    "rootDir": "./src",
     "typeRoots": ["./node_modules/@types", "./@types"],
+    "paths": {
+      "@shared-models/*": ["../shared-models/*"]
+    }
   },
   "include": ["src/**/*.ts", "./@types/**/*.ts"],
   "exclude": ["node_modules"]

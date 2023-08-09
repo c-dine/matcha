@@ -7,8 +7,6 @@ export const authController = express();
 
 authController.get("/", async (req: Request, res: Response, next: NextFunction) => {
 	const result = await req.dbClient.query("select * from profile");
-
-	console.log(result)
 	res.status(200).json(result);
 	next();
 });

@@ -20,6 +20,7 @@ services:
     volumes:
       - client_node_modules:/app/node_modules
       - ./client/src/:/app/src/
+      - ./shared-models/:/app/src/shared-models/
 
   api:
     container_name: matcha_api
@@ -36,6 +37,7 @@ services:
     volumes:
       - api_node_modules:/app/node_modules
       - ./api/src/:/app/src/
+      - ./shared-models/:/app/src/shared-models/
 
   postgres:
     container_name: matcha_postgres
