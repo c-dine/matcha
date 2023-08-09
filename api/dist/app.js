@@ -3,6 +3,7 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
 const app = express();
+console.log("OKAAAY");
 for (const route in routes)
     app.use(route, routes[route]);
 app.listen(3000, () => {

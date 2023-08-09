@@ -32,6 +32,9 @@ services:
       - postgres
     env_file:
       - .db.env
+    volumes:
+      - api_node_modules:/app/node_modules
+      - ./api/src/:/app/src/
 
   postgres:
     container_name: matcha_postgres
@@ -75,3 +78,4 @@ networks:
 volumes:
   postgres_data:
   client_node_modules:
+  api_node_modules:

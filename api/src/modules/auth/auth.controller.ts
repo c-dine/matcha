@@ -6,5 +6,5 @@ export const authController = express();
 
 authController.get("/",
 	async (req, res) => {
-    
+		res.status(200).json('OKAY!')
 });
