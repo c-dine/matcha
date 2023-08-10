@@ -15,33 +15,18 @@ export class ModelBase {
             : "*";
     }
 
-    private getCreateQuery(data: { [ key: string ]: any }) {
-        let createQuery = "(";
-
-        for (const arg in data)
-            createQuery += (createQuery.length > 2 ? `, ` : "") + arg;
-        createQuery += ") VALUES (";
-        for (let i = 1; i <= Object.keys(data).length; i++)
-            createQuery += (createQuery[createQuery.length - 1] === '(' ? "" : ", ")
-                        + `\$${i}`;
-        createQuery += ")";
-        return createQuery;
-    }
-
-    private getUpdateQuery(data: { [ key: string ]: any }) {
-        let updateQuery = "";
-
-        for (const [index, key] of Object.keys(data))
-            updateQuery += updateQuery.length ? ", " : ""
-                        + `${key} = $${index}`;
-        return updateQuery;
-    }
-
 	async findById(id: string, select?: string[]) {
 		const query = `SELECT ${this.getSelectQuery(select)} FROM "${this.table}" WHERE id = $1`;
 		const values = [id];
 		const result = await this.dbClient.query(query, values);
 		return result.rows[0];
+    }
+	
+    async findMany(where: { [ key: string ]: any }, select?: string[]) {
+		const query = `SELECT ${this.getSelectQuery(select)} FROM "${this.table}" WHERE ${this.getWhereQuery(where)}`;
+		const values = Object.values(where);
+		const result = await this.dbClient.query(query, values);
+		return result.rows;
     }
 
     async create(createdData: { [ key: string ]: any }, select?: string[]) {
@@ -63,5 +48,39 @@ export class ModelBase {
         const values = [id];
         const result = await this.dbClient.query(query, values);
         return result.rows[0];
+    }
+
+    private getCreateQuery(data: { [ key: string ]: any }) {
+        let createQuery = "(";
+
+        for (const arg in data)
+            createQuery += (createQuery.length > 2 ? `, ` : "") + arg;
+        createQuery += ") VALUES (";
+        for (let i = 1; i <= Object.keys(data).length; i++) {
+            createQuery += (createQuery[createQuery.length - 1] === '(' ? "" : ", ");
+            createQuery += `\$${i}`;
+        }
+        createQuery += ")";
+        return createQuery;
+    }
+
+    private getUpdateQuery(data: { [ key: string ]: any }) {
+        let updateQuery = "";
+
+        for (const [index, key] of Object.keys(data).entries()) {
+            updateQuery += updateQuery.length ? ", " : "";
+            updateQuery += `${key} = $${index + 1}`;
+        }
+        return updateQuery;
+    }
+    
+    private getWhereQuery(data: { [ key: string ]: any }) {
+        let whereQuery = "";
+
+        for (const [index, key] of Object.keys(data).entries()) {
+            whereQuery += whereQuery.length ? " AND " : "";
+            whereQuery += `${key} = $${index + 1}`;
+        }
+        return whereQuery;
     }
 }
