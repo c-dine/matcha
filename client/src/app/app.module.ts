@@ -9,6 +9,9 @@ import { SigninComponent } from './pages/home/signin/signin.component';
 import { DatingPlatformModule } from './pages/dating-platform/dating-platform.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import { AuthService } from './service/auth.service';
+import { AuthGuard } from './service/authGuard.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,6 +21,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     SigninComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -25,7 +29,10 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatDialogModule,
     DatingPlatformModule
   ],
-  providers: [],
+  providers: [
+    AuthService,
+    AuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

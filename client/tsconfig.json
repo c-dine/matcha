@@ -23,8 +23,10 @@
       "dom"
     ],
     "paths": {
-      "@shared-models/*": ["../shared-models/*"]
-    }
+      "@shared-models/*": ["../shared-models/*"],
+      "@environment/*": ["./src/environments/*"],
+    },
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,84 +1,87 @@
-export interface Tag {
-    id: number;
+interface tag {
+    id: string;
     label?: string;
-}
-
-export interface Profile {
-    id: number;
+  }
+  
+  interface profile {
+    id: string;
     gender?: string;
     birth_date?: Date;
     sexual_preferences?: string;
     biography?: string;
     location?: string;
     fame_rate?: number;
-}
-
-export interface ProfileTag {
-    profile_id: number;
-    tag_id: number;
-}
-
-export interface Picture {
-    id: number;
-    profile_id: number;
+    default_picture_id?: string | null;
+    user_id: string;
+  }
+  
+  interface profileTagAssociation {
+    profile_id: string;
+    tag_id: string;
+  }
+  
+  interface picture {
+    id: string;
+    profile_id: string;
     url?: string;
-}
-
-export interface ProfileDefaultPicture {
-    profile_id: number;
-    picture_id: number;
-}
-
-export interface Like {
-    id: number;
-    profile_id: number;
-    liked_profile_id: number;
+  }
+  
+  interface profilePictureAssociation {
+    profile_id: string;
+    picture_id: string;
+  }
+  
+  interface like {
+    id: string;
+    profile_id: string;
+    liked_profile_id: string;
     date?: Date;
-}
-
-export interface View {
-    id: number;
-    profile_id: number;
-    viewed_profile_id: number;
+  }
+  
+  interface view {
+    id: string;
+    profile_id: string;
+    viewed_profile_id: string;
     date?: Date;
-}
-
-export interface Blacklist {
-    id: number;
-    profile_id: number;
-    blacklisted_profile_id: number;
+  }
+  
+  interface blacklist {
+    id: string;
+    profile_id: string;
+    blacklisted_profile_id: string;
     date?: Date;
-}
-
-export interface FakeReport {
-    id: number;
-    profile_id: number;
-    fake_reported_profile_id: number;
+  }
+  
+  interface fakeReport {
+    id: string;
+    profile_id: string;
+    fake_reported_profile_id: string;
     date?: Date;
-}
-
-export interface User {
-    id: number;
+  }
+  
+  interface user {
+    id: string;
+    username?: string;
     last_name?: string;
     first_name?: string;
     email?: string;
     password?: string;
-    profile_id?: number;
-}
-
-export interface Message {
-    id: number;
-    from: number;
-    to: number;
-    message: string;
-    date: Date;
-}
-
-export interface Notification {
-    id: number;
+  }
+  
+  interface message {
+    id: string;
+    from_profile_id: string;
+    to_profile_id: string;
+    message?: string;
+    date?: Date;
+  }
+  
+  interface notification {
+    id: string;
     is_viewed?: boolean;
-    from?: number;
-    to?: number;
+    from_profile_id: string;
+    to_profile_id: string;
     type?: string;
     date?: Date;
-}
+  }
+  

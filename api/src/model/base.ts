@@ -21,9 +21,9 @@ export class ModelBase {
         for (const arg in data)
             createQuery += (createQuery.length > 2 ? `, ` : "") + arg;
         createQuery += ") VALUES (";
-        for (let i = 1; i <= data.length; i++)
+        for (let i = 1; i <= Object.keys(data).length; i++)
             createQuery += (createQuery[createQuery.length - 1] === '(' ? "" : ", ")
-                        + `$${i}`;
+                        + `\$${i}`;
         createQuery += ")";
         return createQuery;
     }
@@ -38,28 +38,28 @@ export class ModelBase {
     }
 
 	async findById(id: string, select?: string[]) {
-		const query = `SELECT ${this.getSelectQuery(select)} FROM ${this.table} WHERE id = $1`;
+		const query = `SELECT ${this.getSelectQuery(select)} FROM "${this.table}" WHERE id = $1`;
 		const values = [id];
 		const result = await this.dbClient.query(query, values);
 		return result.rows[0];
     }
 
     async create(createdData: { [ key: string ]: any }, select?: string[]) {
-        const query = `INSERT INTO ${this.table} ${this.getCreateQuery(createdData)} RETURNING ${this.getSelectQuery(select)}`;
+        const query = `INSERT INTO "${this.table}" ${this.getCreateQuery(createdData)} RETURNING ${this.getSelectQuery(select)}`;
         const values = Object.values(createdData);
         const result = await this.dbClient.query(query, values);
         return result.rows[0];
       }
     
     async update(id: string, updatedData: { [ key: string ]: any }, select?: string[]) {
-        const query = `UPDATE ${this.table} SET ${this.getUpdateQuery(updatedData)} WHERE id = $4 RETURNING ${this.getSelectQuery(select)}`;
+        const query = `UPDATE "${this.table}" SET ${this.getUpdateQuery(updatedData)} WHERE id = $4 RETURNING ${this.getSelectQuery(select)}`;
         const values = [...Object.values(updatedData), id];
         const result = await this.dbClient.query(query, values);
         return result.rows[0];
     }
     
     async delete(id: string, select?: string[]) {
-        const query = `DELETE FROM ${this.table} WHERE id = $1 RETURNING ${this.getSelectQuery(select)}`;
+        const query = `DELETE FROM "${this.table}" WHERE id = $1 RETURNING ${this.getSelectQuery(select)}`;
         const values = [id];
         const result = await this.dbClient.query(query, values);
         return result.rows[0];
