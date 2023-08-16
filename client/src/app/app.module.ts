@@ -15,6 +15,7 @@ import { PasswordRecoveryComponent } from './pages/home/login-dialog/password-re
 import { MatIconModule } from '@angular/material/icon';
 import { LoginDialogComponent } from './pages/home/login-dialog/login-dialog.component';
 import { LoginComponent } from './pages/home/login-dialog/login/login.component';
+import { ResetPasswordComponent } from './pages/home/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { LoginComponent } from './pages/home/login-dialog/login/login.component'
     PasswordRecoveryComponent,
     LoginComponent,
     SigninDialogComponent,
+	ResetPasswordComponent
   ],
   imports: [
     MatIconModule,

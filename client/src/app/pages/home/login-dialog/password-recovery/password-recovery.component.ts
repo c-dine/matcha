@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginDialogMode } from '../login-dialog.component';
 import { firstValueFrom } from 'rxjs';
+import { MailService } from 'src/app/service/mail.service';
 
 @Component({
     selector: 'app-password-recovery',
@@ -20,14 +21,14 @@ export class PasswordRecoveryComponent {
     mailSent = false;
 
     constructor(
-    	private authService: AuthService,
+		private mailService: MailService
     ) {}
 
     async onSubmit() {
 		this.emailForm.markAllAsTouched();
 		if (this.emailForm.invalid) return;
 		this.mailSent = true;
-		this.authService.resetPassword(String(this.emailForm.get('email')?.value));
+		this.mailService.sendResetPasswordMail(String(this.emailForm.get('email')?.value));
     }
 
     goBackToLoginDialog() {

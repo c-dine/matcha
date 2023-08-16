@@ -4,10 +4,14 @@ import { PoolClient } from "pg";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ProfileModel } from "../../model/profile.model.js";
+import { decryptToken } from "../../utils/encryption.util.js";
+import { encryptionConfig } from "../../config/config.js";
 
 export class AuthService {
 
 	dbClient: PoolClient;
+	
+	RESET_PASSWORD_TIME_LIMIT_MINUTES = 15;
 
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
@@ -15,11 +19,11 @@ export class AuthService {
 
 	private formatUser(createdUser: user): User {
 		return {
-			id: createdUser.id,
-			username: createdUser.username,
-			lastName: createdUser.last_name,
-			firstName: createdUser.first_name,
-			email: createdUser.email,
+			id: createdUser?.id,
+			username: createdUser?.username,
+			lastName: createdUser?.last_name,
+			firstName: createdUser?.first_name,
+			email: createdUser?.email,
 		}
 	}
 
@@ -40,6 +44,18 @@ export class AuthService {
 		});
 	}
 
+	async getUser(
+		whereQuery: { [ key: string ]: any },
+		select?: string[]
+	) {
+		const userModel = new UserModel(this.dbClient);
+		const user = (
+			await userModel.findMany(whereQuery,
+			select
+		))[0];
+		return user ? this.formatUser(user) : undefined;
+	}
+
 	async createUser(
 		userData: NewUser
 	): Promise<User> {
@@ -55,7 +71,7 @@ export class AuthService {
 		await profileModel.create({
 			user_id: newUser.id
 		});
-		return this.formatUser(newUser);
+		return newUser ? this.formatUser(newUser) : undefined;
 	}
 	
 	async getLoggedUser(
@@ -71,14 +87,26 @@ export class AuthService {
 			},
 			["id", "last_name", "first_name", "email", "username", "password"]
 		))[0];
-		if (!loggedUser || !this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password))
+		if (!loggedUser || !(await this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password)))
 			throw new Error("Failed authentication.");
-		return this.formatUser(loggedUser);
+		return loggedUser ? this.formatUser(loggedUser) : undefined;
 	}
 	
 	getNewToken(userId: string, secret: string, expireLimitMinutes: number): string {
 		return jwt.sign({ userId: userId }, secret, {
 			expiresIn: `${expireLimitMinutes}m`,
+		});
+	}
+
+	async resetPassword(resetToken: string, password: string, dbClient: PoolClient) {
+		const decodedToken = decryptToken(resetToken, encryptionConfig.resetPasswordSecret, encryptionConfig.resetPasswordIV);
+		
+		if (Date.now() - new Date(decodedToken.timeStamp).getTime() > this.RESET_PASSWORD_TIME_LIMIT_MINUTES * 60 * 1000)
+			return;
+		
+		const userModel = new UserModel(dbClient);
+		await userModel.updateById(decodedToken.userId, {
+			password: await this.encryptPassword(password)
 		});
 	}
 

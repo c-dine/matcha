@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import nodemailer from 'nodemailer';
-import { env, mailConfig } from "../../config/config.js";
+import { encryptionConfig, env, mailConfig } from "../../config/config.js";
+import { generateEncryptedToken } from "../../utils/encryption.util.js";
 
 export class MailService {
 
@@ -39,6 +40,34 @@ export class MailService {
 		});
 	}
 
+	sendResetPasswordMail(email: string, userId: string) {
+		const resetPasswordUrl = `${env.url}?resetToken=${this.getEncryptedResetPasswordToken(userId)}`;
+		const mailBody =  `
+			<p>Hello,</p>
+			<p>You've requested a password reset. Click the link below to reset your password:</p>
+			<a href="${resetPasswordUrl}" target="_blank">${resetPasswordUrl}</a>
+			<p>This link will expire in 15 minutes.</p>
+			<p>If you didn't request this reset, please ignore this email.</p>
+			<p>Best regards,</p>
+			<p>Matcha Team</p>		
+		`;
+		this.sendMail({
+			subject: "Password reset",
+			to: email,
+			html: mailBody
+		})
+	}
+
+	private getEncryptedResetPasswordToken(userId: string) {
+		return generateEncryptedToken({
+				userId,
+				timeStamp: Date.now()
+			},
+			encryptionConfig.resetPasswordSecret,
+			encryptionConfig.resetPasswordIV
+		);
+	}
+
 	async sendMail(emailOptions: {
 		subject: string,
 		html: string,
@@ -49,23 +78,6 @@ export class MailService {
 			...emailOptions,
 			from: process.env.EMAIL
 		});
-	}
-
-	sendResetPasswordMail(email: string) {
-		const resetPasswordUrl = `${env.url}`;
-		const mailBody =  `
-			<p>Hello,</p>
-			<p>You've requested a password reset. Click the link below to reset your password:</p>
-			<a href="${resetPasswordUrl}" target="_blank">${resetPasswordUrl}</a>
-			<p>If you didn't request this reset, please ignore this email.</p>
-			<p>Best regards,</p>
-			<p>Matcha Team</p>
-		`;
-		this.sendMail({
-			subject: "Password reset",
-			to: email,
-			html: mailBody
-		})
 	}
 
 }

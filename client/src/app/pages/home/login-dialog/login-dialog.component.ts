@@ -8,7 +8,8 @@ export type LoginDialogMode = "login" | "passwordRecovery" | "resetPassword";
     styleUrls: ['./login-dialog.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
 })
 export class LoginDialogComponent {
-    mode: LoginDialogMode = "login";
+    
+	mode: LoginDialogMode = "login";
 
     changeDialogMode(mode: LoginDialogMode) {
         this.mode = mode;

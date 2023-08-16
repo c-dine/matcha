@@ -94,7 +94,12 @@ export class AuthService {
 		this.accessTokenSubject.next(accessToken);
 	}
 
-	async resetPassword(email: string) {
-		await firstValueFrom(this.http.post<void>(environment.apiUrl + '/mail/resetPassword', { email }));
+	async resetPassword(resetToken: string, password: string) {
+		await firstValueFrom(
+			this.http.post<string>(environment.apiUrl + '/auth/resetPassword', {
+				resetToken,
+				password
+			 })
+		)
 	}
 }

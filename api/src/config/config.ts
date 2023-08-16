@@ -1,6 +1,8 @@
-export const config = {
+export const encryptionConfig = {
     accessSecret: process.env.ACCESS_SECRET,
-    refreshSecret: process.env.REFRESH_SECRET
+    refreshSecret: process.env.REFRESH_SECRET,
+	resetPasswordSecret: process.env.RESET_PASSWORD_SECRET,
+	resetPasswordIV: process.env.RESET_PASSwORD_INIT_VECTOR
 }
 
 export const env = {
