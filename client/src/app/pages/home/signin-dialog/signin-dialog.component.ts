@@ -5,16 +5,16 @@ import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-signin',
-    templateUrl: './signin.component.html',
-	styleUrls: ['./signin.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
+    selector: 'app-signin-dialog',
+    templateUrl: './signin-dialog.component.html',
+	styleUrls: ['./signin-dialog.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
 })
-export class SigninComponent {
+export class SigninDialogComponent {
 
 	constructor(
 		private authService: AuthService,
 		private router: Router,
-		private matDialogRef: MatDialogRef<SigninComponent>
+		private matDialogRef: MatDialogRef<SigninDialogComponent>
 	) {}
 
     newUserForm: FormGroup = new FormGroup({
@@ -26,7 +26,8 @@ export class SigninComponent {
     });
 
     async onSubmit() {
-      	if (this.newUserForm.invalid)
+		this.newUserForm.markAllAsTouched();
+		if (this.newUserForm.invalid)
         	return;
 		const signedUser = await this.authService.signIn(this.newUserForm.getRawValue());
 		if (!signedUser) return;

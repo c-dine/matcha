@@ -1,4 +1,15 @@
 export const config = {
-    accessSecret: "69b9883a7236c7fe6b787c7e362ab1263b1714d9793bd57afbf6b4ddb883184ce7c48ca081f493cf834ddcc40415cc6f928ce1c1bae116bc59c5dd3d000167da",
-    refreshSecret: "069ac2853a8499cd9a25c2e2fd8a30d80e29ac9d65640b2c02983ea249ae80557bb4a31261b79274e13b006ab0245e02bb657b92f495b5e62f395610db60bbe6"
+    accessSecret: process.env.ACCESS_SECRET,
+    refreshSecret: process.env.REFRESH_SECRET
+}
+
+export const env = {
+	url: process.env.URL
+}
+
+export const mailConfig = {
+	clientId: process.env.MAIL_CLIENT_ID,
+	secret: process.env.MAIL_SECRET,
+	refreshToken: process.env.MAIL_TOKEN,
+	email: process.env.EMAIL
 }

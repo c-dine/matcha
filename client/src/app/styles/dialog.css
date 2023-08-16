@@ -5,7 +5,15 @@
 .dialog-title {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 25px;
     margin-top: 20px;
+}
+
+.dialog-subtitle {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
 }
 
 .button-group {
@@ -44,4 +52,8 @@
 .cancel-button {
     background-color: white;
     color: var(--primary-text-color);
+}
+
+.go-back-arrow {
+    cursor: pointer;
 }

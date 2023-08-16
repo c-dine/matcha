@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
+import { LoginDialogMode } from '../login-dialog.component';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
+    styleUrls: ['./login.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css']
 })
 export class LoginComponent {
     username: string = "";
     password: string = "";
+
+    @Output() changedDialogMode = new EventEmitter<LoginDialogMode>();
 
     constructor(
     	private authService: AuthService,
@@ -27,6 +30,10 @@ export class LoginComponent {
 		if (!loggedUser) return;
 		this.matDialogRef.close();
         this.router.navigate(['/app']);
+    }
+
+    recoverPassword(){
+        this.changedDialogMode.emit("passwordRecovery");
     }
 }
   

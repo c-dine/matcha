@@ -3,19 +3,20 @@ import { Response, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../../config/config.js';
 import { NewUser } from '@shared-models/user.model.js'
-import { createUser, getNewToken, getLoggedUser, formatUser } from './auth.service.js';
+import { AuthService } from './auth.service.js';
 
 export const authController = express();
 
 authController.post("/signIn", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const userData: NewUser = req.body;
-		const newUser = await createUser(userData, req.dbClient);
-		const accessToken = getNewToken(newUser.id, config.accessSecret, 15);
-		const refreshToken = getNewToken(newUser.id, config.refreshSecret, 12000);
+		const authService = new AuthService(req.dbClient);
+		const newUser = await authService.createUser(userData);
+		const accessToken = authService.getNewToken(newUser.id, config.accessSecret, 15);
+		const refreshToken = authService.getNewToken(newUser.id, config.refreshSecret, 12000);
 
 		res.status(201).json({
-			...formatUser(newUser),
+			...newUser,
 			token: {
 				access: accessToken,
 				refresh: refreshToken
@@ -31,12 +32,13 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 authController.post("/logIn", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const userAuthData = req.body;
-		const loggedUser = await getLoggedUser(userAuthData, req.dbClient);
-		const accessToken = getNewToken(loggedUser.id, config.accessSecret, 15);
-		const refreshToken = getNewToken(loggedUser.id, config.refreshSecret, 12000);
+		const authService = new AuthService(req.dbClient);
+		const loggedUser = await authService.getLoggedUser(userAuthData);
+		const accessToken = authService.getNewToken(loggedUser.id, config.accessSecret, 15);
+		const refreshToken = authService.getNewToken(loggedUser.id, config.refreshSecret, 12000);
 
 		res.status(200).json({
-			...formatUser(loggedUser),
+			...loggedUser,
 			token: {
 				access: accessToken,
 				refresh: refreshToken
@@ -52,12 +54,13 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 authController.post("/refreshAccessToken", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const refreshToken = req.body.refreshToken;
+		const authService = new AuthService(req.dbClient);
 
 		jwt.verify(refreshToken, config.refreshSecret, (err, decoded) => {
 			if (err)
 				return res.status(401).json(undefined);
 
-			res.status(200).json(getNewToken(decoded.userId, config.accessSecret, 15));
+			res.status(200).json(authService.getNewToken(decoded.userId, config.accessSecret, 15));
 		});
 	} catch (e: any) {
 		console.error("Error while refreshing access token.");

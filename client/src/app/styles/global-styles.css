@@ -10,3 +10,14 @@
 
     --background-color: #f7f7ff;
   }
+
+a {
+  cursor: pointer;
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+h3 {
+	text-align: center;
+	font-weight: 500;
+}

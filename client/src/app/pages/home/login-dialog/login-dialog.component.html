@@ -1,0 +1,4 @@
+<div class="dialog">
+   <app-login *ngIf="mode === 'login'" (changedDialogMode)="changeDialogMode($event)"></app-login>
+   <app-password-recovery *ngIf="mode === 'passwordRecovery'" (changedDialogMode)="changeDialogMode($event)"></app-password-recovery>
+</div>

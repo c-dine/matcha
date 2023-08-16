@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { LoginComponent } from './login/login.component';
-import { SigninComponent } from './signin/signin.component';
+import { SigninDialogComponent } from './signin-dialog/signin-dialog.component';
+import { AuthService } from 'src/app/service/auth.service';
+import { Router } from '@angular/router';
+import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -11,17 +13,22 @@ import { SigninComponent } from './signin/signin.component';
 export class HomeComponent {
 
   constructor(
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
-  onLogInClick() {
-    this.dialog.open(LoginComponent, {
-      autoFocus: false
-    });
+  async onLogInClick() {
+	if (await this.authService.isLoggedIn())
+        this.router.navigate(['/app']);
+    else
+		this.dialog.open(LoginDialogComponent, {
+			autoFocus: false
+		});
   }
 
   onSignInClick() {
-    this.dialog.open(SigninComponent, {
+    this.dialog.open(SigninDialogComponent, {
       autoFocus: false
     });
   }

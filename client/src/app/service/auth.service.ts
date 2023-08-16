@@ -44,6 +44,7 @@ export class AuthService {
 	}
 
   	logout(): void {
+		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
 		this.router.navigate(['/']);
 	}
@@ -91,5 +92,9 @@ export class AuthService {
 		if (!accessToken)
 			throw new Error("Invalid refresh token.")
 		this.accessTokenSubject.next(accessToken);
+	}
+
+	async resetPassword(email: string) {
+		await firstValueFrom(this.http.post<void>(environment.apiUrl + '/mail/resetPassword', { email }));
 	}
 }
