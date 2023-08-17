@@ -21,8 +21,10 @@ export class MailService {
 
 		const accessToken = await new Promise((resolve, reject) => {
 			oauth2Client.getAccessToken((err, token) => {
-				if (err)
+				if (err) {
 					reject("Failed to create access token :(");
+					console.log(err);
+				}
 				resolve(token);
 			});
 		});
@@ -65,6 +67,33 @@ export class MailService {
 			},
 			encryptionConfig.resetPasswordSecret,
 			encryptionConfig.resetPasswordIV
+		);
+	}
+
+	sendAccountVerificationMail(email: string, userId: string) {
+		const verificationUrl = `${env.url}?verificationToken=${this.getEncryptedAccountVerificationToken(userId, email)}`;
+		const mailBody =  `
+			<p>Hello,</p>
+			<p>Thank you for creating an account with us. Please click the link below to verify your email address:</p>
+			<p><a href="${verificationUrl}">${verificationUrl}</a></p>
+			<p>If you did not create an account, you can safely ignore this email.</p>
+			<p>Best regards,</p>
+			<p>Matcha Team</p>
+		`;
+		this.sendMail({
+			subject: "Email verification",
+			to: email,
+			html: mailBody
+		})
+	}
+
+	private getEncryptedAccountVerificationToken(userId: string, email: string) {
+		return generateEncryptedToken({
+				userId,
+				email
+			},
+			encryptionConfig.mailActivationSecret,
+			encryptionConfig.mailActivationIV
 		);
 	}
 

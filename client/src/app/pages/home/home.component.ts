@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { VerifyEmailDialogComponent } from './verify-email-dialog/verify-email-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,8 @@ export class HomeComponent {
 		const params = this.route.queryParamMap.subscribe(params => {
 			if (params.has("resetToken"))
 				this.openResetPasswordDialog(String(params.get("resetToken")));
+			if (params.has("verificationToken"))
+				this.openVerifyEmailDialog(String(params.get("verificationToken")));
 		})
 	}
 
@@ -31,6 +34,13 @@ export class HomeComponent {
 		this.dialog.open(ResetPasswordComponent, {
 			autoFocus: false,
 			data: { resetToken }
+		});
+	}
+	
+	openVerifyEmailDialog(verificationToken: string) {
+		this.dialog.open(VerifyEmailDialogComponent, {
+			autoFocus: false,
+			data: { verificationToken }
 		});
 	}
 

@@ -16,6 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoginDialogComponent } from './pages/home/login-dialog/login-dialog.component';
 import { LoginComponent } from './pages/home/login-dialog/login/login.component';
 import { ResetPasswordComponent } from './pages/home/reset-password/reset-password.component';
+import { VerifyEmailDialogComponent } from './pages/home/verify-email-dialog/verify-email-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { ResetPasswordComponent } from './pages/home/reset-password/reset-passwo
     PasswordRecoveryComponent,
     LoginComponent,
     SigninDialogComponent,
-	ResetPasswordComponent
+	ResetPasswordComponent,
+	VerifyEmailDialogComponent,
+	SpinnerComponent
   ],
   imports: [
     MatIconModule,
@@ -35,7 +40,8 @@ import { ResetPasswordComponent } from './pages/home/reset-password/reset-passwo
     ReactiveFormsModule,
     FormsModule,
     MatDialogModule,
-    DatingPlatformModule
+    DatingPlatformModule,
+	MatProgressSpinnerModule
   ],
   providers: [
     AuthService,

@@ -1,0 +1,21 @@
+<div class="dialog">
+	<h1 class="dialog-title">
+		ACCOUNT VERIFICATION
+	</h1>
+
+	<div *ngIf="!isLoading && isVerified">
+		<h3>Your email address was successfully validated.</h3>
+		<p><a (click)="goBackToLoginDialog()" class="go-to-login-link">Go to login</a></p>
+	</div>
+
+	<div *ngIf="!isLoading && !isVerified">
+		<h3>This link is not valid.</h3>
+		<p><a (click)="goBackToLoginDialog()" class="go-to-login-link">Go to login</a></p>
+	</div>
+
+	<div *ngIf="isLoading">
+		<app-spinner></app-spinner>
+	</div>
+
+
+</div>

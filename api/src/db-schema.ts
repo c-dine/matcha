@@ -66,6 +66,7 @@ interface tag {
     first_name?: string;
     email?: string;
     password?: string;
+	verified_account?: boolean;
   }
   
   interface message {

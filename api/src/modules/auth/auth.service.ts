@@ -110,4 +110,21 @@ export class AuthService {
 		});
 	}
 
+	async verifyEmail(verificationToken: string, dbClient: PoolClient) : Promise<boolean> {
+		const decodedToken = decryptToken(
+			verificationToken,
+			encryptionConfig.mailActivationSecret,
+			encryptionConfig.mailActivationIV
+		);
+		const userModel = new UserModel(dbClient);
+		const updatedUsers = await userModel.update({
+			id: decodedToken.userId,
+			email: decodedToken.email
+		}, {
+			verified_account: true
+		}, ["id"]);
+
+		return !!updatedUsers[0];
+	}
+
 }

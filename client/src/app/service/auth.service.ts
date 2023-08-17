@@ -96,10 +96,16 @@ export class AuthService {
 
 	async resetPassword(resetToken: string, password: string) {
 		await firstValueFrom(
-			this.http.post<string>(environment.apiUrl + '/auth/resetPassword', {
+			this.http.post<void>(environment.apiUrl + '/auth/resetPassword', {
 				resetToken,
 				password
 			 })
 		)
+	}
+
+	verifyEmail(verificationToken: string) {
+		return this.http.post<string | undefined>(environment.apiUrl + '/auth/verifyEmail', {
+				verificationToken
+			});
 	}
 }

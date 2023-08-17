@@ -21,6 +21,13 @@ export class LoginComponent {
 		private matDialogRef: MatDialogRef<LoginComponent>
     ) {}
 
+	async ngOnInit() {
+		if (await this.authService.isLoggedIn()) {
+			this.matDialogRef.close();
+			this.router.navigate(['/app']);
+		}
+	}
+
     async onSubmit() {
 		if (!this.username || !this.password) return;
 		const loggedUser = await this.authService.login({
