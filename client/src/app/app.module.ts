@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from './service/auth.service';
 import { AuthGuard } from './service/authGuard.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { PasswordRecoveryComponent } from './pages/home/login-dialog/password-recovery/password-recovery.component';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginDialogComponent } from './pages/home/login-dialog/login-dialog.component';
@@ -19,6 +19,9 @@ import { ResetPasswordComponent } from './pages/home/reset-password/reset-passwo
 import { VerifyEmailDialogComponent } from './pages/home/verify-email-dialog/verify-email-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { HttpInterceptorService } from './service/httpInterceptor.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -41,11 +44,18 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
     FormsModule,
     MatDialogModule,
     DatingPlatformModule,
-	MatProgressSpinnerModule
+	MatProgressSpinnerModule,
+	MatSnackBarModule,
+	BrowserAnimationsModule
   ],
   providers: [
     AuthService,
-    AuthGuard
+    AuthGuard,
+	{
+		provide: HTTP_INTERCEPTORS,
+		useClass: HttpInterceptorService,
+		multi: true
+	},
   ],
   bootstrap: [AppComponent]
 })

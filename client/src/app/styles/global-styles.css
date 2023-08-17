@@ -21,3 +21,15 @@ h3 {
 	text-align: center;
 	font-weight: 500;
 }
+
+.error-snackbar {
+	color: white;
+	--mdc-snackbar-container-color: rgb(156, 63, 63);
+	--mat-mdc-snack-bar-button-color: black;
+}
+
+.success-snackbar {
+	color: white;
+	--mdc-snackbar-container-color: rgb(115, 161, 103);
+	--mat-mdc-snack-bar-button-color: black;
+}

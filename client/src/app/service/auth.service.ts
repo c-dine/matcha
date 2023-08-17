@@ -19,6 +19,10 @@ export class AuthService {
         private router: Router
     ) {}
 
+	getAccessTokenObs() {
+		return this.accessTokenSubject.asObservable();
+	}
+
 	async signIn(newUser: NewUser): Promise<AuthenticatedUser | undefined>  {
 		const userData = await firstValueFrom(
 			this.http.post<AuthenticatedUser | undefined>(environment.apiUrl + '/auth/signIn', newUser)

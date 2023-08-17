@@ -49,7 +49,7 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		})
 	} catch (e: any) {
 		console.error("Error while logging in.");
-		res.status(401).json(undefined);
+		res.status(401).json("Invalid username or password.");
 	}
 	next();
 });
