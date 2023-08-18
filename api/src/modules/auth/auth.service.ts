@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { ProfileModel } from "../../model/profile.model.js";
 import { decryptToken } from "../../utils/encryption.util.js";
 import { encryptionConfig } from "../../config/config.js";
+import { CustomError } from "../../utils/error.util.js";
 
 export class AuthService {
 
@@ -38,7 +39,7 @@ export class AuthService {
 		return new Promise((resolve, reject) => {
 			bcrypt.hash(password, 10, (err, hash) => {
 				if (err)
-					throw new Error("Error while crypting password.");
+					throw new Error();
 				resolve(hash);
 			});
 		});
@@ -88,7 +89,7 @@ export class AuthService {
 			["id", "last_name", "first_name", "email", "username", "password"]
 		))[0];
 		if (!loggedUser || !(await this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password)))
-			throw new Error("Failed authentication.");
+			throw new CustomError("Invalid username or password.", 401);
 		return loggedUser ? this.formatUser(loggedUser) : undefined;
 	}
 	
@@ -102,7 +103,7 @@ export class AuthService {
 		const decodedToken = decryptToken(resetToken, encryptionConfig.resetPasswordSecret, encryptionConfig.resetPasswordIV);
 		
 		if (Date.now() - new Date(decodedToken.timeStamp).getTime() > this.RESET_PASSWORD_TIME_LIMIT_MINUTES * 60 * 1000)
-			return;
+			throw new CustomError("Expired link.", 403);
 		
 		const userModel = new UserModel(dbClient);
 		await userModel.updateById(decodedToken.userId, {

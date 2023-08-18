@@ -24,9 +24,13 @@ export class VerifyEmailDialogComponent {
 	) {}
 
 	async ngOnInit() {
-		if (await firstValueFrom(this.authService.verifyEmail(this.data.verificationToken)))
-			this.isVerified = true;
-		this.isLoading = false;
+		this.authService.verifyEmail(this.data.verificationToken).subscribe(
+			() => { 
+				this.isVerified = true;
+				this.isLoading = false;
+			},
+			() => this.isLoading = false 
+		);
 	}
 
 	goBackToLoginDialog() {

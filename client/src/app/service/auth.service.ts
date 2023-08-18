@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Observable, BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AuthenticatedUser, CurrentUser, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
+import { catchError, map } from 'rxjs/operators';
+import { error } from '@ant-design/icons-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -23,22 +25,24 @@ export class AuthService {
 		return this.accessTokenSubject.asObservable();
 	}
 
-	async signIn(newUser: NewUser): Promise<AuthenticatedUser | undefined>  {
-		const userData = await firstValueFrom(
-			this.http.post<AuthenticatedUser | undefined>(environment.apiUrl + '/auth/signIn', newUser)
-		);
-		if (userData)
-			this.setSession(userData);
-		return userData;
+	signIn(newUser: NewUser): Observable<AuthenticatedUser>  {
+		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/signIn', newUser)
+			.pipe(
+				map(user => {
+					this.setSession(user);
+					return user;
+				})
+			);
 	}
 
-    async login(userAuthData: { username: string, password: string }): Promise<AuthenticatedUser | undefined> {
-        const userData = await firstValueFrom(
-			this.http.post<AuthenticatedUser | undefined>(environment.apiUrl + '/auth/logIn', userAuthData)
-		);
-		if (userData)
-			this.setSession(userData);
-		return userData;
+    login(userAuthData: { username: string, password: string }): Observable<AuthenticatedUser> {
+		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/logIn', userAuthData)
+			.pipe(
+				map(user => {
+					this.setSession(user as AuthenticatedUser);
+					return user;
+				})
+			);
     }
 
 	setSession(user: AuthenticatedUser) {
@@ -98,18 +102,16 @@ export class AuthService {
 		this.accessTokenSubject.next(accessToken);
 	}
 
-	async resetPassword(resetToken: string, password: string) {
-		await firstValueFrom(
-			this.http.post<void>(environment.apiUrl + '/auth/resetPassword', {
-				resetToken,
-				password
-			 })
-		)
+	resetPassword(resetToken: string, password: string) {
+		return this.http.post<string>(environment.apiUrl + '/auth/resetPassword', {
+			resetToken,
+			password
+		});
 	}
 
 	verifyEmail(verificationToken: string) {
-		return this.http.post<string | undefined>(environment.apiUrl + '/auth/verifyEmail', {
-				verificationToken
-			});
+		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
+			verificationToken
+		});
 	}
 }

@@ -19,17 +19,20 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 		mailService.sendAccountVerificationMail(newUser.email, newUser.id);
 
 		res.status(201).json({
-			...newUser,
-			token: {
-				access: accessToken,
-				refresh: refreshToken
+			message: "Successfully signed in.",
+			data: {
+				...newUser,
+				token: {
+					access: accessToken,
+					refresh: refreshToken
+				}
 			}
 		});
-	} catch (e: any) {
-		console.error("Error while creating user.");
-		res.status(400).json(undefined);
+	} catch (error: any) {
+		console.error(`Error while creating user: ${error}`);
+		error.message = error.message || "Error while creating user."; 
+		next(error);
 	}
-	next();
 });
 
 authController.post("/logIn", async (req: Request, res: Response, next: NextFunction) => {
@@ -41,17 +44,20 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		const refreshToken = authService.getNewToken(loggedUser.id, encryptionConfig.refreshSecret, 12000);
 
 		res.status(200).json({
-			...loggedUser,
-			token: {
-				access: accessToken,
-				refresh: refreshToken
+			message: "Successfully logged in.",
+			data: {
+				...loggedUser,
+				token: {
+					access: accessToken,
+					refresh: refreshToken
+				}
 			}
 		})
-	} catch (e: any) {
-		console.error("Error while logging in.");
-		res.status(401).json("Invalid username or password.");
+	} catch (error: any) {
+		console.error(`Error while logging in: ${error}`);
+		error.message = error.message || "Error while logging in."; 
+		next(error);
 	}
-	next();
 });
 
 authController.post("/refreshAccessToken", async (req: Request, res: Response, next: NextFunction) => {
@@ -63,13 +69,15 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 			if (err)
 				return res.status(401).json(undefined);
 
-			res.status(200).json(authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, 15));
+			res.status(200).json({
+				data: authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, 15)
+			});
 		});
-	} catch (e: any) {
-		console.error("Error while refreshing access token.");
-		res.status(500).json(`Error: ${e}`);
+	} catch (error: any) {
+		console.error(`Error while refreshing access token: ${error}`);
+		error.message = "Authentication error."; 
+		next(error);
 	}
-	next();
 });
 
 authController.post("/resetPassword", async (req: Request, res: Response, next: NextFunction) => {
@@ -80,14 +88,13 @@ authController.post("/resetPassword", async (req: Request, res: Response, next: 
 
 		await authService.resetPassword(resetToken, password, req.dbClient);
 
-		res.status(200).json();
-	} catch (e: any) {
-		console.error("Error while reseting password.");
-		res.status(500).json(`Error: ${e}`);
+		res.status(200).json({ message: "Password successfully reset."});
+	} catch (error: any) {
+		console.error(`Error while reseting password: ${error}`);
+		error.message = error.message || "Error while reseting password."; 
+		next(error);
 	}
-	next();
 });
-
 
 authController.post("/verifyEmail", async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -95,13 +102,12 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 		const authService = new AuthService(req.dbClient);
 		const emailIsValid = await authService.verifyEmail(verificationToken, req.dbClient);
 		
-		if (emailIsValid)
-			res.status(200).json("Account verified.");
-		else
-			res.status(200).json(undefined);
-	} catch (e: any) {
-		console.error("Error while verifying email.");
-		res.status(200).json(undefined);
+		if (!emailIsValid)
+			throw new Error();
+		res.status(200).json({ message: "Email successfully verified."});
+	} catch (error: any) {
+		console.error(`Error while verifying email: ${error}`);
+		error.message = "Error while verifying email."; 
+		next(error);
 	}
-	next();
 });

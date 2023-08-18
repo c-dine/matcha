@@ -25,14 +25,18 @@ export class SigninDialogComponent {
 		password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
 
-    async onSubmit() {
+    onSubmit() {
 		this.newUserForm.markAllAsTouched();
 		if (this.newUserForm.invalid)
         	return;
-		const signedUser = await this.authService.signIn(this.newUserForm.getRawValue());
-		if (!signedUser) return;
-		this.matDialogRef.close();
-        this.router.navigate(['/app']);
+		this.authService.signIn(this.newUserForm.getRawValue())
+			.subscribe({
+				next: () => {
+					this.matDialogRef.close();
+					this.router.navigate(['/app']);
+				},
+				error: () => {}
+			});
     }
   }
   

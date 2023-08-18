@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { LoginDialogMode } from '../login-dialog.component';
+import { catchError, map } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -28,15 +29,16 @@ export class LoginComponent {
 		}
 	}
 
-    async onSubmit() {
+    onSubmit() {
 		if (!this.username || !this.password) return;
-		const loggedUser = await this.authService.login({
-			username: this.username,
-			password: this.password
-		})
-		if (!loggedUser) return;
-		this.matDialogRef.close();
-        this.router.navigate(['/app']);
+		this.authService.login({ username: this.username, password: this.password })
+			.subscribe({
+				next: () => {
+					this.matDialogRef.close();
+					this.router.navigate(['/app']);
+				},
+				error: () => {}
+			});
     }
 
     recoverPassword(){

@@ -15,10 +15,10 @@ mailController.post("/resetPassword", async (req: Request, res: Response, next: 
 		if (linkedUser)
 			await mailService.sendResetPasswordMail(email, linkedUser.id);
 
-		res.status(200).json(email);
-	} catch (e: any) {
-		console.error(`Error while sending reset password email: ${e}.`);
-		res.status(500).json(`Error: ${e}`);
+		res.status(200).json({ message: "Reset password mail successfully sent." });
+	} catch (error: any) {
+		console.error(`Error while sending reset password email: ${error}.`);
+		error.message = error.message || `Error while sending reset password email.`;
+		next(error);
 	}
-	next();
 });

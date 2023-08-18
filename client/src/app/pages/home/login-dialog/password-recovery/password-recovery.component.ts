@@ -28,7 +28,10 @@ export class PasswordRecoveryComponent {
 		this.emailForm.markAllAsTouched();
 		if (this.emailForm.invalid) return;
 		this.mailSent = true;
-		this.mailService.sendResetPasswordMail(String(this.emailForm.get('email')?.value));
+		this.mailService.sendResetPasswordMail(String(this.emailForm.get('email')?.value))
+			.subscribe({
+				error: () => {}
+			});
     }
 
     goBackToLoginDialog() {

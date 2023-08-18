@@ -13,8 +13,8 @@ export class MailService {
         private http: HttpClient,
     ) {}
 
-	async sendResetPasswordMail(email: string) {
-		await firstValueFrom(this.http.post<void>(environment.apiUrl + '/mail/resetPassword', { email }));
+	sendResetPasswordMail(email: string) {
+		return this.http.post<void>(environment.apiUrl + '/mail/resetPassword', { email });
 	}
 
 }
