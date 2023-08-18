@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { LoginDialogMode } from '../login-dialog.component';
-import { catchError, map } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-login',
@@ -19,7 +19,8 @@ export class LoginComponent {
     constructor(
     	private authService: AuthService,
 		private router: Router,
-		private matDialogRef: MatDialogRef<LoginComponent>
+		private matDialogRef: MatDialogRef<LoginComponent>,
+		private snackBar: MatSnackBar
     ) {}
 
 	async ngOnInit() {
@@ -30,7 +31,13 @@ export class LoginComponent {
 	}
 
     onSubmit() {
-		if (!this.username || !this.password) return;
+		if (!this.username || !this.password) {
+			this.snackBar.open("Please enter your logins.", "Close", {
+				duration: 5000,
+				panelClass: "error-snackbar"	
+			});
+			return;
+		}
 		this.authService.login({ username: this.username, password: this.password })
 			.subscribe({
 				next: () => {

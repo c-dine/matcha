@@ -11,6 +11,7 @@ dotenv.config();
 const app = express();
 
 app.use(bodyParser.json());
+app.use(authenticationHandler)
 app.use(connectToDatabase);
 
 for (const route in routes) app.use(route, routes[route]);

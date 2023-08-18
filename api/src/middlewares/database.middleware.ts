@@ -12,7 +12,7 @@ export async function connectToDatabase(req: Request, res: Response, next: NextF
 };
 
 export async function disconnectFromDatabase(req: Request, res: Response, next: NextFunction) {
-    if (req.dbClient)
+		if (req.dbClient)
         req.dbClient.release();
     next();
 };

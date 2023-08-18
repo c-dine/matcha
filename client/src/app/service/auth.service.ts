@@ -24,6 +24,10 @@ export class AuthService {
 	getAccessTokenObs() {
 		return this.accessTokenSubject.asObservable();
 	}
+	
+	getCurrentUserObs() {
+		return this.currentUserSubject.asObservable();
+	}
 
 	signIn(newUser: NewUser): Observable<AuthenticatedUser>  {
 		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/signIn', newUser)
