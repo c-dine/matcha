@@ -1,6 +1,6 @@
 import { NewUser, User } from "@shared-models/user.model.js";
 import { UserModel } from '../../model/user.model.js';
-import { PoolClient } from "pg";
+import { Pool, PoolClient } from "pg";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ProfileModel } from "../../model/profile.model.js";
@@ -61,7 +61,6 @@ export class AuthService {
 		userData: NewUser
 	): Promise<User> {
 		const userModel = new UserModel(this.dbClient);
-		const profileModel = new ProfileModel(this.dbClient);
 		const newUser = await userModel.create({
 			username: userData.username,
 			last_name: userData.lastName,
@@ -69,9 +68,6 @@ export class AuthService {
 			email: userData.email,
 			password: await this.encryptPassword(userData.password)
 		}, ["id", "last_name", "first_name", "email", "username"]);
-		await profileModel.create({
-			user_id: newUser.id
-		});
 		return newUser ? this.formatUser(newUser) : undefined;
 	}
 	

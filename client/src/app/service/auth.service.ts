@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
-import { AuthenticatedUser, CurrentUser, NewUser } from '@shared-models/user.model'
+import { AuthenticatedUser, User, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
 import { catchError, map } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { error } from '@ant-design/icons-angular';
   providedIn: 'root'
 })
 export class AuthService {
-	private currentUserSubject: BehaviorSubject<CurrentUser | undefined> = new BehaviorSubject<CurrentUser | undefined>(undefined);
+	private currentUserSubject: BehaviorSubject<User | undefined> = new BehaviorSubject<User | undefined>(undefined);
 	private accessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
     constructor(
@@ -51,8 +51,8 @@ export class AuthService {
 
 	setSession(user: AuthenticatedUser) {
 		this.setRefreshToken(user.token.refresh);
-		this.accessTokenSubject.next(user.token.refresh);
-		this.currentUserSubject.next(user as CurrentUser);
+		this.accessTokenSubject.next(user.token.access);
+		this.currentUserSubject.next(user as User);
 	}
 
   	logout(): void {

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "profile" (
     "location" VARCHAR(100),
     "fame_rate" INTEGER DEFAULT 100,
     "default_picture_id" UUID,
-    "user_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL UNIQUE,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 

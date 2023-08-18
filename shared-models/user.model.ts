@@ -3,14 +3,10 @@ export interface User {
     lastName?: string;
     firstName?: string;
     email?: string;
-    username: string,
+    username: string;
 }
 
-export interface CurrentUser extends User {
-    profilePictureUrl?: string,
-}
-
-export interface AuthenticatedUser extends CurrentUser {
+export interface AuthenticatedUser extends User {
     token: {
         refresh: string,
         access: string

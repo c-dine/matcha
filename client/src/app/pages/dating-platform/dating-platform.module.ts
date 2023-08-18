@@ -24,6 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FirstProfileFillingDialogComponent } from './profile/first-profile-filling-dialog/first-profile-filling-dialog.component';
 @NgModule({
   declarations: [
     DatingPlatformComponent,
@@ -41,7 +42,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ConversationComponent,
     ChatSearchBarComponent,
     ChatMessageComponent,
-    ProfileComponent
+    ProfileComponent,
+	FirstProfileFillingDialogComponent
   ],
   imports: [
     CommonModule,
