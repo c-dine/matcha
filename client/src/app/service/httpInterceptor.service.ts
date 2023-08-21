@@ -11,7 +11,6 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {

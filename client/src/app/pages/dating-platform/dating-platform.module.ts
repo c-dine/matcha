@@ -25,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirstProfileFillingDialogComponent } from './profile/first-profile-filling-dialog/first-profile-filling-dialog.component';
+
 @NgModule({
   declarations: [
     DatingPlatformComponent,

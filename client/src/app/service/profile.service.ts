@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom, tap } from 'rxjs';
 import { Profile } from "@shared-models/profile.model.js"
 import { AuthService } from './auth.service';
 
@@ -10,12 +10,25 @@ import { AuthService } from './auth.service';
 })
 export class ProfileService {
 
+	private profileSubject: Subject<Profile | null> = new Subject<Profile | null>();
+
     constructor(
         private http: HttpClient
     ) {}
 
-	getProfile() {
-		return this.http.get<Profile | null>(`${environment.apiUrl}/profile/`);
+	private getProfile() {
+		return this.http.get<Profile | null>(`${environment.apiUrl}/profile/`)
+			.pipe(
+				tap(profile => this.profileSubject.next(profile))
+			);
+	}
+
+	getProfileObs() {
+		return this.profileSubject.asObservable();
+	}
+
+	async userHasProfile(): Promise<boolean> {
+		return !!(await firstValueFrom(this.getProfile()));
 	}
 
 }

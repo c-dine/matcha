@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ProfileService } from 'src/app/service/profile.service';
-import { FirstProfileFillingDialogComponent } from './profile/first-profile-filling-dialog/first-profile-filling-dialog.component';
+import { Profile } from '@shared-models/profile.model';
 
 @Component({
   selector: 'app-dating-platform',
@@ -11,19 +11,11 @@ import { FirstProfileFillingDialogComponent } from './profile/first-profile-fill
 })
 export class DatingPlatformComponent {
 
+	private profile: Profile | null = null;
+
 	constructor(
 		private profileService: ProfileService,
 		private dialog: MatDialog
 	) {}
-
-	async ngOnInit() {
-		const profile = await firstValueFrom(this.profileService.getProfile())
-			.catch();
-		if (!profile)
-			this.dialog.open(FirstProfileFillingDialogComponent, {
-				disableClose: true,
-				autoFocus: false
-			});
-	}
 
 }
