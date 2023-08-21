@@ -7,6 +7,7 @@ const dbConfig = {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     port: Number(process.env.POSTGRES_PORT),
+	max: 10
   };
 
 export const dbPool = new Pool(dbConfig);

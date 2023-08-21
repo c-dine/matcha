@@ -40,7 +40,7 @@ export class HttpInterceptorService implements HttpInterceptor {
 		return next.handle(modifiedRequest).pipe(
 			catchError((error: HttpErrorResponse) => {
 				this.snackBar.open(error.error.error, 'Close', {
-					duration: 5000,
+					duration: 4000,
 					panelClass: "error-snackbar"
 				});
 				return throwError(() => error);
@@ -49,7 +49,7 @@ export class HttpInterceptorService implements HttpInterceptor {
 				if (event instanceof HttpResponse) {
 					if (event.body?.message)
 						this.snackBar.open(event.body.message, 'Close', {
-							duration: 5000,
+							duration: 4000,
 							panelClass: 'success-snackbar'
 						});
 					event = event.clone({ body: event.body.data });

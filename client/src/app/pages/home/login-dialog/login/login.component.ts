@@ -33,7 +33,7 @@ export class LoginComponent {
     onSubmit() {
 		if (!this.username || !this.password) {
 			this.snackBar.open("Please enter your logins.", "Close", {
-				duration: 5000,
+				duration: 4000,
 				panelClass: "error-snackbar"	
 			});
 			return;

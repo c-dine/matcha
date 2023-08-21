@@ -10,6 +10,7 @@ profileController.get("/", async (req: Request, res: Response, next: NextFunctio
 		const profile = await profileService.getProfile(req.userId);
 
 		res.status(200).json({ data: profile || null });
+		next();
 	} catch (error: any) {
 		console.error(`Error while fetching user profile: ${error}.`);
 		error.message = `Error while fetching user profile.`;

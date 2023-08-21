@@ -53,9 +53,11 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 				}
 			}
 		})
+		next();
 	} catch (error: any) {
 		console.error(`Error while logging in: ${error}`);
 		error.message = error.message || "Error while logging in."; 
+		console.log("Passing control to error handler.")
 		next(error);
 	}
 });
@@ -73,6 +75,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 				data: authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, 15)
 			});
 		});
+		next();
 	} catch (error: any) {
 		console.error(`Error while refreshing access token: ${error}`);
 		error.message = "Authentication error."; 
@@ -89,6 +92,7 @@ authController.post("/resetPassword", async (req: Request, res: Response, next: 
 		await authService.resetPassword(resetToken, password, req.dbClient);
 
 		res.status(200).json({ message: "Password successfully reset."});
+		next();
 	} catch (error: any) {
 		console.error(`Error while reseting password: ${error}`);
 		error.message = error.message || "Error while reseting password."; 
@@ -105,6 +109,7 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 		if (!emailIsValid)
 			throw new Error();
 		res.status(200).json({ message: "Email successfully verified."});
+		next();
 	} catch (error: any) {
 		console.error(`Error while verifying email: ${error}`);
 		error.message = "Error while verifying email."; 

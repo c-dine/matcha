@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import { encryptionConfig } from "../config/config.js";
+import { CustomError } from "../utils/error.util.js";
 
 export function authenticationHandler(req: Request, res: Response, next: NextFunction) {
     try {
@@ -16,7 +17,7 @@ export function authenticationHandler(req: Request, res: Response, next: NextFun
 		next();
     } catch (error) {
         console.error('Authentication error:', error);
-        res.status(401).json({ error: 'Authentication error.' });
+		next(new CustomError('Authentication error.', 401));
     }
 };
 
