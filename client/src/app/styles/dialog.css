@@ -57,3 +57,13 @@
 .go-back-arrow {
     cursor: pointer;
 }
+
+button:disabled {
+	background-color: var(--primary-lighter-color);
+	color: black;
+}
+
+button:disabled:hover {
+	background-color: var(--primary-lighter-color);
+	color: black;
+}

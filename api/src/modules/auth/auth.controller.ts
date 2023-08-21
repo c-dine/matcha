@@ -18,6 +18,7 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 		const mailService = new MailService();
 		mailService.sendAccountVerificationMail(newUser.email, newUser.id);
 
+		next();
 		res.status(201).json({
 			message: "Successfully signed in.",
 			data: {
@@ -57,7 +58,6 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 	} catch (error: any) {
 		console.error(`Error while logging in: ${error}`);
 		error.message = error.message || "Error while logging in."; 
-		console.log("Passing control to error handler.")
 		next(error);
 	}
 });

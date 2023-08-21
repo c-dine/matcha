@@ -25,6 +25,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirstProfileFillingDialogComponent } from './profile/first-profile-filling-dialog/first-profile-filling-dialog.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { FirstProfileFillingDialogComponent } from './profile/first-profile-fill
     MatDialogModule,
     ReactiveFormsModule,
     FormsModule,
-    DatingPlatformRoutingModule
+    DatingPlatformRoutingModule,
+	MatInputModule,
+	MatRadioModule
   ]
 })
 export class DatingPlatformModule { }

@@ -1,16 +1,15 @@
 <h1 class="dialog-title">LOG IN</h1>
 <div>
     <form>
-        <div class="form-field">
-            <label>Username</label>
-            <input [(ngModel)]="username" name="username" type="text" required>
-        </div>
-        <br />
+        <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput [(ngModel)]="username" name="username" type="text" required>
+		</mat-form-field>
 
-        <div class="form-field">
-            <label>Password</label>
-            <input [(ngModel)]="password" name="password" type="password" required>
-        </div>
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput [(ngModel)]="password" name="password" type="password" required>
+		</mat-form-field>
     </form>
 </div>
 <a (click)="recoverPassword()" class="password-recovery">Trouble logging in ?</a>

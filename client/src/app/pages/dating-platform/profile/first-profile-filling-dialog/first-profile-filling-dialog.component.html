@@ -1,9 +1,96 @@
-<div class="dialog">
-	<h1 class="dialog-title">WELCOME !</h1>
-	<div>
-		<h3 class="dialog-subtitle">Please fill your profile before exploring singles around you.</h3>
+<div class="dialog first-profile-filling-dialog">
+	
+	<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.INTRO">
+		<h1 class="dialog-title">WELCOME !</h1>
+		<div>
+			<h3 class="dialog-subtitle">Please fill your profile before exploring singles around you.</h3>
+		</div>
 	</div>
+	
+	<form [formGroup]="profileForm">
+
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.SEXUAL_PROFILE">
+			<h1 class="dialog-title">Sexual preferences</h1>
+			<div formGroupName="sexualProfile">
+				<div class="form-field">
+					<label for="gender">Gender</label>
+					<mat-radio-group aria-label="Select an option" formControlName="gender" matInput>
+						<mat-radio-button value="1">Woman</mat-radio-button>
+						<mat-radio-button value="2">Man</mat-radio-button>
+						<mat-radio-button value="2">Binary</mat-radio-button>
+					</mat-radio-group>
+				</div>
+				<div class="form-field">
+					<label for="sexualPreferences">Sexual Preferences</label>
+					<mat-radio-group aria-label="Select an option" formControlName="sexualPreferences">
+						<mat-radio-button value="1">Woman</mat-radio-button>
+						<mat-radio-button value="2">Man</mat-radio-button>
+						<mat-radio-button value="2">All</mat-radio-button>
+					</mat-radio-group>
+				</div>
+			</div>
+		</div>
+		
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PERSONNAL_PROFILE">
+			<h1 class="dialog-title">Personnal details</h1>
+			<div formGroupName="personnalProfile">
+				<mat-form-field appearance="outline">
+					<mat-label>Tell the world a bit more about you (min. 50 characters)</mat-label>
+					<textarea matInput formControlName="biography"></textarea>
+				</mat-form-field>
+				
+				<mat-form-field appearance="outline">
+					<mat-label>Select a couple of tags that define you (min. 3)</mat-label>
+					<mat-chip-grid #chipGrid aria-label="Tags" formControlName="selectedTags">
+					  	<mat-chip-row *ngFor="let tag of profileForm.get('personnalProfile.selectedTags')?.value" (removed)="removeTag(tag)">
+							{{tag}}
+							<button matChipRemove [attr.aria-label]="'remove ' + tag">
+						  		<mat-icon>cancel</mat-icon>
+							</button>
+						</mat-chip-row>
+					</mat-chip-grid>
+					<input	formControlName="tagInput"
+							[matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+							[matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+							(matChipInputTokenEnd)="addTagFromInput($event)"/>
+					<mat-autocomplete #auto="matAutocomplete" (optionSelected)="addTagFromAutocompletion($event)">
+						<mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+							{{tag}}
+						</mat-option>
+					</mat-autocomplete>
+				</mat-form-field>
+
+			</div>
+		</div>
+
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PHOTOS">
+			<h1 class="dialog-title">Photos</h1>
+		</div>
+
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.END">
+			<h1 class="dialog-title">Profile complete</h1>
+			Your profile is complete. Let's swipe !
+		</div>
+		
+	</form>
+	  
 	<div class="button-group">
-		<button class="dialog-button submit-button">Next</button>
+		<button class="dialog-button cancel-button"
+				(click)="onSwitchPreviousModeClick()"
+				*ngIf="firstFillingProfileMode > FirstFillingProfileMode.INTRO">
+				Previous
+		</button>
+		<button class="dialog-button submit-button"
+				(click)="onSwitchNextModeClick()"
+				*ngIf="firstFillingProfileMode < FirstFillingProfileMode.END"
+				[disabled]="!canGoNext()">
+				Next
+		</button>
+		<button class="dialog-button submit-button"
+				(click)="onSubmit()"
+				*ngIf="firstFillingProfileMode === FirstFillingProfileMode.END">
+				Submit
+		</button>
 	</div>
+
  </div>

@@ -3,6 +3,7 @@ import { LoginDialogComponent } from "../login-dialog/login-dialog.component";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "src/app/service/auth.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-reset-password',
@@ -22,12 +23,20 @@ export class ResetPasswordComponent {
 			resetToken: string
 		},
 		private dialog: MatDialog,
+		private snackBar: MatSnackBar,
 		private dialogRef: MatDialogRef<ResetPasswordComponent>,
 		private authService: AuthService
 	) {}
 
 	onSubmit() {
 		if (this.resetPasswordForm.invalid)	return;
+		if (this.resetPasswordForm.get('password')?.getRawValue() !== this.resetPasswordForm.get('passwordConfirmation')?.getRawValue()) {
+			this.snackBar.open("Password don't match.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return;
+		}
 		this.passwordReset = true;
 		this.authService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue());
 	}
