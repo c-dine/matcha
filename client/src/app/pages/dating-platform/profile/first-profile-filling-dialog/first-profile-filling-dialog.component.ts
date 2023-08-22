@@ -1,10 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, firstValueFrom, map, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { minArrayLengthValidator } from 'src/app/validators/custom-validators';
+import { TagService } from 'src/app/service/tag.service';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
@@ -14,9 +15,9 @@ enum FirstFillingProfileMode {
 	END = 4
 }
 @Component({
-    selector: 'app-first-profile-filling-dialog',
-    templateUrl: './first-profile-filling-dialog.component.html',
-    styleUrls: ['./first-profile-filling-dialog.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css']
+	selector: 'app-first-profile-filling-dialog',
+	templateUrl: './first-profile-filling-dialog.component.html',
+	styleUrls: ['./first-profile-filling-dialog.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css']
 })
 export class FirstProfileFillingDialogComponent {
 
@@ -24,35 +25,37 @@ export class FirstProfileFillingDialogComponent {
 	firstFillingProfileMode: number = FirstFillingProfileMode.INTRO;
 
 	separatorKeyCodes: number[] = [ENTER, COMMA];
-	availableTags = ['Angular', 'React', 'Vue', 'JavaScript', 'TypeScript', 'HTML', 'CSS'];
+	availableTags!: string[];
 	filteredTags: Observable<string[]> | undefined;
 
 	profileForm = new FormGroup({
 		sexualProfile: new FormGroup({
-			gender: new FormControl<string>('', [ Validators.required ]),
-			sexualPreferences: new FormControl<string>('', [ Validators.required ])
+			gender: new FormControl<string>('', [Validators.required]),
+			sexualPreferences: new FormControl<string>('', [Validators.required])
 		}),
 		personnalProfile: new FormGroup({
-			biography: new FormControl<string>('', [ Validators.required, Validators.minLength(50) ]),
+			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50)]),
 			tagInput: new FormControl<string | null>('', []),
-			selectedTags: new FormControl<string[]>([], [ Validators.required, minArrayLengthValidator(3) ]),
+			selectedTags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
 		}),
 	});
 
-	constructor() {
+	constructor(
+		private tagService: TagService
+	) { }
+
+	async ngOnInit() {
+		this.availableTags = (await firstValueFrom(this.tagService.getTags())).map(tag => tag.label);
 		this.filteredTags = this.profileForm.get("personnalProfile.tagInput")?.valueChanges.pipe(
 			startWith(null),
 			map((tag: string | null) => (tag ? this.filterTags(tag) : this.availableTags.slice())),
 		);
 	}
 
-	onSubmit() {
-
-	}
-
+	onSubmit() { }
 
 	canGoNext() {
-		switch(this.firstFillingProfileMode) {
+		switch (this.firstFillingProfileMode) {
 			case FirstFillingProfileMode.SEXUAL_PROFILE:
 				if (this.profileForm.get("sexualProfile")?.invalid)
 					return false;
@@ -66,15 +69,15 @@ export class FirstProfileFillingDialogComponent {
 	}
 
 	onSwitchNextModeClick() {
-		this.firstFillingProfileMode = 
+		this.firstFillingProfileMode =
 			this.firstFillingProfileMode === FirstFillingProfileMode.END ?
-			FirstFillingProfileMode.END : this.firstFillingProfileMode + 1;
+				FirstFillingProfileMode.END : this.firstFillingProfileMode + 1;
 	}
 
 	onSwitchPreviousModeClick() {
-		this.firstFillingProfileMode = 
+		this.firstFillingProfileMode =
 			this.firstFillingProfileMode === FirstFillingProfileMode.INTRO ?
-			FirstFillingProfileMode.INTRO : this.firstFillingProfileMode - 1;
+				FirstFillingProfileMode.INTRO : this.firstFillingProfileMode - 1;
 	}
 
 	addTagFromInput(event: MatChipInputEvent): void {
@@ -83,7 +86,7 @@ export class FirstProfileFillingDialogComponent {
 		if (value) this.addTag(value);
 		event.chipInput!.clear();
 	}
-	
+
 	addTagFromAutocompletion(event: MatAutocompleteSelectedEvent): void {
 		this.addTag(event.option.viewValue);
 	}
@@ -108,8 +111,7 @@ export class FirstProfileFillingDialogComponent {
 
 	private filterTags(value: string): string[] {
 		const filterValue = value.toLowerCase();
-	
+
 		return this.availableTags.filter(tag => tag.toLowerCase().includes(filterValue));
 	}
 }
-  

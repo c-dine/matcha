@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS "tag" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "label" VARCHAR(100) NOT NULL
+    "label" VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS "user" (
@@ -112,3 +112,13 @@ CREATE TABLE IF NOT EXISTS "notification" (
     FOREIGN KEY ("from_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+INSERT INTO public.tag (label) VALUES ('Vegan');
+INSERT INTO public.tag (label) VALUES ('Queer');
+INSERT INTO public.tag (label) VALUES ('Food');
+INSERT INTO public.tag (label) VALUES ('Technology');
+INSERT INTO public.tag (label) VALUES ('Travel');
+INSERT INTO public.tag (label) VALUES ('Sport');
+INSERT INTO public.tag (label) VALUES ('Nerd');
+INSERT INTO public.tag (label) VALUES ('Drink');
+INSERT INTO public.tag (label) VALUES ('Party');

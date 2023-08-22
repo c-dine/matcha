@@ -1,9 +1,8 @@
 import { NewUser, User } from "@shared-models/user.model.js";
 import { UserModel } from '../../model/user.model.js';
-import { Pool, PoolClient } from "pg";
+import { PoolClient } from "pg";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { ProfileModel } from "../../model/profile.model.js";
 import { decryptToken } from "../../utils/encryption.util.js";
 import { encryptionConfig } from "../../config/config.js";
 import { CustomError } from "../../utils/error.util.js";

@@ -28,7 +28,7 @@ interface tag {
   
   interface profilePictureAssociation {
     profile_id: string;
-    picture_id: string;
+    picture_id: string;profile
   }
   
   interface like {

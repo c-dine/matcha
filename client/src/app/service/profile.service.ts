@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { BehaviorSubject, Subject, firstValueFrom, tap } from 'rxjs';
+import { Subject, firstValueFrom, tap } from 'rxjs';
 import { Profile } from "@shared-models/profile.model.js"
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
