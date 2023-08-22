@@ -47,15 +47,6 @@ ALTER TABLE "profile"
     ADD CONSTRAINT fk_default_picture_profile
     FOREIGN KEY ("default_picture_id") REFERENCES "picture"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
-
-CREATE TABLE IF NOT EXISTS "profile_picture_asso" (
-    "profile_id" UUID NOT NULL,
-    "picture_id" UUID NOT NULL,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("picture_id") REFERENCES "picture"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY ("profile_id", "picture_id")
-);
-
 CREATE TABLE IF NOT EXISTS "like" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "profile_id" UUID NOT NULL,

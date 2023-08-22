@@ -6,21 +6,24 @@ import { Observable, firstValueFrom, map, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { minArrayLengthValidator } from 'src/app/validators/custom-validators';
 import { TagService } from 'src/app/service/tag.service';
+import { AuthService } from 'src/app/service/auth.service';
+import { Router } from '@angular/router';
+import { ProfileService } from 'src/app/service/profile.service';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
 	SEXUAL_PROFILE = 1,
 	PERSONNAL_PROFILE = 2,
-	PHOTOS = 3,
-	END = 4
+	END = 3
 }
 @Component({
-	selector: 'app-first-profile-filling-dialog',
-	templateUrl: './first-profile-filling-dialog.component.html',
-	styleUrls: ['./first-profile-filling-dialog.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css']
+	selector: 'app-first-profile-filling',
+	templateUrl: './first-profile-filling.component.html',
+	styleUrls: ['./first-profile-filling.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
 })
-export class FirstProfileFillingDialogComponent {
+export class FirstProfileFillingComponent {
 
+	isLoading = true;
 	FirstFillingProfileMode = FirstFillingProfileMode;
 	firstFillingProfileMode: number = FirstFillingProfileMode.INTRO;
 
@@ -41,15 +44,27 @@ export class FirstProfileFillingDialogComponent {
 	});
 
 	constructor(
-		private tagService: TagService
+		private authService: AuthService,
+		private tagService: TagService,
+		private router: Router,
+		private profileService: ProfileService
 	) { }
 
 	async ngOnInit() {
+		await this.redirectUserIfNotAllowed();
 		this.availableTags = (await firstValueFrom(this.tagService.getTags())).map(tag => tag.label);
 		this.filteredTags = this.profileForm.get("personnalProfile.tagInput")?.valueChanges.pipe(
 			startWith(null),
 			map((tag: string | null) => (tag ? this.filterTags(tag) : this.availableTags.slice())),
 		);
+		this.isLoading = false;
+	}
+
+	async redirectUserIfNotAllowed() {
+		if (!(await this.authService.isLoggedIn()))
+			this.router.navigate([""]);
+		if (await this.profileService.userHasProfile())
+			this.router.navigate(["/app"]);
 	}
 
 	onSubmit() { }

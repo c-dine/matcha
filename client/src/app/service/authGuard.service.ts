@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ProfileService } from './profile.service';
-import { FirstProfileFillingDialogComponent } from '../pages/dating-platform/profile/first-profile-filling-dialog/first-profile-filling-dialog.component';
+import { FirstProfileFillingComponent } from '../pages/home/first-profile-filling/first-profile-filling.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
@@ -21,11 +21,10 @@ export class AuthGuard {
 			this.router.navigate(['']);
 			return false;
 		}
-		if (!(await this.profileService.userHasProfile()))
-			this.dialog.open(FirstProfileFillingDialogComponent, {
-				disableClose: true,
-				autoFocus: false
-			});
+		if (!(await this.profileService.userHasProfile())){
+			this.router.navigate(['/fillProfile']);
+			return true;
+		}
 		return true;
     }
 }

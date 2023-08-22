@@ -24,7 +24,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FirstProfileFillingDialogComponent } from './profile/first-profile-filling-dialog/first-profile-filling-dialog.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 
@@ -45,8 +44,7 @@ import { MatRadioModule } from '@angular/material/radio';
     ConversationComponent,
     ChatSearchBarComponent,
     ChatMessageComponent,
-    ProfileComponent,
-	FirstProfileFillingDialogComponent
+    ProfileComponent
   ],
   imports: [
     CommonModule,

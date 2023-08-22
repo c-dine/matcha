@@ -24,43 +24,54 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FirstProfileFillingComponent } from './pages/home/first-profile-filling/first-profile-filling.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ProfilePicturesComponent } from './shared/profile-pictures/profile-pictures.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    LoginDialogComponent,
-    PasswordRecoveryComponent,
-    LoginComponent,
-    SigninDialogComponent,
-	ResetPasswordComponent,
-	VerifyEmailDialogComponent,
-	SpinnerComponent
-  ],
-  imports: [
-    MatIconModule,
-    HttpClientModule,
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatDialogModule,
-    DatingPlatformModule,
-	MatProgressSpinnerModule,
-	MatSnackBarModule,
-	BrowserAnimationsModule,
-	MatInputModule,
-    MatFormFieldModule
-  ],
-  providers: [
-    AuthService,
-    AuthGuard,
-	{
-		provide: HTTP_INTERCEPTORS,
-		useClass: HttpInterceptorService,
-		multi: true
-	},
-  ],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		HomeComponent,
+		LoginDialogComponent,
+		PasswordRecoveryComponent,
+		LoginComponent,
+		SigninDialogComponent,
+		ResetPasswordComponent,
+		VerifyEmailDialogComponent,
+		SpinnerComponent,
+		FirstProfileFillingComponent,
+		ProfilePicturesComponent
+	],
+	imports: [
+		MatIconModule,
+		HttpClientModule,
+		BrowserModule,
+		AppRoutingModule,
+		ReactiveFormsModule,
+		FormsModule,
+		MatDialogModule,
+		DatingPlatformModule,
+		MatProgressSpinnerModule,
+		MatSnackBarModule,
+		BrowserAnimationsModule,
+		MatInputModule,
+		MatFormFieldModule,
+		MatRadioModule,
+		MatChipsModule,
+		MatAutocompleteModule
+
+	],
+	providers: [
+		AuthService,
+		AuthGuard,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: HttpInterceptorService,
+			multi: true
+		},
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

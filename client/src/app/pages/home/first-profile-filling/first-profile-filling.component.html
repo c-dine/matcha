@@ -1,16 +1,17 @@
-<div class="dialog first-profile-filling-dialog">
+<app-spinner *ngIf="isLoading"></app-spinner>
+
+<div *ngIf="!isLoading" class="full-page first-profile-filling-page">
 	
-	<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.INTRO">
-		<h1 class="dialog-title">WELCOME !</h1>
-		<div>
-			<h3 class="dialog-subtitle">Please fill your profile before exploring singles around you.</h3>
-		</div>
+	<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.INTRO" class="first-profile-filling-subpage">
+		<h1>Welcome! Let’s create your profile</h1>
+		<h2>Let others get to know you better! Select up to 5 pictures</h2>
+		<app-profile-pictures></app-profile-pictures>
 	</div>
 	
 	<form [formGroup]="profileForm">
 
-		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.SEXUAL_PROFILE">
-			<h1 class="dialog-title">Sexual preferences</h1>
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.SEXUAL_PROFILE" class="first-profile-filling-subpage">
+			<h1>Sexual preferences</h1>
 			<div formGroupName="sexualProfile">
 				<div class="form-field">
 					<label for="gender">Gender</label>
@@ -31,8 +32,8 @@
 			</div>
 		</div>
 		
-		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PERSONNAL_PROFILE">
-			<h1 class="dialog-title">Personnal details</h1>
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PERSONNAL_PROFILE" class="first-profile-filling-subpage">
+			<h1>Give a little description of yourself :)</h1>
 			<div formGroupName="personnalProfile">
 				<mat-form-field appearance="outline">
 					<mat-label>Tell the world a bit more about you (min. 50 characters)</mat-label>
@@ -63,13 +64,8 @@
 			</div>
 		</div>
 
-		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PHOTOS">
-			<h1 class="dialog-title">Photos</h1>
-		</div>
-
-		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.END">
-			<h1 class="dialog-title">Profile complete</h1>
-			Your profile is complete. Let's swipe !
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.END" class="first-profile-filling-subpage">
+			<h1>Your profile is complete. Let's swipe !</h1>
 		</div>
 		
 	</form>

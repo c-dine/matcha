@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@900&display=swap');
+
 :root {
     --primary-color: #5D5FEF;
     --primary-lighter-color: #f2edfa;
@@ -10,6 +12,11 @@
 
     --background-color: #f7f7ff;
   }
+
+body {
+    font-family: 'Raleway', sans-serif !important;
+    font-weight: 400;
+}
 
 a {
   cursor: pointer;
@@ -32,4 +39,12 @@ h3 {
 	color: white;
 	--mdc-snackbar-container-color: rgb(115, 161, 103);
 	--mat-mdc-snack-bar-button-color: black;
+}
+
+.full-page {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
 }
