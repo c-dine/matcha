@@ -1,6 +1,7 @@
 .first-profile-filling-page {
 	display: flex;
 	flex-direction: column;
+	height: calc(100% - 4px) !important;
 }
 
 .first-profile-filling-subpage {
@@ -10,7 +11,7 @@
 }
 
 h1 {
-	font-size: 5vh;
+	font-size: 4vh;
 	font-weight: 600;
 	margin-bottom: 20px;
 }

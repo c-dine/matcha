@@ -5,10 +5,25 @@ import bodyParser from 'body-parser';
 import { connectToDatabase, disconnectFromDatabase } from "./middlewares/database.middleware.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 import { authenticationHandler } from "./middlewares/authentication.middleware.js";
+import admin from 'firebase-admin';
+import { env, firebaseConfig, firebaseMetadata } from "./config/config.js";
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
+
+admin.initializeApp({
+	credential: admin.credential.cert(firebaseConfig),
+	storageBucket: process.env.FIREBASE_STORAGE_URL
+});
+
+export const bucket = admin.storage().bucket();
+bucket.setMetadata(firebaseMetadata);
+
+app.use(cors({
+	origin: env.url
+}));
 
 app.use(bodyParser.json());
 app.use(authenticationHandler)
@@ -20,5 +35,5 @@ app.use(errorHandler);
 app.use(disconnectFromDatabase);
 
 app.listen(3000, () => {
-  console.log('Server started on port 3000');
+	console.log('Server started on port 3000');
 });

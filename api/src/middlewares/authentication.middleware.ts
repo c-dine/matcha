@@ -27,5 +27,6 @@ const publicRoutes = [
 	"/auth/refreshAccessToken",
 	"/auth/resetPassword",
 	"/auth/verifyEmail",
-	"/auth/resetPassword"
+	"/auth/resetPassword",
+	"/mail/resetPassword"
 ]

@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css']
+    styleUrls: ['./login.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css', '../../../../styles/buttons.css']
 })
 export class LoginComponent {
     username: string = "";

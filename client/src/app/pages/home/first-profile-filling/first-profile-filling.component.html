@@ -1,16 +1,19 @@
-<app-spinner *ngIf="isLoading"></app-spinner>
+<mat-progress-bar mode="determinate"
+	[value]="firstFillingProfileMode / FILLING_PROFILE_STEP_COUNT * 100"></mat-progress-bar>
 
 <div *ngIf="!isLoading" class="full-page first-profile-filling-page">
-	
+	<app-spinner *ngIf="isLoading"></app-spinner>
+
 	<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.INTRO" class="first-profile-filling-subpage">
 		<h1>Welcome! Let’s create your profile</h1>
 		<h2>Let others get to know you better! Select up to 5 pictures</h2>
-		<app-profile-pictures></app-profile-pictures>
+		<app-profile-pictures [pictures]="pictures" (updatedPictures)="updatePictures($event)"></app-profile-pictures>
 	</div>
-	
+
 	<form [formGroup]="profileForm">
 
-		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.SEXUAL_PROFILE" class="first-profile-filling-subpage">
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.SEXUAL_PROFILE"
+			class="first-profile-filling-subpage">
 			<h1>Sexual preferences</h1>
 			<div formGroupName="sexualProfile">
 				<div class="form-field">
@@ -31,29 +34,30 @@
 				</div>
 			</div>
 		</div>
-		
-		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PERSONNAL_PROFILE" class="first-profile-filling-subpage">
+
+		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.PERSONNAL_PROFILE"
+			class="first-profile-filling-subpage">
 			<h1>Give a little description of yourself :)</h1>
 			<div formGroupName="personnalProfile">
 				<mat-form-field appearance="outline">
 					<mat-label>Tell the world a bit more about you (min. 50 characters)</mat-label>
 					<textarea matInput formControlName="biography"></textarea>
 				</mat-form-field>
-				
+
 				<mat-form-field appearance="outline">
 					<mat-label>Select a couple of tags that define you (min. 3)</mat-label>
 					<mat-chip-grid #chipGrid aria-label="Tags" formControlName="selectedTags">
-					  	<mat-chip-row *ngFor="let tag of profileForm.get('personnalProfile.selectedTags')?.value" (removed)="removeTag(tag)">
+						<mat-chip-row *ngFor="let tag of profileForm.get('personnalProfile.selectedTags')?.value"
+							(removed)="removeTag(tag)">
 							{{tag}}
 							<button matChipRemove [attr.aria-label]="'remove ' + tag">
-						  		<mat-icon>cancel</mat-icon>
+								<mat-icon>cancel</mat-icon>
 							</button>
 						</mat-chip-row>
 					</mat-chip-grid>
-					<input	formControlName="tagInput"
-							[matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-							[matChipInputSeparatorKeyCodes]="separatorKeyCodes"
-							(matChipInputTokenEnd)="addTagFromInput($event)"/>
+					<input formControlName="tagInput" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+						[matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+						(matChipInputTokenEnd)="addTagFromInput($event)" />
 					<mat-autocomplete #auto="matAutocomplete" (optionSelected)="addTagFromAutocompletion($event)">
 						<mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
 							{{tag}}
@@ -67,26 +71,22 @@
 		<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.END" class="first-profile-filling-subpage">
 			<h1>Your profile is complete. Let's swipe !</h1>
 		</div>
-		
+
 	</form>
-	  
+
 	<div class="button-group">
-		<button class="dialog-button cancel-button"
-				(click)="onSwitchPreviousModeClick()"
-				*ngIf="firstFillingProfileMode > FirstFillingProfileMode.INTRO">
-				Previous
+		<button class="custom-button cancel-button" (click)="onSwitchPreviousModeClick()"
+			*ngIf="firstFillingProfileMode > FirstFillingProfileMode.INTRO">
+			Previous
 		</button>
-		<button class="dialog-button submit-button"
-				(click)="onSwitchNextModeClick()"
-				*ngIf="firstFillingProfileMode < FirstFillingProfileMode.END"
-				[disabled]="!canGoNext()">
-				Next
+		<button class="custom-button submit-button" (click)="onSwitchNextModeClick()"
+			*ngIf="firstFillingProfileMode < FirstFillingProfileMode.END" [disabled]="!canGoNext()">
+			Next
 		</button>
-		<button class="dialog-button submit-button"
-				(click)="onSubmit()"
-				*ngIf="firstFillingProfileMode === FirstFillingProfileMode.END">
-				Submit
+		<button class="custom-button submit-button" (click)="onSubmit()"
+			*ngIf="firstFillingProfileMode === FirstFillingProfileMode.END">
+			Submit
 		</button>
 	</div>
 
- </div>
+</div>

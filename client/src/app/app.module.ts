@@ -29,6 +29,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ProfilePicturesComponent } from './shared/profile-pictures/profile-pictures.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
 	declarations: [
@@ -60,8 +61,8 @@ import { ProfilePicturesComponent } from './shared/profile-pictures/profile-pict
 		MatFormFieldModule,
 		MatRadioModule,
 		MatChipsModule,
-		MatAutocompleteModule
-
+		MatAutocompleteModule,
+		MatProgressBarModule
 	],
 	providers: [
 		AuthService,

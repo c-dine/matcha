@@ -9,6 +9,8 @@ import { TagService } from 'src/app/service/tag.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/service/profile.service';
+import { DisplayableProfilePictures, PictureService } from 'src/app/service/picture.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
@@ -19,10 +21,11 @@ enum FirstFillingProfileMode {
 @Component({
 	selector: 'app-first-profile-filling',
 	templateUrl: './first-profile-filling.component.html',
-	styleUrls: ['./first-profile-filling.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
+	styleUrls: ['./first-profile-filling.component.css', '../../../styles/dialog.css', '../../../styles/form.css', '../../../styles/buttons.css']
 })
 export class FirstProfileFillingComponent {
 
+	FILLING_PROFILE_STEP_COUNT = 3;
 	isLoading = true;
 	FirstFillingProfileMode = FirstFillingProfileMode;
 	firstFillingProfileMode: number = FirstFillingProfileMode.INTRO;
@@ -30,6 +33,11 @@ export class FirstProfileFillingComponent {
 	separatorKeyCodes: number[] = [ENTER, COMMA];
 	availableTags!: string[];
 	filteredTags: Observable<string[]> | undefined;
+	
+	pictures: DisplayableProfilePictures = {
+		profilePicture: undefined,
+		additionnalPictures: [{}, {}, {}, {}]
+	}
 
 	profileForm = new FormGroup({
 		sexualProfile: new FormGroup({
@@ -46,7 +54,9 @@ export class FirstProfileFillingComponent {
 	constructor(
 		private authService: AuthService,
 		private tagService: TagService,
+		private pictureService: PictureService,
 		private router: Router,
+		private snackBar: MatSnackBar,
 		private profileService: ProfileService
 	) { }
 
@@ -71,6 +81,10 @@ export class FirstProfileFillingComponent {
 
 	canGoNext() {
 		switch (this.firstFillingProfileMode) {
+			case FirstFillingProfileMode.INTRO:
+				if (!this.pictures.profilePicture)
+					return false;
+				break;
 			case FirstFillingProfileMode.SEXUAL_PROFILE:
 				if (this.profileForm.get("sexualProfile")?.invalid)
 					return false;
@@ -94,6 +108,8 @@ export class FirstProfileFillingComponent {
 			this.firstFillingProfileMode === FirstFillingProfileMode.INTRO ?
 				FirstFillingProfileMode.INTRO : this.firstFillingProfileMode - 1;
 	}
+
+	// TAGS
 
 	addTagFromInput(event: MatChipInputEvent): void {
 		const value = event.value || "";
@@ -128,5 +144,33 @@ export class FirstProfileFillingComponent {
 		const filterValue = value.toLowerCase();
 
 		return this.availableTags.filter(tag => tag.toLowerCase().includes(filterValue));
+	}
+
+	// PICTURES
+
+	updatePictures(pictures: DisplayableProfilePictures) {
+		this.pictures = pictures;
+	}
+
+	async uploadPicture(event: any): Promise<string | undefined> {
+		const file: File = event.target.files[0];
+		const { id, uploadUrl } = await firstValueFrom(this.pictureService.generateUploadUrl());
+
+		try {
+			await fetch(uploadUrl, {
+				method: 'PUT',
+				body: file,
+				headers: {
+					'Content-Type': "image/jpeg",
+				}
+			});
+			return id;
+		} catch (error: any) {
+			this.snackBar.open("Error uploading picture. Try again.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return undefined;
+		}
 	}
 }

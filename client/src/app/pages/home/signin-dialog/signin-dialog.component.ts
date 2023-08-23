@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'app-signin-dialog',
     templateUrl: './signin-dialog.component.html',
-	styleUrls: ['./signin-dialog.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
+	styleUrls: ['./signin-dialog.component.css', '../../../styles/dialog.css', '../../../styles/form.css', '../../../styles/buttons.css']
 })
 export class SigninDialogComponent {
 

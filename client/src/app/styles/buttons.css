@@ -1,0 +1,49 @@
+.button-group {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+	gap: 10px;
+}
+
+.custom-button {
+    cursor: pointer;
+    border: solid thin white;
+    border-radius: 7px;
+    padding: 9px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    font-weight: 500;
+    background-color: white;
+    color: var(--primary-text-color);
+}
+
+.custom-button:hover {
+	border: solid var(--primary-lighter-color) thin;
+}
+
+.submit-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: var(--primary-color);
+}
+
+.cancel-button {
+    background-color: white;
+    color: var(--primary-text-color);
+}
+
+button:disabled {
+	background-color: var(--primary-lighter-color);
+	color: black;
+}
+
+button:disabled:hover {
+	background-color: var(--primary-lighter-color);
+	color: black;
+}
+

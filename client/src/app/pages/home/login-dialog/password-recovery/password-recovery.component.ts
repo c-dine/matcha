@@ -10,7 +10,7 @@ import { MailService } from 'src/app/service/mail.service';
 @Component({
     selector: 'app-password-recovery',
     templateUrl: './password-recovery.component.html',
-    styleUrls: ['./password-recovery.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css']
+    styleUrls: ['./password-recovery.component.css', '../../../../styles/dialog.css', '../../../../styles/form.css', '../../../../styles/buttons.css']
 })
 export class PasswordRecoveryComponent {
     @Output() changedDialogMode = new EventEmitter<LoginDialogMode>();

@@ -2,6 +2,7 @@
 
 :root {
     --primary-color: #5D5FEF;
+    --primary-medium-color: #b9bafa;
     --primary-lighter-color: #f2edfa;
     --primary-text-color: #1c1e4f;
     --primary-light-text-color: white;
@@ -43,6 +44,7 @@ h3 {
 
 .full-page {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	width: 100%;

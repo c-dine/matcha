@@ -8,7 +8,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 @Component({
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
-    styleUrls: ['./reset-password.component.css', '../../../styles/dialog.css', '../../../styles/form.css']
+    styleUrls: ['./reset-password.component.css', '../../../styles/dialog.css', '../../../styles/form.css', '../../../styles/buttons.css']
 })
 export class ResetPasswordComponent {
 

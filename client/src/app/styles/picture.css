@@ -1,0 +1,41 @@
+.rounded-circle-container {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--primary-lighter-color);
+}
+
+.rounded-circle-image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: center;
+}
+
+.rounded-rectangular-container {
+	width: 130px;
+	height: 150px;
+	border-radius: 10px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--primary-lighter-color);
+}
+
+.rounded-rectangular-image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: center;
+}
