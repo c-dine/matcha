@@ -10,5 +10,11 @@ export interface Profile {
 
 export interface NewProfile extends Profile {
 	tags: string[],
-	picturesIds: ProfilePicturesIds
+	picturesIds: ProfilePicturesIds,
+	location?: GeoCoordinate
+}
+
+export interface GeoCoordinate {
+	latitude: number,
+	longitude: number
 }

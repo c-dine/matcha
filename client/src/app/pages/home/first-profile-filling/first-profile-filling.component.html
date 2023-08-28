@@ -49,8 +49,8 @@
 			<h1>Give a little description of yourself :)</h1>
 			<div formGroupName="personnalProfile">
 				<mat-form-field appearance="outline">
-					<mat-label>Tell the world a bit more about you (min. 50 characters)</mat-label>
-					<textarea matInput formControlName="biography"></textarea>
+					<mat-label>Tell the world a bit more about you (50-500 characters)</mat-label>
+					<textarea matInput formControlName="biography" maxlength="500"></textarea>
 				</mat-form-field>
 
 				<mat-form-field appearance="outline">

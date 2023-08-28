@@ -24,6 +24,7 @@ bucket.setMetadata(firebaseMetadata);
 app.use(cors({
 	origin: env.url
 }));
+app.set("trust proxy", true);
 
 app.use(bodyParser.json());
 app.use(authenticationHandler)

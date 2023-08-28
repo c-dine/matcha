@@ -12,7 +12,7 @@ import { ProfileService } from 'src/app/service/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DisplayableProfilePictures, PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model';
 import { PictureService } from 'src/app/service/picture.service';
-import { NewProfile } from '@shared-models/profile.model';
+import { GeoCoordinate, NewProfile } from '@shared-models/profile.model';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
@@ -35,7 +35,7 @@ export class FirstProfileFillingComponent {
 	separatorKeyCodes: number[] = [ENTER, COMMA, SPACE];
 	availableTags!: string[];
 	filteredTags: Observable<string[]> | undefined;
-	
+
 	pictures: DisplayableProfilePictures = {
 		profilePicture: undefined,
 		additionnalPictures: []
@@ -48,11 +48,13 @@ export class FirstProfileFillingComponent {
 			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required])
 		}),
 		personnalProfile: new FormGroup({
-			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50)]),
+			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
 			tagInput: new FormControl<string | null>('', []),
 			tags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
 		}),
 	});
+
+	location: GeoCoordinate | undefined;
 
 	constructor(
 		private authService: AuthService,
@@ -70,6 +72,13 @@ export class FirstProfileFillingComponent {
 			startWith(null),
 			map((tag: string | null) => (tag ? this.filterTags(tag) : this.availableTags.slice())),
 		);
+		if ("geolocation" in navigator)
+			this.location = await new Promise((resolve, reject) => {
+		 		navigator.geolocation.getCurrentPosition(
+					position => resolve({ latitude: position.coords.latitude, longitude: position.coords.longitude}),
+					error => resolve(undefined)
+				);
+			});
 		this.isLoading = false;
 	}
 
@@ -82,7 +91,7 @@ export class FirstProfileFillingComponent {
 
 	async onSubmit() {
 		this.isLoading = true;
-		
+
 		const picturesIds = await this.uploadAndGetPicturesIds();
 		if (!picturesIds) {
 			this.isLoading = false;
@@ -92,17 +101,18 @@ export class FirstProfileFillingComponent {
 		const newProfile = {
 			...formValue.personnalProfile,
 			...formValue.sexualProfile,
-			picturesIds
+			picturesIds,
+			location: this.location
 		} as NewProfile;
-		
+
 		this.profileService.createProfile(newProfile)
 			.subscribe({
 				next: () => {
 					this.isLoading = false;
 					this.router.navigate(["/app"]);
 				},
-				error: () => this.isLoading = false				
-			})		
+				error: () => this.isLoading = false
+			})
 	}
 
 	async uploadAndGetPicturesIds(): Promise<ProfilePicturesIds | undefined> {

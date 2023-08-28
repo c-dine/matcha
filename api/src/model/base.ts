@@ -37,6 +37,7 @@ export class ModelBase {
 	}
 
 	async createMany(createdData: { [ key: string ]: any }[], select?: string[]) {
+		if (!Object.keys(createdData).length) return [];
         const query = `INSERT INTO "${this.table}" ${this.getCreateManyQuery(createdData)} RETURNING ${this.getSelectQuery(select)}`;
 		const values = createdData.flatMap(object => Object.values(object));
         const result = await this.dbClient.query(query, values);

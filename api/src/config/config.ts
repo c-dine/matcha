@@ -10,7 +10,8 @@ export const encryptionConfig = {
 }
 
 export const env = {
-	url: process.env.URL
+	url: process.env.URL,
+	ipLocationKey: process.env.IP_LOCATION_KEY
 }
 
 export const mailConfig = {

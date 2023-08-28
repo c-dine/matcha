@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS "profile" (
     "birth_date" DATE,
     "sexual_preferences" VARCHAR(100) DEFAULT 'bisexual',
     "biography" VARCHAR(510),
-    "location" VARCHAR(100),
+    "location_latitude" FLOAT NULL,
+	"location_longitude" FLOAT NULL,
     "fame_rate" INTEGER DEFAULT 100,
     "user_id" UUID NOT NULL UNIQUE,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE

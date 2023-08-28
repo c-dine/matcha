@@ -5,6 +5,7 @@ import { NewProfile } from '@shared-models/profile.model.js';
 import { TagService } from '../tag/tag.service.js';
 import { Profile } from '@shared-models/common.models.js';
 import { PictureService } from '../picture/picture.service.js';
+import { env } from '../../config/config.js';
 
 export const profileController = express();
 
@@ -25,10 +26,13 @@ profileController.get("/", async (req: Request, res: Response, next: NextFunctio
 
 profileController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const newProfile: NewProfile = req.body;
+		let newProfile: NewProfile = req.body;
 		const tagService = new TagService(req.dbClient);
 		const profileService = new ProfileService(req.dbClient);
 		const pictureService = new PictureService(req.dbClient);
+		
+		if (!newProfile.location)
+			newProfile.location = await profileService.getLocationFromIpAddress(env.url.includes("localhost") ? await profileService.getLocalhostIpAddress() : req.ip);
 		
 		const createdProfile: Profile = await profileService.createProfile(newProfile, req.userId);
 		await pictureService.createProfilePictures(newProfile.picturesIds, createdProfile.id);
