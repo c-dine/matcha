@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable, firstValueFrom, map, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -9,8 +9,10 @@ import { TagService } from 'src/app/service/tag.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/service/profile.service';
-import { DisplayableProfilePictures, PictureService } from 'src/app/service/picture.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DisplayableProfilePictures, PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model';
+import { PictureService } from 'src/app/service/picture.service';
+import { NewProfile } from '@shared-models/profile.model';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
@@ -30,24 +32,25 @@ export class FirstProfileFillingComponent {
 	FirstFillingProfileMode = FirstFillingProfileMode;
 	firstFillingProfileMode: number = FirstFillingProfileMode.INTRO;
 
-	separatorKeyCodes: number[] = [ENTER, COMMA];
+	separatorKeyCodes: number[] = [ENTER, COMMA, SPACE];
 	availableTags!: string[];
 	filteredTags: Observable<string[]> | undefined;
 	
 	pictures: DisplayableProfilePictures = {
 		profilePicture: undefined,
-		additionnalPictures: [{}, {}, {}, {}]
+		additionnalPictures: []
 	}
 
 	profileForm = new FormGroup({
 		sexualProfile: new FormGroup({
 			gender: new FormControl<string>('', [Validators.required]),
-			sexualPreferences: new FormControl<string>('', [Validators.required])
+			sexualPreferences: new FormControl<string>('', [Validators.required]),
+			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required])
 		}),
 		personnalProfile: new FormGroup({
 			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50)]),
 			tagInput: new FormControl<string | null>('', []),
-			selectedTags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
+			tags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
 		}),
 	});
 
@@ -77,7 +80,52 @@ export class FirstProfileFillingComponent {
 			this.router.navigate(["/app"]);
 	}
 
-	onSubmit() { }
+	async onSubmit() {
+		this.isLoading = true;
+		
+		const picturesIds = await this.uploadAndGetPicturesIds();
+		if (!picturesIds) {
+			this.isLoading = false;
+			return;
+		}
+		const formValue = this.profileForm.getRawValue();
+		const newProfile = {
+			...formValue.personnalProfile,
+			...formValue.sexualProfile,
+			picturesIds
+		} as NewProfile;
+		
+		this.profileService.createProfile(newProfile)
+			.subscribe({
+				next: () => {
+					this.isLoading = false;
+					this.router.navigate(["/app"]);
+				},
+				error: () => this.isLoading = false				
+			})		
+	}
+
+	async uploadAndGetPicturesIds(): Promise<ProfilePicturesIds | undefined> {
+		const presignedPictures = await firstValueFrom(this.pictureService.generateMultipleUploadUrl(this.pictures.additionnalPictures.length + 1));
+		try {
+			await this.uploadPicture(presignedPictures[presignedPictures.length - 1].uploadUrl, this.pictures.profilePicture?.file);
+			for (let i = 0; i < this.pictures.additionnalPictures.length; i++)
+				await this.uploadPicture(presignedPictures[i].uploadUrl, this.pictures.additionnalPictures[i].file);
+			return {
+				profilePicture: presignedPictures[presignedPictures.length - 1].id,
+				additionnalPicture: presignedPictures.slice(0, this.pictures.additionnalPictures.length).map(picture => picture.id)
+			}
+		} catch (error: any) {
+			this.firstFillingProfileMode = FirstFillingProfileMode.INTRO;
+			this.snackBar.open("Error uploading picture. Try again.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return undefined;
+		}
+	}
+
+	// NAVIGATION 
 
 	canGoNext() {
 		switch (this.firstFillingProfileMode) {
@@ -125,18 +173,18 @@ export class FirstProfileFillingComponent {
 	addTag(inputTag: string) {
 		inputTag = inputTag.trim().toLowerCase();
 		this.availableTags = this.availableTags.filter(tag => tag.trim().toLowerCase() !== inputTag);
-		this.profileForm.get("personnalProfile.selectedTags")?.value?.push(inputTag);
-		this.profileForm.get("personnalProfile.selectedTags")?.updateValueAndValidity();
+		this.profileForm.get("personnalProfile.tags")?.value?.push(inputTag);
+		this.profileForm.get("personnalProfile.tags")?.updateValueAndValidity();
 		this.profileForm.get("personnalProfile.tagInput")?.setValue(null);
 	}
 
 	removeTag(tag: string): void {
-		const index = this.profileForm.get("personnalProfile.selectedTags")?.value?.indexOf(tag);
+		const index = this.profileForm.get("personnalProfile.tags")?.value?.indexOf(tag);
 
 		if (index !== undefined && index !== -1) {
 			this.availableTags.push(tag);
-			this.profileForm.get("personnalProfile.selectedTags")?.value?.splice(index, 1);
-			this.profileForm.get("personnalProfile.selectedTags")?.updateValueAndValidity();
+			this.profileForm.get("personnalProfile.tags")?.value?.splice(index, 1);
+			this.profileForm.get("personnalProfile.tags")?.updateValueAndValidity();
 		}
 	}
 
@@ -152,25 +200,14 @@ export class FirstProfileFillingComponent {
 		this.pictures = pictures;
 	}
 
-	async uploadPicture(event: any): Promise<string | undefined> {
-		const file: File = event.target.files[0];
-		const { id, uploadUrl } = await firstValueFrom(this.pictureService.generateUploadUrl());
-
-		try {
-			await fetch(uploadUrl, {
-				method: 'PUT',
-				body: file,
-				headers: {
-					'Content-Type': "image/jpeg",
-				}
-			});
-			return id;
-		} catch (error: any) {
-			this.snackBar.open("Error uploading picture. Try again.", "Close", {
-				duration: 4000,
-				panelClass: "error-snackbar"
-			});
-			return undefined;
-		}
+	async uploadPicture(uploadUrl: string, file?: File) {
+		if (!file) throw new Error();
+		await fetch(uploadUrl, {
+			method: 'PUT',
+			body: file,
+			headers: {
+				'Content-Type': "image/jpeg",
+			}
+		});
 	}
 }

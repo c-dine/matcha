@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '@environment/environment';
-import { DisplayablePicture, DisplayableProfilePictures } from 'src/app/service/picture.service';
+import { DisplayablePicture, DisplayableProfilePictures } from '@shared-models/picture.model';
 
 @Component({
 	selector: 'app-profile-pictures',
@@ -21,7 +21,7 @@ export class ProfilePicturesComponent {
 	) { }
 
 	deleteAdditionnalPicture(index: number) {
-		this.pictures.additionnalPictures[index] = {};
+		this.pictures.additionnalPictures.splice(index, 1);
 		this.updatedPictures.emit(this.pictures);
 	}
 
@@ -30,18 +30,15 @@ export class ProfilePicturesComponent {
 		this.updatedPictures.emit(this.pictures);
 	}
 
-	async uploadProfilePic(event: any) {
+	uploadPicture(event: any) {
+		if (this.pictures.additionnalPictures.length === 4) return;
 		try {
-			this.pictures.profilePicture = this.getFileMeta(event);
-			this.updatedPictures.emit(this.pictures);
-		} catch (error: any) {
-			this.displayError();
-		}
-	}
-
-	async uploadAdditionnalPic(event: any, index: number) {
-		try {
-			this.pictures.additionnalPictures[index] = this.getFileMeta(event);
+			const fileMeta = this.getFileMeta(event);
+			if (!this.pictures.profilePicture)
+				this.pictures.profilePicture = fileMeta;
+			else {
+				this.pictures.additionnalPictures.push(fileMeta);
+			}
 			this.updatedPictures.emit(this.pictures);
 		} catch (error: any) {
 			this.displayError();

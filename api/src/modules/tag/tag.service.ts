@@ -1,6 +1,7 @@
 import { PoolClient } from "pg";
 import { TagModel } from "../../model/tag.model.js";
 import { Tag } from "@shared-models/common.models.js";
+import { ProfileTagAssoModel } from "../../model/profileTagAsso.model.js";
 
 export class TagService {
 
@@ -12,14 +13,26 @@ export class TagService {
 		this.tagModel = new TagModel(this.dbClient);
 	}
 
+	async linkTagsToProfile(profileId: string, tags: string[]) {
+		const upsertedTags = await this.upsertTags(tags);
+		const profileTagAssoService = new ProfileTagAssoModel(this.dbClient);
+
+		await profileTagAssoService.createMany(upsertedTags.map(tag => ({
+			profile_id: profileId,
+			tag_id: tag.id
+		})));
+	}
+
 	async upsertTags(labels: string[]): Promise<Tag[]> {
-		const existingTags = (await this.getTags()).map(tag => tag.label.toLowerCase());
-		const tagsToCreate = labels.filter((tag) => !existingTags.includes(tag.toLowerCase()));
-		return this.createTags(tagsToCreate);
+		const allTags = (await this.getTags());
+		const existingTags = allTags.filter(tag => !labels.includes(tag.label))
+		const tagsToCreate = labels.filter((tag) => !existingTags.find(
+			existingTag => existingTag.label.toLowerCase() === tag.toLowerCase()));
+		return [...await this.createTags(tagsToCreate), ...existingTags];
 	}
 
 	async getTags(): Promise<Tag[]> {
-		const tagList = await this.tagModel.findMany({}, ["label"]);
+		const tagList = await this.tagModel.findMany({}, ["id", "label"]);
 		return tagList.map(this.formatTag);
 	}
 

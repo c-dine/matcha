@@ -1,8 +1,9 @@
 <mat-progress-bar mode="determinate"
 	[value]="firstFillingProfileMode / FILLING_PROFILE_STEP_COUNT * 100"></mat-progress-bar>
 
+<app-spinner *ngIf="isLoading"></app-spinner>
+
 <div *ngIf="!isLoading" class="full-page first-profile-filling-page">
-	<app-spinner *ngIf="isLoading"></app-spinner>
 
 	<div *ngIf="firstFillingProfileMode === FirstFillingProfileMode.INTRO" class="first-profile-filling-subpage">
 		<h1>Welcome! Let’s create your profile</h1>
@@ -17,19 +18,27 @@
 			<h1>Sexual preferences</h1>
 			<div formGroupName="sexualProfile">
 				<div class="form-field">
+					<mat-form-field appearance="outline">
+						<mat-label>Date of birth</mat-label>
+						<input matInput formControlName="birthDate" [matDatepicker]="picker">
+						<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+						<mat-datepicker #picker></mat-datepicker>
+					</mat-form-field>
+				</div>
+				<div class="form-field">
 					<label for="gender">Gender</label>
 					<mat-radio-group aria-label="Select an option" formControlName="gender" matInput>
-						<mat-radio-button value="1">Woman</mat-radio-button>
-						<mat-radio-button value="2">Man</mat-radio-button>
-						<mat-radio-button value="2">Binary</mat-radio-button>
+						<mat-radio-button value="female">Woman</mat-radio-button>
+						<mat-radio-button value="male">Man</mat-radio-button>
+						<mat-radio-button value="binary">Binary</mat-radio-button>
 					</mat-radio-group>
 				</div>
 				<div class="form-field">
 					<label for="sexualPreferences">Sexual Preferences</label>
 					<mat-radio-group aria-label="Select an option" formControlName="sexualPreferences">
-						<mat-radio-button value="1">Woman</mat-radio-button>
-						<mat-radio-button value="2">Man</mat-radio-button>
-						<mat-radio-button value="2">All</mat-radio-button>
+						<mat-radio-button value="female">Woman</mat-radio-button>
+						<mat-radio-button value="male">Man</mat-radio-button>
+						<mat-radio-button value="binary">All</mat-radio-button>
 					</mat-radio-group>
 				</div>
 			</div>
@@ -46,8 +55,8 @@
 
 				<mat-form-field appearance="outline">
 					<mat-label>Select a couple of tags that define you (min. 3)</mat-label>
-					<mat-chip-grid #chipGrid aria-label="Tags" formControlName="selectedTags">
-						<mat-chip-row *ngFor="let tag of profileForm.get('personnalProfile.selectedTags')?.value"
+					<mat-chip-grid #chipGrid aria-label="Tags" formControlName="tags">
+						<mat-chip-row *ngFor="let tag of profileForm.get('personnalProfile.tags')?.value"
 							(removed)="removeTag(tag)">
 							{{tag}}
 							<button matChipRemove [attr.aria-label]="'remove ' + tag">

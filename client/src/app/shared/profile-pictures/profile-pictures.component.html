@@ -2,23 +2,49 @@
 
 <div class="profile-pictures-container" *ngIf="!isLoading">
 
+	<input hidden #pictureInput type="file" (change)="uploadPicture($event)">
+
 	<div class="profile-picture rounded-rectangular-container">
 		<div class="rounded-rectangular-image"
 			[style.background-image]="pictures.profilePicture?.url ? 'url(' + pictures.profilePicture?.url + ')' : ''">
-			<mat-icon *ngIf="!pictures.profilePicture?.url" (click)="profilePicInput.click()" class="picture-center-icon">add</mat-icon>
+			<mat-icon *ngIf="!pictures.profilePicture?.url" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
 			<mat-icon *ngIf="pictures.profilePicture?.url" class="picture-center-icon hide" (click)="deleteProfilePicture()">delete_outline</mat-icon>
 		</div>
-		<input hidden #profilePicInput type="file" (change)="uploadProfilePic($event)">
 	</div>
 
 	<div class="additionnal-pictures-container">
-		<div *ngFor="let picture of pictures.additionnalPictures; let i = index" class="rounded-rectangular-container">
+
+		<div class="rounded-rectangular-container">
 			<div class="rounded-rectangular-image"
-				[style.background-image]="picture.url ? 'url(' + picture.url + ')' : ''">
-				<mat-icon *ngIf="!picture.url" (click)="additionnalPicInput.click()" class="picture-center-icon">add</mat-icon>
-				<mat-icon *ngIf="picture.url" class="picture-center-icon hide" (click)="deleteAdditionnalPicture(i)">delete_outline</mat-icon>
-				<input hidden #additionnalPicInput type="file" (change)="uploadAdditionnalPic($event, i)">
+				[style.background-image]="pictures.additionnalPictures[0] ? 'url(' + pictures.additionnalPictures[0].url + ')' : ''">
+				<mat-icon *ngIf="!pictures.additionnalPictures[0]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
+				<mat-icon *ngIf="pictures.additionnalPictures[0]" class="picture-center-icon hide" (click)="deleteAdditionnalPicture(0)">delete_outline</mat-icon>
 			</div>
 		</div>
+
+		<div class="rounded-rectangular-container">
+			<div class="rounded-rectangular-image"
+				[style.background-image]="pictures.additionnalPictures[1] ? 'url(' + pictures.additionnalPictures[1].url + ')' : ''">
+				<mat-icon *ngIf="!pictures.additionnalPictures[1]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
+				<mat-icon *ngIf="pictures.additionnalPictures[1]" class="picture-center-icon hide" (click)="deleteAdditionnalPicture(1)">delete_outline</mat-icon>
+			</div>
+		</div>
+		
+		<div class="rounded-rectangular-container">
+			<div class="rounded-rectangular-image"
+				[style.background-image]="pictures.additionnalPictures[2] ? 'url(' + pictures.additionnalPictures[2].url + ')' : ''">
+				<mat-icon *ngIf="!pictures.additionnalPictures[2]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
+				<mat-icon *ngIf="pictures.additionnalPictures[2]" class="picture-center-icon hide" (click)="deleteAdditionnalPicture(2)">delete_outline</mat-icon>
+			</div>
+		</div>
+		
+		<div class="rounded-rectangular-container">
+			<div class="rounded-rectangular-image"
+				[style.background-image]="pictures.additionnalPictures[3] ? 'url(' + pictures.additionnalPictures[3].url + ')' : ''">
+				<mat-icon *ngIf="!pictures.additionnalPictures[3]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
+				<mat-icon *ngIf="pictures.additionnalPictures[3]" class="picture-center-icon hide" (click)="deleteAdditionnalPicture(3)">delete_outline</mat-icon>
+			</div>
+		</div>
+
 	</div>
 </div>

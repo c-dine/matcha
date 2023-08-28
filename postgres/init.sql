@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS "profile" (
     "biography" VARCHAR(510),
     "location" VARCHAR(100),
     "fame_rate" INTEGER DEFAULT 100,
-    "default_picture_id" UUID,
     "user_id" UUID NOT NULL UNIQUE,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -39,13 +38,9 @@ CREATE TABLE IF NOT EXISTS "profile_tag_asso" (
 CREATE TABLE IF NOT EXISTS "picture" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "profile_id" UUID NOT NULL,
-    "url" VARCHAR(255) NOT NULL,
+	"is_profile_picture" BOOLEAN DEFAULT(FALSE),
     FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-ALTER TABLE "profile"
-    ADD CONSTRAINT fk_default_picture_profile
-    FOREIGN KEY ("default_picture_id") REFERENCES "picture"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS "like" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

@@ -29,7 +29,11 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ProfilePicturesComponent } from './shared/profile-pictures/profile-pictures.component';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
 	declarations: [
@@ -62,7 +66,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 		MatRadioModule,
 		MatChipsModule,
 		MatAutocompleteModule,
-		MatProgressBarModule
+		MatProgressBarModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
 	],
 	providers: [
 		AuthService,
@@ -72,6 +78,11 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 			useClass: HttpInterceptorService,
 			multi: true
 		},
+
+		{
+			provide: MAT_DATE_LOCALE, 
+			useValue: 'fr-FR'
+		},		
 	],
 	bootstrap: [AppComponent]
 })

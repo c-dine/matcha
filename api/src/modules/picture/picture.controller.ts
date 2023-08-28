@@ -6,8 +6,9 @@ export const pictureController = express();
 
 pictureController.get("/generateUploadUrl", async (req: Request, res: Response, next: NextFunction) => {
 	try {
+		const count = Number(req.query.count);
 		const pictureService = new PictureService(req.dbClient);
-		const url = await pictureService.generateUploadUrl();
+		const url = await pictureService.generateMultipleUploadUrls(count);
 		
 		res.status(200).json(url);
 		next();
