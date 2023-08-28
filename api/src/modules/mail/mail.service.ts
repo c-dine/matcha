@@ -2,19 +2,20 @@ import { google } from "googleapis";
 import nodemailer from 'nodemailer';
 import { encryptionConfig, env, mailConfig } from "../../config/config.js";
 import { generateEncryptedToken } from "../../utils/encryption.util.js";
+import { CustomError } from "../../utils/error.util.js";
 
 export class MailService {
 
-	constructor() {}
+	constructor() { }
 
 	private async createTransporter(): nodemailer.transporter {
 		const OAuth2 = google.auth.OAuth2;
 		const oauth2Client = new OAuth2(
-		mailConfig.clientId,
-		mailConfig.secret,
-		"https://developers.google.com/oauthplayground"
+			mailConfig.clientId,
+			mailConfig.secret,
+			"https://developers.google.com/oauthplayground"
 		);
-	
+
 		oauth2Client.setCredentials({
 			refresh_token: mailConfig.refreshToken
 		});
@@ -42,9 +43,9 @@ export class MailService {
 		});
 	}
 
-	sendResetPasswordMail(email: string, userId: string) {
+	async sendResetPasswordMail(email: string, userId: string) {
 		const resetPasswordUrl = `${env.url}?resetToken=${this.getEncryptedResetPasswordToken(userId)}`;
-		const mailBody =  `
+		const mailBody = `
 			<p>Hello,</p>
 			<p>You've requested a password reset. Click the link below to reset your password:</p>
 			<a href="${resetPasswordUrl}" target="_blank">${resetPasswordUrl}</a>
@@ -53,7 +54,7 @@ export class MailService {
 			<p>Best regards,</p>
 			<p>Matcha Team</p>		
 		`;
-		this.sendMail({
+		await this.sendMail({
 			subject: "Password reset",
 			to: email,
 			html: mailBody
@@ -62,17 +63,17 @@ export class MailService {
 
 	private getEncryptedResetPasswordToken(userId: string) {
 		return generateEncryptedToken({
-				userId,
-				timeStamp: Date.now()
-			},
+			userId,
+			timeStamp: Date.now()
+		},
 			encryptionConfig.resetPasswordSecret,
 			encryptionConfig.resetPasswordIV
 		);
 	}
 
-	sendAccountVerificationMail(email: string, userId: string) {
+	async sendAccountVerificationMail(email: string, userId: string) {
 		const verificationUrl = `${env.url}?verificationToken=${this.getEncryptedAccountVerificationToken(userId, email)}`;
-		const mailBody =  `
+		const mailBody = `
 			<p>Hello,</p>
 			<p>Thank you for creating an account with us. Please click the link below to verify your email address:</p>
 			<p><a href="${verificationUrl}">${verificationUrl}</a></p>
@@ -80,18 +81,18 @@ export class MailService {
 			<p>Best regards,</p>
 			<p>Matcha Team</p>
 		`;
-		this.sendMail({
+		await this.sendMail({
 			subject: "Email verification",
 			to: email,
 			html: mailBody
-		})
+		});
 	}
 
 	private getEncryptedAccountVerificationToken(userId: string, email: string) {
 		return generateEncryptedToken({
-				userId,
-				email
-			},
+			userId,
+			email
+		},
 			encryptionConfig.mailActivationSecret,
 			encryptionConfig.mailActivationIV
 		);
@@ -102,11 +103,15 @@ export class MailService {
 		html: string,
 		to: string,
 	}) {
-		const transporter = await this.createTransporter();
-		await transporter.sendMail({
-			...emailOptions,
-			from: process.env.EMAIL
-		});
+		try {
+			const transporter = await this.createTransporter();
+			await transporter.sendMail({
+				...emailOptions,
+				from: process.env.EMAIL
+			});
+		} catch (error: any) {
+			throw new CustomError("Error sending mail.", 500);
+		}
 	}
 
 }

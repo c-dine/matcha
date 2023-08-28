@@ -17,7 +17,7 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 		const accessToken = authService.getNewToken(newUser.id, encryptionConfig.accessSecret, 15);
 		const refreshToken = authService.getNewToken(newUser.id, encryptionConfig.refreshSecret, 12000);
 		const mailService = new MailService();
-		mailService.sendAccountVerificationMail(newUser.email, newUser.id);
+		await mailService.sendAccountVerificationMail(newUser.email, newUser.id);
 
 		next();
 		res.status(201).json({
@@ -32,7 +32,7 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 		});
 	} catch (error: any) {
 		console.error(`Error while creating user: ${error}`);
-		error.message = error.message || "Error while creating user."; 
+		error.message = "Username or email already taken."; 
 		next(error);
 	}
 });
