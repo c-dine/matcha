@@ -14,7 +14,8 @@ const routes: Routes = [
       { path: '', component: DatingComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'dating', component: DatingComponent },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent },
+      { path: 'userList', component: ProfileComponent }
     ],
     canActivate: [AuthGuard]
   },

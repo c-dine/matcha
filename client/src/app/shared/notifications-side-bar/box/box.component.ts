@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { NotificationDto } from 'src/typing';
 
 @Component({
   selector: 'app-box',

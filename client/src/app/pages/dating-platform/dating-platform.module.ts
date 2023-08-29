@@ -1,4 +1,3 @@
-// dating-platform.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatingPlatformRoutingModule } from './dating-platform-routing.module';
@@ -15,7 +14,6 @@ import { ContactCardComponent } from './chat/contacts-side-bar/contact-card/cont
 import { ConversationComponent } from './chat/conversation/conversation.component';
 import { ChatSearchBarComponent } from './chat/contacts-side-bar/chat-search-bar/chat-search-bar.component';
 import { ChatMessageComponent } from './chat/conversation/chat-message/chat-message.component';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
@@ -26,12 +24,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { UserListComponent } from './user-list/user-list.component';
+import { SharedModule } from "../../shared/shared.module";
 
 @NgModule({
   declarations: [
     DatingPlatformComponent,
     ChatComponent,
-    DatingComponent,
     DatingComponent,
     ProfileComponent,
     ImageSliderComponent,
@@ -44,11 +43,11 @@ import { MatRadioModule } from '@angular/material/radio';
     ConversationComponent,
     ChatSearchBarComponent,
     ChatMessageComponent,
-    ProfileComponent
+    ProfileComponent,
+	UserListComponent
   ],
   imports: [
     CommonModule,
-    SharedModule,
     RouterModule,
     MatIconModule,
     MatChipsModule,
@@ -60,7 +59,8 @@ import { MatRadioModule } from '@angular/material/radio';
     FormsModule,
     DatingPlatformRoutingModule,
 	MatInputModule,
-	MatRadioModule
+	MatRadioModule,
+	SharedModule
   ]
 })
 export class DatingPlatformModule { }

@@ -10,6 +10,7 @@ export interface Profile {
 	location?: GeoCoordinate;
 	tags?: string[];
 	picturesIds?: ProfilePicturesIds;
+	username?: string;
 }
 
 export interface NavbarProfile {
@@ -25,4 +26,11 @@ export interface NavbarProfile {
 export interface GeoCoordinate {
 	latitude: number;
 	longitude: number;
+}
+
+export interface ProfileFilters {
+	ageGap?: [number, number];
+	distanceKilometers?: number;
+	fameRatingGap?: [number, number];
+	tags?: string[];
 }

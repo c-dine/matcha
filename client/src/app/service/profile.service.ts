@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { BehaviorSubject, firstValueFrom, tap } from 'rxjs';
-import { Profile } from "@shared-models/profile.model.js"
+import { BehaviorSubject, filter, firstValueFrom, tap } from 'rxjs';
+import { Profile, ProfileFilters } from "@shared-models/profile.model.js"
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,15 @@ export class ProfileService {
 
 	getProfileObs() {
 		return this.profileSubject.asObservable();
+	}
+
+	getUserList(filters: ProfileFilters, batchSize: number, offset: number) {
+		let params = new HttpParams();
+		for (const [key, value] of Object.values(filters))
+			params.append(key, value);
+		return this.http.get<Profile[]>(`${environment.apiUrl}/profile/userList?batchSize=${batchSize}&offset=?${offset}`, {
+			params
+		});
 	}
 
 	async userHasProfile(): Promise<boolean> {

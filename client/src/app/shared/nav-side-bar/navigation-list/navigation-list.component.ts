@@ -15,7 +15,7 @@ export class NavigationListComponent {
     },
     {
       title: 'Users',
-      path: '/app/users',
+      path: '/app/userList',
       iconName: "groupe"
     },
     {

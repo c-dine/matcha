@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NotificationDto } from 'src/typing';
 
 @Component({
   selector: 'app-notification-card',

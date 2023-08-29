@@ -22,6 +22,19 @@ profileController.get("/", async (req: Request, res: Response, next: NextFunctio
 	}
 });
 
+profileController.get("/userList", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const filters = req.params;
+		console.log(filters);
+		res.status(200).json({ data: null });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching user list: ${error}.`);
+		error.message = `Error while fetching user list.`;
+		next(error);
+	}
+});
+
 
 profileController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {

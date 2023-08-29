@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable, firstValueFrom, map, startWith } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { firstValueFrom } from 'rxjs';
 import { dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
-import { TagService } from 'src/app/service/tag.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/service/profile.service';
@@ -32,10 +28,6 @@ export class FirstProfileFillingComponent {
 	FirstFillingProfileMode = FirstFillingProfileMode;
 	firstFillingProfileMode: number = FirstFillingProfileMode.INTRO;
 
-	separatorKeyCodes: number[] = [ENTER, COMMA, SPACE];
-	availableTags!: string[];
-	filteredTags: Observable<string[]> | undefined;
-
 	pictures: DisplayableProfilePictures = {
 		profilePicture: undefined,
 		additionnalPictures: []
@@ -49,7 +41,6 @@ export class FirstProfileFillingComponent {
 		}),
 		personnalProfile: new FormGroup({
 			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
-			tagInput: new FormControl<string | null>('', []),
 			tags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
 		}),
 	});
@@ -58,7 +49,6 @@ export class FirstProfileFillingComponent {
 
 	constructor(
 		private authService: AuthService,
-		private tagService: TagService,
 		private pictureService: PictureService,
 		private router: Router,
 		private snackBar: MatSnackBar,
@@ -67,11 +57,7 @@ export class FirstProfileFillingComponent {
 
 	async ngOnInit() {
 		await this.redirectUserIfNotAllowed();
-		this.availableTags = (await firstValueFrom(this.tagService.getTags())).map(tag => tag.label);
-		this.filteredTags = this.profileForm.get("personnalProfile.tagInput")?.valueChanges.pipe(
-			startWith(null),
-			map((tag: string | null) => (tag ? this.filterTags(tag) : this.availableTags.slice())),
-		);
+		
 		if ("geolocation" in navigator)
 			this.location = await new Promise((resolve, reject) => {
 		 		navigator.geolocation.getCurrentPosition(
@@ -115,6 +101,10 @@ export class FirstProfileFillingComponent {
 			})
 	}
 
+	setTags(tags: string[]) {
+		this.profileForm.get("personnalProfile.tags")?.setValue(tags);
+	}
+
 	async uploadAndGetPicturesIds(): Promise<ProfilePicturesIds | undefined> {
 		const presignedPictures = await firstValueFrom(this.pictureService.generateMultipleUploadUrl(this.pictures.additionnalPictures.length + 1));
 		try {
@@ -134,8 +124,6 @@ export class FirstProfileFillingComponent {
 			return undefined;
 		}
 	}
-
-	// NAVIGATION 
 
 	canGoNext() {
 		switch (this.firstFillingProfileMode) {
@@ -166,45 +154,6 @@ export class FirstProfileFillingComponent {
 			this.firstFillingProfileMode === FirstFillingProfileMode.INTRO ?
 				FirstFillingProfileMode.INTRO : this.firstFillingProfileMode - 1;
 	}
-
-	// TAGS
-
-	addTagFromInput(event: MatChipInputEvent): void {
-		const value = event.value || "";
-
-		if (value) this.addTag(value);
-		event.chipInput!.clear();
-	}
-
-	addTagFromAutocompletion(event: MatAutocompleteSelectedEvent): void {
-		this.addTag(event.option.viewValue);
-	}
-
-	addTag(inputTag: string) {
-		inputTag = inputTag.trim().toLowerCase();
-		this.availableTags = this.availableTags.filter(tag => tag.trim().toLowerCase() !== inputTag);
-		this.profileForm.get("personnalProfile.tags")?.value?.push(inputTag);
-		this.profileForm.get("personnalProfile.tags")?.updateValueAndValidity();
-		this.profileForm.get("personnalProfile.tagInput")?.setValue(null);
-	}
-
-	removeTag(tag: string): void {
-		const index = this.profileForm.get("personnalProfile.tags")?.value?.indexOf(tag);
-
-		if (index !== undefined && index !== -1) {
-			this.availableTags.push(tag);
-			this.profileForm.get("personnalProfile.tags")?.value?.splice(index, 1);
-			this.profileForm.get("personnalProfile.tags")?.updateValueAndValidity();
-		}
-	}
-
-	private filterTags(value: string): string[] {
-		const filterValue = value.toLowerCase();
-
-		return this.availableTags.filter(tag => tag.toLowerCase().includes(filterValue));
-	}
-
-	// PICTURES
 
 	updatePictures(pictures: DisplayableProfilePictures) {
 		this.pictures = pictures;

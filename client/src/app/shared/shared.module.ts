@@ -11,6 +11,13 @@ import { RouterModule } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { BoxComponent } from './notifications-side-bar/box/box.component';
 import { NotificationCardComponent } from './notifications-side-bar/notification-card/notification-card.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { TagInputComponent } from './tag-input/tag-input.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { ProfilePicturesComponent } from './profile-pictures/profile-pictures.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 
 @NgModule({
   declarations: [
@@ -22,17 +29,27 @@ import { NotificationCardComponent } from './notifications-side-bar/notification
     NavigationElementComponent,
     BoxComponent,
     NotificationCardComponent,
+	TagInputComponent,
+	SpinnerComponent,
+	ProfilePicturesComponent
   ],
   imports: [
     CommonModule,
     MatIconModule,
     RouterModule,
     MatDividerModule,
+	MatFormFieldModule,
+	MatChipsModule,
+	MatAutocompleteModule,
+	MatProgressSpinnerModule
   ],
   exports: [
     HeaderComponent,
     NavSideBarComponent,
     NotificationsSideBarComponent,
+	TagInputComponent,
+	SpinnerComponent,
+	ProfilePicturesComponent
   ]
 })
 export class SharedModule { }
