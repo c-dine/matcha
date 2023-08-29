@@ -1,16 +1,7 @@
-interface UserDto {
-	firstName: string;
-	lastName: string;
-	profilePictureSrc?: string;
-	location: string;
-	likesNb?: number;
-	matchesNb?: number;
-	fameRate?: number;
-	resume?: string;
-}
+import { NavbarProfile } from "@shared-models/profile.model";
 
 interface NotificationDto {
-	user: UserDto;
+	user: NavbarProfile;
 	viewed: boolean;
 	message: string;
 	date: Date;

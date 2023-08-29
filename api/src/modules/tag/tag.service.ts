@@ -15,9 +15,9 @@ export class TagService {
 
 	async linkTagsToProfile(profileId: string, tags: string[]) {
 		const upsertedTags = await this.upsertTags(tags);
-		const profileTagAssoService = new ProfileTagAssoModel(this.dbClient);
+		const profileTagAssoModel = new ProfileTagAssoModel(this.dbClient);
 
-		await profileTagAssoService.createMany(upsertedTags.map(tag => ({
+		await profileTagAssoModel.createMany(upsertedTags.map(tag => ({
 			profile_id: profileId,
 			tag_id: tag.id
 		})));
@@ -33,8 +33,19 @@ export class TagService {
 	}
 
 	async getTags(): Promise<Tag[]> {
-		const tagList = await this.tagModel.findMany({}, ["id", "label"]);
+		const tagList = await this.tagModel.findMany([{}], ["id", "label"]);
 		return tagList.map(this.formatTag);
+	}
+
+	async getProfileTags(profileId: string): Promise<string[]> {
+		const profileTagAssoModel = new ProfileTagAssoModel(this.dbClient);
+		const tagIds = (await profileTagAssoModel.findMany([{
+			profile_id: profileId
+		}], ["tag_id"])).map(profileTagAsso => profileTagAsso.tag_id);
+
+		return (await this.tagModel.findMany(tagIds.map(id => ({
+			id
+		})), ["label"])).map(tag => tag.label);
 	}
 
 	async createTags(labels: string[]): Promise<Tag[]> {

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NavbarProfile } from '@shared-models/profile.model';
 
 @Component({
   selector: 'app-contact-card',
@@ -7,7 +8,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ContactCardComponent {
   @Input()
-  user!: UserDto;
+  user!: NavbarProfile;
 
   @Input()
   activated!: boolean;

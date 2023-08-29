@@ -5,7 +5,7 @@
 	border-bottom: 0.5px solid #F7F7FF;
 	display: flex;
     align-items: center;
-
+	justify-content: space-between;
 }
 
 .header-flex-container {
@@ -14,10 +14,10 @@
 	height: 100%;
 	margin-left: 20px;
 	margin-right: 20px;
+	cursor: pointer;
 }
 
 .logo {
 	height: 30px;
 	width: 100%;
-	cursor: pointer;
 }

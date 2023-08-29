@@ -50,7 +50,7 @@ export class AuthService {
 	) {
 		const userModel = new UserModel(this.dbClient);
 		const user = (
-			await userModel.findMany(whereQuery,
+			await userModel.findMany([whereQuery],
 			select
 		))[0];
 		return user ? this.formatUser(user) : undefined;
@@ -78,9 +78,9 @@ export class AuthService {
 	): Promise<User> {
 		const userModel = new UserModel(this.dbClient);
 		const loggedUser = (
-			await userModel.findMany({
+			await userModel.findMany([{
 				username: userAuthData.username,
-			},
+			}],
 			["id", "last_name", "first_name", "email", "username", "password"]
 		))[0];
 		if (!loggedUser || !(await this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password)))
@@ -113,10 +113,10 @@ export class AuthService {
 			encryptionConfig.mailActivationIV
 		);
 		const userModel = new UserModel(dbClient);
-		const updatedUsers = await userModel.update({
+		const updatedUsers = await userModel.update([{
 			id: decodedToken.userId,
 			email: decodedToken.email
-		}, {
+		}], {
 			verified_account: true
 		}, ["id"]);
 

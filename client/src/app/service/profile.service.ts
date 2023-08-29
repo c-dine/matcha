@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { Subject, firstValueFrom, tap } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, tap } from 'rxjs';
 import { Profile } from "@shared-models/profile.model.js"
 
 @Injectable({
@@ -9,7 +9,7 @@ import { Profile } from "@shared-models/profile.model.js"
 })
 export class ProfileService {
 
-	private profileSubject: Subject<Profile | null> = new Subject<Profile | null>();
+	private profileSubject: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
 
     constructor(
         private http: HttpClient

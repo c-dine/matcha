@@ -10,7 +10,7 @@ export class NavigationListComponent {
   navLinks: NavigationButton[] = [
     {
       title: 'Dating',
-      path: '/app/',
+      path: '/app',
       iconName: "favorite"
     },
     {

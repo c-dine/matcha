@@ -50,7 +50,7 @@ export class AuthService {
     }
 
 	setSession(user: AuthenticatedUser) {
-		this.setRefreshToken(user.token.refresh);
+		this.setRefreshToken(user.token.refresh || "");
 		this.accessTokenSubject.next(user.token.access);
 		this.currentUserSubject.next(user as User);
 	}
@@ -98,12 +98,13 @@ export class AuthService {
   	}
 
 	async refreshAccessToken(refreshToken: string) {
-        const accessToken = await firstValueFrom(
-			this.http.post<string>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken })
+        const authenticatedUser = await firstValueFrom(
+			this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken })
 		);
-		if (!accessToken)
+		if (!authenticatedUser)
 			throw new Error("Invalid refresh token.")
-		this.accessTokenSubject.next(accessToken);
+		this.accessTokenSubject.next(authenticatedUser.token.access);
+		this.currentUserSubject.next(authenticatedUser as User);
 	}
 
 	resetPassword(resetToken: string, password: string) {

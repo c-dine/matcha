@@ -11,7 +11,7 @@ export const profileController = express();
 profileController.get("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const profileService = new ProfileService(req.dbClient);
-		const profile = await profileService.getProfile(req.userId);
+		const profile = await profileService.getFullProfile(req.userId);
 
 		res.status(200).json({ data: profile || null });
 		next();
@@ -36,7 +36,7 @@ profileController.post("/", async (req: Request, res: Response, next: NextFuncti
 		const createdProfile: Profile = await profileService.createProfile(newProfile, req.userId);
 		await pictureService.createProfilePictures(newProfile.picturesIds, createdProfile.id);
 		await tagService.linkTagsToProfile(createdProfile.id, newProfile.tags);
-		res.status(201).json({ data: createdProfile });
+		res.status(201).json({ data: newProfile });
 		next();
 	} catch (error: any) {
 		console.error(`Error while creating user profile: ${error}.`);

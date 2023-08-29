@@ -2,6 +2,8 @@ import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
 import { Profile, GeoCoordinate } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
+import { TagService } from "../tag/tag.service.js";
+import { PictureService } from "../picture/picture.service.js";
 
 export class ProfileService {
 
@@ -22,11 +24,25 @@ export class ProfileService {
 		}
 	}
 
+	async getFullProfile(userId: string): Promise<Profile> {
+		const tagService = new TagService(this.dbClient);
+		const pictureService = new PictureService(this.dbClient);
+		const profile = await this.getProfile(userId);
+		const tags = await tagService.getProfileTags(profile.id);
+		const pictures = await pictureService.getProfilePictures(profile.id);
+
+		return {
+			...profile,
+			picturesIds: pictures,
+			tags
+		}
+	}
+
 	async getProfile(userId: string): Promise<Profile> {
 		const profileModel = new ProfileModel(this.dbClient);
-		const profiles = await profileModel.findMany({
+		const profiles = await profileModel.findMany([{
 			user_id: userId
-		});
+		}]);
 
 		return profiles[0] ? this.formatProfile(profiles[0]) : undefined;
 	}

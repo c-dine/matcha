@@ -34,6 +34,17 @@ export class PictureService {
 		return { id: fileName, uploadUrl };
 	}
 
+	async getProfilePictures(profileId: string): Promise<ProfilePicturesIds> {
+		const profilePictures = await this.pictureModel.findMany([{
+			profile_id: profileId
+		}]);
+
+		return {
+			profilePicture: profilePictures.find(picture => picture.is_profile_picture === true).id,
+			additionnalPicture: profilePictures.filter(picture => picture.is_profile_picture === false).map(picture => picture.id)
+		}
+	}
+
 	async createProfilePictures(profilePictures: ProfilePicturesIds, profileId: string) {
 		await this.pictureModel.createMany([
 			this.getPictureCreateQuery(profilePictures.profilePicture, profileId, true),

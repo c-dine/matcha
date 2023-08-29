@@ -12,6 +12,16 @@ export interface Profile {
 	picturesIds?: ProfilePicturesIds;
 }
 
+export interface NavbarProfile {
+	firstName?: string;
+	lastName?: string;
+	username?: string;
+	profilePictureUrl?: string;
+	likesNb?: number;
+	matchesNb?: number;
+	fameRate?: number;
+}
+
 export interface GeoCoordinate {
 	latitude: number;
 	longitude: number;

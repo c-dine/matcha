@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '@environment/environment';
+import { NavbarProfile } from '@shared-models/profile.model';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/service/auth.service';
+import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
   selector: 'app-user-informations',
@@ -6,17 +11,41 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-informations.component.css']
 })
 export class UserInformationsComponent implements OnInit {
-	user!: UserDto;
+	
+	profile: NavbarProfile = {};
+	mySubscriptions: Subscription[] = [];
+
+	environment = environment;
+
+	constructor(
+		private authService: AuthService,
+		private profileService: ProfileService
+	) {}
 
 	ngOnInit(): void {
-		this.user = {
-			'profilePictureSrc': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'location': "Paris",
-			'likesNb': 250,
-			'matchesNb': 64,
-			'fameRate': 76
-		}
+		this.mySubscriptions.push(this.authService.getCurrentUserObs().subscribe({
+			next: (currentUser) => {
+				if (!currentUser) return;
+				this.profile.firstName = currentUser.firstName;
+				this.profile.lastName = currentUser.lastName;
+				this.profile.username = currentUser.username;
+			}
+		}));
+		this.mySubscriptions.push(this.profileService.getProfileObs().subscribe({
+			next: (profile) => {
+				if (!profile) return;
+				this.profile.profilePictureUrl = `${environment.firebaseUrl}${profile.picturesIds?.profilePicture}?alt=media`;
+				this.profile.fameRate = profile.fameRate;
+			}
+		}))
+		this.profile.matchesNb = 250;
+		this.profile.likesNb = 640;
+		this.profile.fameRate = 76;
+	}
+
+	ngOnDestroy() {
+		this.mySubscriptions.forEach(subscription => {
+			subscription.unsubscribe();
+		});
 	}
 }
