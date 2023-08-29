@@ -6,15 +6,13 @@ export interface Profile {
     sexualPreferences: string;
     birthDate: Date;
     biography: string;
-}
-
-export interface NewProfile extends Profile {
-	tags: string[],
-	picturesIds: ProfilePicturesIds,
-	location?: GeoCoordinate
+	fameRate?: number;
+	location?: GeoCoordinate;
+	tags?: string[];
+	picturesIds?: ProfilePicturesIds;
 }
 
 export interface GeoCoordinate {
-	latitude: number,
-	longitude: number
+	latitude: number;
+	longitude: number;
 }

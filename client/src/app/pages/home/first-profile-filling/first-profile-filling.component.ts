@@ -4,7 +4,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable, firstValueFrom, map, startWith } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { minArrayLengthValidator } from 'src/app/validators/custom-validators';
+import { dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
 import { TagService } from 'src/app/service/tag.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { ProfileService } from 'src/app/service/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DisplayableProfilePictures, PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model';
 import { PictureService } from 'src/app/service/picture.service';
-import { GeoCoordinate, NewProfile } from '@shared-models/profile.model';
+import { GeoCoordinate, Profile } from '@shared-models/profile.model';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
@@ -45,7 +45,7 @@ export class FirstProfileFillingComponent {
 		sexualProfile: new FormGroup({
 			gender: new FormControl<string>('', [Validators.required]),
 			sexualPreferences: new FormControl<string>('', [Validators.required]),
-			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required])
+			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required, dateIsPastDateValidator()])
 		}),
 		personnalProfile: new FormGroup({
 			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
@@ -103,13 +103,13 @@ export class FirstProfileFillingComponent {
 			...formValue.sexualProfile,
 			picturesIds,
 			location: this.location
-		} as NewProfile;
+		} as Profile;
 
 		this.profileService.createProfile(newProfile)
 			.subscribe({
 				next: () => {
-					this.isLoading = false;
 					this.router.navigate(["/app"]);
+					this.isLoading = false;
 				},
 				error: () => this.isLoading = false
 			})

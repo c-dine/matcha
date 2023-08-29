@@ -24,10 +24,11 @@ export class TagService {
 	}
 
 	async upsertTags(labels: string[]): Promise<Tag[]> {
-		const allTags = (await this.getTags());
-		const existingTags = allTags.filter(tag => !labels.includes(tag.label))
+		const allTags = await this.getTags();
+		const existingTags = allTags.filter(tag => labels.find(userLabel => userLabel.toLowerCase() === tag.label.toLowerCase()));
 		const tagsToCreate = labels.filter((tag) => !existingTags.find(
 			existingTag => existingTag.label.toLowerCase() === tag.toLowerCase()));
+
 		return [...await this.createTags(tagsToCreate), ...existingTags];
 	}
 

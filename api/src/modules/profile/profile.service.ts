@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
-import { NewProfile, Profile, GeoCoordinate } from "@shared-models/profile.model.js"
+import { Profile, GeoCoordinate } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
 
 export class ProfileService {
@@ -17,7 +17,8 @@ export class ProfileService {
 			gender: profile.gender,
 			birthDate: profile.birth_date,
 			sexualPreferences: profile.sexual_preferences,
-			biography: profile.biography
+			biography: profile.biography,
+			fameRate: profile.fame_rate
 		}
 	}
 
@@ -25,12 +26,12 @@ export class ProfileService {
 		const profileModel = new ProfileModel(this.dbClient);
 		const profiles = await profileModel.findMany({
 			user_id: userId
-		}, ["id", "gender", "birth_date", "sexual_preferences", "biography", "location"]);
+		});
 
 		return profiles[0] ? this.formatProfile(profiles[0]) : undefined;
 	}
 
-	async createProfile(newProfile: NewProfile, userId: string): Promise<Profile> {
+	async createProfile(newProfile: Profile, userId: string): Promise<Profile> {
 		const profileModel = new ProfileModel(this.dbClient);
 		const createdProfile = await profileModel.create({
 			gender: newProfile.gender,
@@ -39,8 +40,8 @@ export class ProfileService {
 			biography: newProfile.biography,
 			user_id: userId,
 			location_latitude: newProfile.location.latitude,
-			location_longitude: newProfile.location.longitude
-		}, ["id", "gender", "birth_date", "sexual_preferences", "biography", "location"]);
+			location_longitude: newProfile.location.longitude,
+		});
 
 		return this.formatProfile(createdProfile);
 	}

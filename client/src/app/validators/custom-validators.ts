@@ -9,3 +9,12 @@ export function minArrayLengthValidator(minLength: number): ValidatorFn {
 	};
 }
 
+export function dateIsPastDateValidator(date = new Date()): ValidatorFn {
+	return (control: AbstractControl): { [key: string]: any } | null => {
+		const inputDate = control.value as Date;
+		if (inputDate && inputDate > date)
+			return { dateIsPastDate: true };
+		return null;
+	};
+}
+

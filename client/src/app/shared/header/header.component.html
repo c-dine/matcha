@@ -1,6 +1,6 @@
 <div class="header-container">
 	<div class="header-flex-container">
-		<img [src]="logoUrl" alt="logo matcha">
+		<img (click)="goToHomePage()" [src]="environment.logoUrl" alt="logo matcha" class="logo">
 	</div>
 	<div (click)="logOut()">
 		LOG OUT

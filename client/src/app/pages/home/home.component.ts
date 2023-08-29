@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerifyEmailDialogComponent } from './verify-email-dialog/verify-email-dialog.component';
+import { environment } from '@environment/environment';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,8 @@ import { VerifyEmailDialogComponent } from './verify-email-dialog/verify-email-d
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+
+	environment = environment;
 
 	constructor(
 		private dialog: MatDialog,

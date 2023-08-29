@@ -1,19 +1,26 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { environment } from '@environment/environment';
 import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+	selector: 'app-header',
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  logoUrl: string = '/assets/logo-matcha.png';
+	environment	= environment;
 
-  constructor(
-    private authService: AuthService
-  ) {}
+	constructor(
+		private authService: AuthService,
+		private router: Router
+	) { }
 
-  logOut() {
-      this.authService.logout();
-  }
+	logOut() {
+		this.authService.logout();
+	}
+
+	goToHomePage() {
+		this.router.navigateByUrl("/");
+	}
 }

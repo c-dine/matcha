@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { Subject, firstValueFrom, tap } from 'rxjs';
-import { NewProfile, Profile } from "@shared-models/profile.model.js"
+import { Profile } from "@shared-models/profile.model.js"
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class ProfileService {
 			);
 	}
 
-	createProfile(newProfile: NewProfile) {
+	createProfile(newProfile: Profile) {
 		return this.http.post<Profile | null>(`${environment.apiUrl}/profile/`, newProfile)
 			.pipe(
 				tap(profile => this.profileSubject.next(profile))

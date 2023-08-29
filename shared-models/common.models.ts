@@ -3,16 +3,6 @@ export interface Tag {
 	label: string;
 }
 
-export interface Profile {
-	id?: string;
-	gender?: string;
-	birthDate?: Date;
-	sexualPreferences?: string;
-	biography?: string;
-	location?: string;
-	fameRate?: number;
-}
-
 export interface ProfileTag {
 	profileId?: string;
 	tagId?: string;

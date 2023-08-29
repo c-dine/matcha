@@ -10,27 +10,27 @@ export class NavigationListComponent {
   navLinks: NavigationButton[] = [
     {
       title: 'Dating',
-      path: '/',
+      path: '/app/',
       iconName: "favorite"
     },
     {
       title: 'Users',
-      path: '/users',
+      path: '/app/users',
       iconName: "groupe"
     },
     {
       title: 'Chat',
-      path: '/chat',
+      path: '/app/chat',
       iconName: "chat"
     },
     {
       title: 'Activity',
-      path: '/activity',
+      path: '/app/activity',
       iconName: "diversity_1"
     },
     {
       title: 'Profile',
-      path: '/profile',
+      path: '/app/profile',
       iconName: "person"
     },
   ];
