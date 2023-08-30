@@ -19,10 +19,12 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { ProfilePicturesComponent } from './profile-pictures/profile-pictures.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SliderPopupComponent } from './filters/slider-popup/slider-popup.component';
+import { DoubleSliderPopupComponent } from './filters/double-slider-popup/double-slider-popup.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { SliderPopupComponent } from './filters/slider-popup/slider-popup.component';
+import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { MatInputModule } from '@angular/material/input';
 	TagInputComponent,
 	SpinnerComponent,
 	ProfilePicturesComponent,
-	SliderPopupComponent
+	DoubleSliderPopupComponent,
+	SliderPopupComponent,
+	TagsPopupComponent
   ],
   imports: [
     CommonModule,
@@ -61,7 +65,9 @@ import { MatInputModule } from '@angular/material/input';
 	TagInputComponent,
 	SpinnerComponent,
 	ProfilePicturesComponent,
-	SliderPopupComponent
+	SliderPopupComponent,
+	DoubleSliderPopupComponent,
+	TagsPopupComponent
   ]
 })
 export class SharedModule { }

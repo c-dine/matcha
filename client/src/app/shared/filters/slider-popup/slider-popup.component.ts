@@ -9,31 +9,23 @@ export class SliderPopupComponent {
 
 	@Input() label!: string;
 	@Input() description!: string;
-	@Input() min!: number;
 	@Input() max!: number;
-	@Output() appliedValue = new EventEmitter<{ min: number, max: number }>()
+	@Output() appliedValue = new EventEmitter<number | undefined>()
 
-	minValue!: number;
 	maxValue!: number;
 
 	ngOnInit() {
-		this.minValue = this.min;
 		this.maxValue = this.max;
 	}
 
 	onResetClick() {
-		this.minValue = this.min;
 		this.maxValue = this.max;
+		this.appliedValue.emit(undefined);
 	}
 
 	onApplyClick() {
-		if (this.minValue > this.maxValue) {
-			this.onResetClick();
-			return;
-		}
-		this.appliedValue.emit({
-			min: this.minValue,
-			max: this.maxValue
-		});
+		this.appliedValue.emit(
+			this.maxValue
+		);
 	}
 } 

@@ -44,18 +44,23 @@ export class UserListComponent {
 		this.getUserList();
 	}
 
-	setAgeGapFilter(gap: { min: number, max: number }) {
-		this.filters.ageMax = gap.max;
-		this.filters.ageMin = gap.min;
+	setAgeGapFilter(gap: { min: number, max: number } | undefined) {
+		this.filters.ageMax = gap?.max;
+		this.filters.ageMin = gap?.min;
 		this.filters.offset = 0;
 		this.getUserList();
 	}
 
-	setFameGapFilter(gap: { min: number, max: number }) {
-		this.filters.fameRateMax = gap.max;
-		this.filters.fameRateMin = gap.min;
+	setFameGapFilter(gap: { min: number, max: number } | undefined) {
+		this.filters.fameRateMax = gap?.max;
+		this.filters.fameRateMin = gap?.min;
 		this.filters.offset = 0;
 		this.getUserList();
 	}
 
+	setDistanceFilter(distance: number | undefined) {
+		this.filters.distanceKilometers = distance;
+		this.filters.offset = 0;
+		this.getUserList();
+	}
 }

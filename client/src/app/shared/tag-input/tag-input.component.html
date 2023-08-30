@@ -1,6 +1,6 @@
 <div [formGroup]="tagFormField">
 	<mat-form-field appearance="outline">
-		<mat-label>{{label}}</mat-label>
+		<mat-label *ngIf="label">{{label}}</mat-label>
 		<mat-chip-grid #chipGrid aria-label="Tags" formControlName="tags">
 			<mat-chip-row *ngFor="let tag of tagFormField.get('tags')?.value" (removed)="removeTag(tag)">
 				{{tag}}
@@ -9,8 +9,9 @@
 				</button>
 			</mat-chip-row>
 		</mat-chip-grid>
-		<input formControlName="tagInput" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-			[matChipInputSeparatorKeyCodes]="separatorKeyCodes" (matChipInputTokenEnd)="addTagFromInput($event)" />
+		<input	formControlName="tagInput" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+				[matChipInputSeparatorKeyCodes]="separatorKeyCodes" (matChipInputTokenEnd)="addTagFromInput($event)"
+				/>
 		<mat-autocomplete #auto="matAutocomplete" (optionSelected)="addTagFromAutocompletion($event)">
 			<mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
 				{{tag}}

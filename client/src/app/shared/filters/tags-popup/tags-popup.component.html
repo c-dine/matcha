@@ -7,12 +7,7 @@
 		<div class="filter-popup-description">
 			{{description}}
 		</div>
-		<div class="slider">
-			<mat-slider min=1 [max]="max">
-				<input [value]="maxValue" [(ngModel)]="maxValue" matSliderThumb>
-			</mat-slider>
-		</div>
-		<span class="value-display">{{maxValue}}km</span>
+		<app-tag-input (addedTag)="setTags($event)" [minArrayLength]=3 [resetTagsObservable]="resetTagsSubject.asObservable()"></app-tag-input>
 		<div class="popup-button-group">
 			<button class="custom-button cancel-button" (click)="onResetClick()">Reset</button>
 			<button class="custom-button submit-button" (click)="onApplyClick()">Apply</button>

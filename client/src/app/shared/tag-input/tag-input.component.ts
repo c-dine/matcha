@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatChipInputEvent } from "@angular/material/chips";
-import { Observable, firstValueFrom, map, startWith } from "rxjs";
+import { Observable, Subscription, firstValueFrom, map, startWith } from "rxjs";
 import { TagService } from "src/app/service/tag.service";
 import { minArrayLengthValidator } from "src/app/validators/custom-validators";
 
@@ -14,8 +14,12 @@ import { minArrayLengthValidator } from "src/app/validators/custom-validators";
 })
 export class TagInputComponent {
 
+	@Input() resetTagsObservable!: Observable<void>;
 	@Input() label!: string;
+	@Input() minArrayLength!: number;
 	@Output() addedTag = new EventEmitter<string[]>();
+
+	mySubscriptions: Subscription[] = [];
 
 	separatorKeyCodes: number[] = [ENTER, COMMA, SPACE];
 	availableTags!: string[];
@@ -23,7 +27,7 @@ export class TagInputComponent {
 
 	tagFormField = new FormGroup({
 		tagInput: new FormControl<string | null>('', []),
-		tags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
+		tags: new FormControl<string[]>([], [minArrayLengthValidator(this.minArrayLength)]),
 	});
 
 	constructor(
@@ -31,11 +35,28 @@ export class TagInputComponent {
 	) { }
 
 	async ngOnInit() {
+		if (this.resetTagsObservable)
+			this.mySubscriptions.push(
+				this.resetTagsObservable.subscribe({
+					next: () => this.resetTags()
+				})
+			);
 		this.availableTags = (await firstValueFrom(this.tagService.getTags())).map(tag => tag.label);
 		this.filteredTags = this.tagFormField.get("tagInput")?.valueChanges.pipe(
 			startWith(null),
 			map((tag: string | null) => (tag ? this.filterTags(tag) : this.availableTags.slice())),
 		);
+	}
+	
+	ngOnDestroy() {
+		this.mySubscriptions.forEach(subscription => {
+			subscription.unsubscribe();
+		});
+	}
+
+	resetTags() {
+		this.availableTags.push(...this.tagFormField.get('tags')?.getRawValue());
+		this.tagFormField.get('tags')?.setValue([]);
 	}
 
 	addTagFromInput(event: MatChipInputEvent): void {

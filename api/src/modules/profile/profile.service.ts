@@ -28,11 +28,11 @@ export class ProfileService {
 		return {
 			batchSize: filters.batchSize ? Number(filters.batchSize) : undefined,
 			offset: filters.offset ? Number(filters.offset) : undefined,
-			ageMax: filters.ageMax ? Number(filters.ageMax) : undefined,
-			ageMin: filters.ageMin ? Number(filters.ageMin) : undefined,
-			fameRateMax: filters.fameRateMax ? Number(filters.fameRateMax) : undefined,
-			fameRateMin: filters.fameRateMin ? Number(filters.fameRateMin) : undefined,
-			distanceKilometers: filters.distanceKilometers ? Number(filters.distanceKilometers) : undefined,
+			ageMax: filters.ageMax && filters.ageMax !== 'undefined' ? Number(filters.ageMax) : undefined,
+			ageMin: filters.ageMin && filters.ageMin !== 'undefined' ? Number(filters.ageMin) : undefined,
+			fameRateMax: filters.fameRateMax && filters.fameRateMax !== 'undefined' ? Number(filters.fameRateMax) : undefined,
+			fameRateMin: filters.fameRateMin && filters.fameRateMin !== 'undefined' ? Number(filters.fameRateMin) : undefined,
+			distanceKilometers: filters.distanceKilometers && filters.distanceKilometers !== 'undefined' ? Number(filters.distanceKilometers) : undefined,
 			tags: filters.tags ? (filters.tags as string).split(',') : undefined
 		}
 	}
