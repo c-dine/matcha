@@ -5,6 +5,7 @@ import { DatingComponent } from './dating/dating.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DatingPlatformComponent } from './dating-platform.component';
 import { AuthGuard } from 'src/app/service/authGuard.service';
+import { UserListComponent } from './user-list/user-list.component';
 
 const routes: Routes = [
   { 
@@ -15,7 +16,7 @@ const routes: Routes = [
       { path: 'chat', component: ChatComponent },
       { path: 'dating', component: DatingComponent },
       { path: 'profile', component: ProfileComponent },
-      { path: 'userList', component: ProfileComponent }
+      { path: 'userList', component: UserListComponent }
     ],
     canActivate: [AuthGuard]
   },

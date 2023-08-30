@@ -19,8 +19,8 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FirstProfileFillingComponent } from "./first-profile-filling/first-profile-filling.component";
-import { SharedModule } from "../../shared/shared.module";
 import { CommonModule } from "@angular/common";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
 	declarations: [
