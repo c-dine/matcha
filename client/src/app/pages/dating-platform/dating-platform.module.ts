@@ -26,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { UserListComponent } from './user-list/user-list.component';
 import { SharedModule } from "../../shared/shared.module";
+import { UserListFiltersComponent } from './user-list/user-list-filters/user-list-filters.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { SharedModule } from "../../shared/shared.module";
     ChatSearchBarComponent,
     ChatMessageComponent,
     ProfileComponent,
-	UserListComponent
+	UserListComponent,
+	UserListFiltersComponent
   ],
   imports: [
     CommonModule,

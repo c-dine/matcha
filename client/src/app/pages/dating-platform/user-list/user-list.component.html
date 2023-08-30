@@ -1,46 +1,5 @@
 <div class="user-list-container">
-	<div class="filters">
-
-		<div class="filter">
-			<span class="filter-label">Tags</span>
-			<app-tags-popup
-				[label]="filters.tags?.length ? filters.tags?.length + ' tags' : 'None'"
-				description="Select some tags"
-				(appliedValue)="setTagsFilter($event)">
-			</app-tags-popup>
-		</div>
-
-		<div class="filter">
-			<span class="filter-label">Age gap</span>
-			<app-double-slider-popup
-				[label]="filters.ageMax ? filters.ageMin + ' - ' + filters.ageMax : 'All'"
-				description="Select an age gap"
-				[min]=18 [max]=100
-				(appliedValue)="setAgeGapFilter($event)">
-			</app-double-slider-popup>
-		</div>
-
-		<div class="filter">
-			<span class="filter-label">Fame gap</span>
-			<app-double-slider-popup
-				[label]="filters.fameRateMax ? filters.fameRateMin + ' - ' + filters.fameRateMax : 'All'"
-				label="Select"
-				description="Select a fame gap"
-				[min]=0 [max]=100
-				(appliedValue)="setFameGapFilter($event)">
-			</app-double-slider-popup>
-		</div>
-
-		<div class="filter">
-			<span class="filter-label">Distance max. (km)</span>
-			<app-slider-popup
-				[label]="filters.distanceKilometers ? filters.distanceKilometers + 'km' : 'All'"
-				label="Select"
-				description="Select a max distance in kilometers"
-				[max]=1000
-				(appliedValue)="setDistanceFilter($event)">
-			</app-slider-popup>
-		</div> 
-
+	<div class="user-list-filter-bar">
+		<app-user-list-filters (addedFilter)="setFilters($event)"></app-user-list-filters>
 	</div>
 </div>
