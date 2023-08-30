@@ -29,8 +29,23 @@ export interface GeoCoordinate {
 }
 
 export interface ProfileFilters {
-	ageGap?: [number, number];
+	ageMin?: number;
+	ageMax?: number;
 	distanceKilometers?: number;
-	fameRatingGap?: [number, number];
+	fameRateMin?: number;
+	fameRateMax?: number;
 	tags?: string[];
+	batchSize: number;
+	offset: number;
+}
+
+export interface ProfileFiltersRequest {
+	ageMin?: string;
+	ageMax?: string;
+	distanceKilometers?: string;
+	fameRateMin?: string;
+	fameRateMax?: string;
+	tags?: string;
+	batchSize: string;
+	offset: string;
 }

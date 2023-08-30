@@ -4,7 +4,7 @@ import { ProfileService } from './profile.service.js';
 import { TagService } from '../tag/tag.service.js';
 import { PictureService } from '../picture/picture.service.js';
 import { env } from '../../config/config.js';
-import { Profile } from '@shared-models/profile.model.js';
+import { Profile, ProfileFilters, ProfileFiltersRequest } from '@shared-models/profile.model.js';
 
 export const profileController = express();
 
@@ -22,9 +22,10 @@ profileController.get("/", async (req: Request, res: Response, next: NextFunctio
 	}
 });
 
-profileController.get("/userList", async (req: Request, res: Response, next: NextFunction) => {
+profileController.get("/userList", async (req: Request<any, any, any, ProfileFiltersRequest>, res: Response, next: NextFunction) => {
 	try {
-		const filters = req.params;
+		const profileService = new ProfileService(req.dbClient);
+		const filters: ProfileFilters = profileService.formatProfileFilters(req.query);
 		console.log(filters);
 		res.status(200).json({ data: null });
 		next();

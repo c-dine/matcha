@@ -18,6 +18,11 @@ import { TagInputComponent } from './tag-input/tag-input.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { ProfilePicturesComponent } from './profile-pictures/profile-pictures.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SliderPopupComponent } from './filters/slider-popup/slider-popup.component';
+import { MatSliderModule } from '@angular/material/slider';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     NotificationCardComponent,
 	TagInputComponent,
 	SpinnerComponent,
-	ProfilePicturesComponent
+	ProfilePicturesComponent,
+	SliderPopupComponent
   ],
   imports: [
     CommonModule,
@@ -41,7 +47,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 	MatFormFieldModule,
 	MatChipsModule,
 	MatAutocompleteModule,
-	MatProgressSpinnerModule
+	MatProgressSpinnerModule,
+	BrowserAnimationsModule,
+	MatSliderModule,
+	FormsModule,
+	ReactiveFormsModule,
+	MatInputModule
   ],
   exports: [
     HeaderComponent,
@@ -49,7 +60,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     NotificationsSideBarComponent,
 	TagInputComponent,
 	SpinnerComponent,
-	ProfilePicturesComponent
+	ProfilePicturesComponent,
+	SliderPopupComponent
   ]
 })
 export class SharedModule { }

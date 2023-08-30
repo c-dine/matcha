@@ -1,0 +1,32 @@
+<div class="filter-item">
+	<div class="filter-button">
+		<mat-label>{{label}}</mat-label>
+		<mat-icon class="arrow-icon">keyboard_arrow_down</mat-icon>
+	</div>
+	<div class="filter-popup" id="age-popup">
+		<div class="description">
+			{{description}}
+		</div>
+		<div class="slider">
+			<mat-slider [min]="min" [max]="max">
+				<input [value]="minValue" [(ngModel)]="minValue" matSliderStartThumb>
+				<input [value]="maxValue" [(ngModel)]="maxValue" matSliderEndThumb>
+			</mat-slider>
+		</div>
+		<div class="gap-inputs">
+			<mat-form-field appearance="outline">
+				<mat-label>Min</mat-label>
+				<input matInput type="number" [min]="min" [max]="maxValue" [(ngModel)]="minValue">
+			</mat-form-field>
+			<span> - </span>
+			<mat-form-field appearance="outline">
+				<mat-label>Max</mat-label>
+				<input matInput type="number" [min]="minValue" [max]="max" [(ngModel)]="maxValue">
+			</mat-form-field>
+		</div>
+		<div class="button-group">
+			<button class="custom-button cancel-button" (click)="onResetClick()">Reset</button>
+			<button class="custom-button submit-button" (click)="onApplyClick()">Apply</button>
+		</div>
+	</div>
+</div>

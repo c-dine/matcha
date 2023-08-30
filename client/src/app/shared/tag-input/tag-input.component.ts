@@ -65,6 +65,7 @@ export class TagInputComponent {
 			this.availableTags.push(tag);
 			this.tagFormField.get("tags")?.value?.splice(index, 1);
 			this.tagFormField.get("tags")?.updateValueAndValidity();
+			this.addedTag.emit(this.tagFormField.get("tags")?.getRawValue());
 		}
 	}
 

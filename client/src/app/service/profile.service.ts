@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { BehaviorSubject, filter, firstValueFrom, tap } from 'rxjs';
 import { Profile, ProfileFilters } from "@shared-models/profile.model.js"
+import { buildHttpParams } from '../utils/http.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -33,11 +34,9 @@ export class ProfileService {
 		return this.profileSubject.asObservable();
 	}
 
-	getUserList(filters: ProfileFilters, batchSize: number, offset: number) {
-		let params = new HttpParams();
-		for (const [key, value] of Object.values(filters))
-			params.append(key, value);
-		return this.http.get<Profile[]>(`${environment.apiUrl}/profile/userList?batchSize=${batchSize}&offset=?${offset}`, {
+	getUserList(filters: ProfileFilters) {
+		const params = buildHttpParams(filters);
+		return this.http.get<Profile[]>(`${environment.apiUrl}/profile/userList`, {
 			params
 		});
 	}

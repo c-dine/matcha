@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
-import { Profile, GeoCoordinate } from "@shared-models/profile.model.js"
+import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
 import { TagService } from "../tag/tag.service.js";
 import { PictureService } from "../picture/picture.service.js";
@@ -24,17 +24,34 @@ export class ProfileService {
 		}
 	}
 
-	async getFullProfile(userId: string): Promise<Profile> {
-		const tagService = new TagService(this.dbClient);
-		const pictureService = new PictureService(this.dbClient);
-		const profile = await this.getProfile(userId);
-		const tags = await tagService.getProfileTags(profile.id);
-		const pictures = await pictureService.getProfilePictures(profile.id);
-
+	formatProfileFilters(filters: ProfileFiltersRequest): ProfileFilters {
 		return {
-			...profile,
-			picturesIds: pictures,
-			tags
+			batchSize: filters.batchSize ? Number(filters.batchSize) : undefined,
+			offset: filters.offset ? Number(filters.offset) : undefined,
+			ageMax: filters.ageMax ? Number(filters.ageMax) : undefined,
+			ageMin: filters.ageMin ? Number(filters.ageMin) : undefined,
+			fameRateMax: filters.fameRateMax ? Number(filters.fameRateMax) : undefined,
+			fameRateMin: filters.fameRateMin ? Number(filters.fameRateMin) : undefined,
+			distanceKilometers: filters.distanceKilometers ? Number(filters.distanceKilometers) : undefined,
+			tags: filters.tags ? (filters.tags as string).split(',') : undefined
+		}
+	}
+
+	async getFullProfile(userId: string): Promise<Profile | undefined> {
+		try {
+			const tagService = new TagService(this.dbClient);
+			const pictureService = new PictureService(this.dbClient);
+			const profile = await this.getProfile(userId);
+			const tags = await tagService.getProfileTags(profile.id);
+			const pictures = await pictureService.getProfilePictures(profile.id);
+
+			return {
+				...profile,
+				picturesIds: pictures,
+				tags
+			}
+		} catch (error: any) {
+			return undefined;
 		}
 	}
 
@@ -44,7 +61,9 @@ export class ProfileService {
 			user_id: userId
 		}]);
 
-		return profiles[0] ? this.formatProfile(profiles[0]) : undefined;
+		if (!profiles[0])
+			throw new Error();
+		return this.formatProfile(profiles[0]);
 	}
 
 	async createProfile(newProfile: Profile, userId: string): Promise<Profile> {

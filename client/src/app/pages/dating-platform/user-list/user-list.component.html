@@ -1,5 +1,20 @@
-<div>
+<div class="user-list-container">
 	<div class="filters">
-		<app-tag-input label="tags" (addedTag)="setTagsFilter($event)"></app-tag-input>
+
+		<div class="filter">
+			<app-tag-input label="Tags" (addedTag)="setTagsFilter($event)"></app-tag-input>
+		</div>
+
+		<div class="filter">
+			<app-slider-popup label="Select" description="Select an age gap" [min]=18 [max]=100 (appliedValue)="setAgeGapFilter($event)"></app-slider-popup>
+		</div>
+
+		<div class="filter">
+			<app-slider-popup label="Select" description="Select a fame gap" [min]=0 [max]=100 (appliedValue)="setFameGapFilter($event)"></app-slider-popup>
+		</div>
+
+		<div class="filter">
+		</div> 
+
 	</div>
 </div>

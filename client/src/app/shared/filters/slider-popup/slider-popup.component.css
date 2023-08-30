@@ -1,0 +1,23 @@
+.slider {
+	display: flex;
+	justify-content: center;
+}
+
+.description {
+	font-weight: 600 !important;
+}
+
+.gap-inputs {
+	display: inline-flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+mat-form-field {
+	width: 40%;
+	height: 50px !important;
+}
+
+mat-slider {
+	width: 90%;
+}

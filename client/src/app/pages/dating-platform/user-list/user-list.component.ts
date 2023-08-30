@@ -11,10 +11,10 @@ export class UserListComponent {
 
 	isLoading = true;
 	userList: Profile[] = [];
-	filters: ProfileFilters = {};
-
-	BATCH_SIZE = 15;
-	offset = 0;
+	filters: ProfileFilters = {
+		batchSize: 15,
+		offset: 0
+	};
 
 	constructor(
 		private profileService: ProfileService
@@ -26,10 +26,10 @@ export class UserListComponent {
 
 	getUserList() {
 		this.isLoading = true;
-		this.profileService.getUserList(this.filters, this.BATCH_SIZE, this.offset).subscribe({
+		this.profileService.getUserList(this.filters).subscribe({
 			next: (userList) => {
 				this.userList = userList;
-				this.offset += this.BATCH_SIZE;
+				this.filters.offset += this.filters.batchSize;
 				this.isLoading = false;
 			},
 			error: () => {
@@ -40,7 +40,21 @@ export class UserListComponent {
 
 	setTagsFilter(tags: string[]) {
 		this.filters.tags = tags;
-		this.offset = 0;
+		this.filters.offset = 0;
+		this.getUserList();
+	}
+
+	setAgeGapFilter(gap: { min: number, max: number }) {
+		this.filters.ageMax = gap.max;
+		this.filters.ageMin = gap.min;
+		this.filters.offset = 0;
+		this.getUserList();
+	}
+
+	setFameGapFilter(gap: { min: number, max: number }) {
+		this.filters.fameRateMax = gap.max;
+		this.filters.fameRateMin = gap.min;
+		this.filters.offset = 0;
 		this.getUserList();
 	}
 
