@@ -1,16 +1,20 @@
 import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
-import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest } from "@shared-models/profile.model.js"
+import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserProfile } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
 import { TagService } from "../tag/tag.service.js";
 import { PictureService } from "../picture/picture.service.js";
+import { AuthService } from "../auth/auth.service.js";
 
 export class ProfileService {
 
 	dbClient: PoolClient;
+	profileModel: ProfileModel;
+
 	
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
+		this.profileModel = new ProfileModel(this.dbClient);
 	}
 
 	formatProfile(profile: profile): Profile {
@@ -20,7 +24,11 @@ export class ProfileService {
 			birthDate: profile.birth_date,
 			sexualPreferences: profile.sexual_preferences,
 			biography: profile.biography,
-			fameRate: profile.fame_rate
+			fameRate: profile.fame_rate,
+			location: {
+				latitude: profile.location_latitude,
+				longitude: profile.location_longitude,
+			}
 		}
 	}
 
@@ -28,11 +36,11 @@ export class ProfileService {
 		return {
 			batchSize: filters.batchSize ? Number(filters.batchSize) : undefined,
 			offset: filters.offset ? Number(filters.offset) : undefined,
-			ageMax: filters.ageMax && filters.ageMax !== 'undefined' ? Number(filters.ageMax) : undefined,
-			ageMin: filters.ageMin && filters.ageMin !== 'undefined' ? Number(filters.ageMin) : undefined,
-			fameRateMax: filters.fameRateMax && filters.fameRateMax !== 'undefined' ? Number(filters.fameRateMax) : undefined,
-			fameRateMin: filters.fameRateMin && filters.fameRateMin !== 'undefined' ? Number(filters.fameRateMin) : undefined,
-			distanceKilometers: filters.distanceKilometers && filters.distanceKilometers !== 'undefined' ? Number(filters.distanceKilometers) : undefined,
+			ageMax: !!filters.ageMax ? Number(filters.ageMax) : undefined,
+			ageMin: !!filters.ageMin ? Number(filters.ageMin) : undefined,
+			fameRateMax: !!filters.fameRateMax ? Number(filters.fameRateMax) : undefined,
+			fameRateMin: !!filters.fameRateMin ? Number(filters.fameRateMin) : undefined,
+			distanceKilometers: !!filters.distanceKilometers ? Number(filters.distanceKilometers) : undefined,
 			tags: filters.tags ? (filters.tags as string).split(',') : undefined
 		}
 	}
@@ -56,8 +64,7 @@ export class ProfileService {
 	}
 
 	async getProfile(userId: string): Promise<Profile> {
-		const profileModel = new ProfileModel(this.dbClient);
-		const profiles = await profileModel.findMany([{
+		const profiles = await this.profileModel.findMany([{
 			user_id: userId
 		}]);
 
@@ -66,9 +73,20 @@ export class ProfileService {
 		return this.formatProfile(profiles[0]);
 	}
 
+	async getUserList(filters: ProfileFilters, userId: string): Promise<UserProfile[]> {
+		const userProfile = (await this.profileModel.findMany([{
+			user_id: userId
+		}]))[0];
+		const userlist = await this.profileModel.getUserList(filters, userProfile);
+
+		return userlist.map(user => ({
+			...this.formatProfile(user as profile),
+			...(new AuthService(this.dbClient)).formatUser(user as user),
+		}));
+	}
+
 	async createProfile(newProfile: Profile, userId: string): Promise<Profile> {
-		const profileModel = new ProfileModel(this.dbClient);
-		const createdProfile = await profileModel.create({
+		const createdProfile = await this.profileModel.create({
 			gender: newProfile.gender,
 			birth_date: newProfile.birthDate,
 			sexual_preferences: newProfile.sexualPreferences,

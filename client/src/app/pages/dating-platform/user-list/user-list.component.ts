@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Profile, ProfileFilters } from '@shared-models/profile.model';
+import { ProfileFilters, UserProfile } from '@shared-models/profile.model';
 import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { ProfileService } from 'src/app/service/profile.service';
 export class UserListComponent {
 
 	isLoading = true;
-	userList: Profile[] = [];
+	userList: UserProfile[] = [];
 	filters: ProfileFilters = {
 		batchSize: 15,
 		offset: 0
@@ -29,7 +29,7 @@ export class UserListComponent {
 		this.profileService.getUserList(this.filters).subscribe({
 			next: (userList) => {
 				this.userList = userList;
-				this.filters.offset += this.filters.batchSize;
+				this.filters.offset += userList.length;
 				this.isLoading = false;
 			},
 			error: () => {

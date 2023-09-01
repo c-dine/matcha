@@ -9,7 +9,8 @@ interface profile {
 	birth_date?: Date;
 	sexual_preferences?: string;
 	biography?: string;
-	location?: string;
+	location_latitude?: number;
+	location_longitude?: number;
 	fame_rate?: number;
 	user_id: string;
 }

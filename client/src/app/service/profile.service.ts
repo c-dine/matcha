@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { BehaviorSubject, filter, firstValueFrom, tap } from 'rxjs';
-import { Profile, ProfileFilters } from "@shared-models/profile.model.js"
+import { BehaviorSubject, firstValueFrom, tap } from 'rxjs';
+import { Profile, ProfileFilters, UserProfile } from "@shared-models/profile.model.js"
 import { buildHttpParams } from '../utils/http.utils';
 
 @Injectable({
@@ -36,7 +36,7 @@ export class ProfileService {
 
 	getUserList(filters: ProfileFilters) {
 		const params = buildHttpParams(filters);
-		return this.http.get<Profile[]>(`${environment.apiUrl}/profile/userList`, {
+		return this.http.get<UserProfile[]>(`${environment.apiUrl}/profile/userList`, {
 			params
 		});
 	}

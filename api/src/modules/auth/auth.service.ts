@@ -17,7 +17,7 @@ export class AuthService {
 		this.dbClient = dbClient;
 	}
 
-	private formatUser(createdUser: user): User {
+	formatUser(createdUser: user): User {
 		return {
 			id: createdUser?.id,
 			username: createdUser?.username,
