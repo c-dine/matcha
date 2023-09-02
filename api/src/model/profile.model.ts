@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ModelBase } from "./base.js";
-import { Profile, ProfileFilters } from "@shared-models/profile.model.js";
+import { ProfileFilters } from "@shared-models/profile.model.js";
 
 export class ProfileModel extends ModelBase {
 
@@ -11,8 +11,6 @@ export class ProfileModel extends ModelBase {
 	async getUserList(filters: ProfileFilters, userProfile: profile) {
 		const query = this.getProfileFiltersQuery(filters, userProfile);
 		const values = this.getProfileFiltersQueryValues(filters);
-		console.log(query)
-		console.log(values)
         const result = await this.dbClient.query(query, values);
 		console.log(result.rows);
 		return result.rows;
@@ -31,12 +29,19 @@ export class ProfileModel extends ModelBase {
 					profile.sexual_preferences,
 					profile.biography,
 					profile.fame_rate,
-					picture.id AS profilePictureId,
-					calculate_distance(profile.location_latitude, profile.location_longitude, ${userProfile.location_latitude}, ${userProfile.location_longitude}, 'K') as distanceKm
+					profilePicture.id AS profile_picture_id,
+					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
+					STRING_AGG(additionnalPicture.id::TEXT, ',') AS additionnal_pictures_ids,
+					calculate_distance(profile.location_latitude, profile.location_longitude, ${userProfile.location_latitude}, ${userProfile.location_longitude}, 'K') as distance_km
 				FROM profile 
-				INNER JOIN "user" ON "user".id = profile.user_id 
-				LEFT JOIN picture ON picture.profile_id = profile.id
-					WHERE picture.is_profile_picture=true`;
+				INNER JOIN "user" ON "user".id = profile.user_id
+				LEFT JOIN tag ON tag.id IN (
+					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
+				)
+				LEFT JOIN picture AS profilePicture ON profilePicture.profile_id = profile.id
+				LEFT JOIN picture AS additionnalPicture ON additionnalPicture.profile_id = profile.id
+					WHERE profilePicture.is_profile_picture=true
+					AND additionnalPicture.is_profile_picture=false`;
 
 		if (filters.ageMin)
 			query += ` AND profile.birth_date <= $${i++}`;
@@ -54,9 +59,21 @@ export class ProfileModel extends ModelBase {
 					)`
 		}
 		query += this.getSexualProfileFiltersQuery(userProfile);
-		query += `) SELECT * FROM profile_with_distance`
+		query += `
+			GROUP BY 
+				"user".username,
+				"user".last_name,
+				"user".first_name,
+				profile.gender,
+				profile.birth_date,
+				profile.sexual_preferences,
+				profile.biography,
+				profile.fame_rate,
+				profilePicture.id,
+				distance_km
+		) SELECT * FROM profile_with_distance`
 		if (filters.distanceKilometers)
-			query += ` WHERE distanceKm <= $${i++}`;
+			query += ` WHERE distance_km <= $${i++}`;
 		query += ` LIMIT $${i++} OFFSET $${i++}`;
 
 		return query;
