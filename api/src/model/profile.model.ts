@@ -12,7 +12,6 @@ export class ProfileModel extends ModelBase {
 		const query = this.getProfileFiltersQuery(filters, userProfile);
 		const values = this.getProfileFiltersQueryValues(filters);
         const result = await this.dbClient.query(query, values);
-		console.log(result.rows);
 		return result.rows;
 	}
 

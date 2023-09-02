@@ -25,10 +25,10 @@ export class ProfileService {
 			sexualPreferences: profile.sexual_preferences,
 			biography: profile.biography,
 			fameRate: profile.fame_rate,
-			location: {
+			location: profile.location_latitude ? {
 				latitude: profile.location_latitude,
 				longitude: profile.location_longitude,
-			}
+			} : undefined
 		}
 	}
 
@@ -82,6 +82,12 @@ export class ProfileService {
 		return userlist.map(user => ({
 			...this.formatProfile(user as profile),
 			...(new AuthService(this.dbClient)).formatUser(user as user),
+			tags: user.tags.split(','),
+			picturesIds: {
+				profilePicture: user.profile_picture_id,
+				additionnalPicture: user.additionnal_pictures_ids.split(',')
+			},
+			ditanceKm: user.distance_km
 		}));
 	}
 

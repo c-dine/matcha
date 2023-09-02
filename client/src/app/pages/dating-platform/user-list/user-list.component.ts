@@ -28,6 +28,7 @@ export class UserListComponent {
 		this.isLoading = true;
 		this.profileService.getUserList(this.filters).subscribe({
 			next: (userList) => {
+				console.log(userList);
 				this.userList = userList;
 				this.filters.offset += userList.length;
 				this.isLoading = false;
