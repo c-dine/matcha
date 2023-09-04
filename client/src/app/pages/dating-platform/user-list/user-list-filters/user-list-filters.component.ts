@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ProfileFilters } from "@shared-models/profile.model";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
 
 @Component({
 	selector: 'app-user-list-filters',
@@ -8,11 +9,27 @@ import { ProfileFilters } from "@shared-models/profile.model";
   })
   export class UserListFiltersComponent {
 
-	filters: ProfileFilters = {
-		batchSize: 15,
-		offset: 0
-	};
+	@Input() filtersObservable!: Observable<ProfileFilters>;
+	filters!: ProfileFilters;
+	tagsSubject: BehaviorSubject<string[] | undefined> = new BehaviorSubject<string[] | undefined>(undefined);
 	@Output() addedFilter = new EventEmitter<ProfileFilters>()
+
+	mySubcriptions: Subscription[] = [];
+
+	ngOnInit() {
+		this.mySubcriptions.push(
+			this.filtersObservable.subscribe({
+				next: (filters) => {
+					this.filters = filters;
+					this.tagsSubject?.getValue() !== filters.tags && this.tagsSubject?.next(filters.tags);
+				}
+			})
+		);
+	}
+
+	ngOnDestroy() {
+		this.mySubcriptions.forEach(subscription => subscription.unsubscribe());
+	}
 
 	setTagsFilter(tags: string[]) {
 		this.filters.tags = tags;

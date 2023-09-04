@@ -5,7 +5,8 @@
 		<app-tags-popup
 			[label]="filters.tags?.length ? filters.tags?.length + ' tags' : 'None'"
 			description="Select some tags"
-			(appliedValue)="setTagsFilter($event)">
+			(appliedValue)="setTagsFilter($event)"
+			[tagsObservable]="tagsSubject.asObservable()">
 		</app-tags-popup>
 	</div>
 

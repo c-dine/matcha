@@ -26,7 +26,9 @@ profileController.get("/userList", async (req: Request<any, any, any, ProfileFil
 	try {
 		const profileService = new ProfileService(req.dbClient);
 		const filters: ProfileFilters = profileService.formatProfileFilters(req.query);
+		console.log(filters)
 		const userList = await profileService.getUserList(filters, req.userId);
+		console.log(userList)
 		res.status(200).json({ data: userList });
 		next();
 	} catch (error: any) {

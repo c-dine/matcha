@@ -27,6 +27,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { UserListComponent } from './user-list/user-list.component';
 import { SharedModule } from "../../shared/shared.module";
 import { UserListFiltersComponent } from './user-list/user-list-filters/user-list-filters.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { UserListFiltersComponent } from './user-list/user-list-filters/user-lis
     DatingPlatformRoutingModule,
 	MatInputModule,
 	MatRadioModule,
+	MatTooltipModule,
 	SharedModule
   ]
 })

@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { MatChipInputEvent } from "@angular/material/chips";
-import { Observable, Subscription, firstValueFrom, map, startWith } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, firstValueFrom, map, startWith } from "rxjs";
 import { TagService } from "src/app/service/tag.service";
 import { minArrayLengthValidator } from "src/app/validators/custom-validators";
 
@@ -14,7 +14,8 @@ import { minArrayLengthValidator } from "src/app/validators/custom-validators";
 })
 export class TagInputComponent {
 
-	@Input() resetTagsObservable!: Observable<void>;
+	@Input() parentResetTagsObservable!: Observable<void>;
+	@Input() tagsSubject!: BehaviorSubject<string[] | undefined>;
 	@Input() label!: string;
 	@Input() minArrayLength!: number;
 	@Output() addedTag = new EventEmitter<string[]>();
@@ -27,7 +28,7 @@ export class TagInputComponent {
 
 	tagFormField = new FormGroup({
 		tagInput: new FormControl<string | null>('', []),
-		tags: new FormControl<string[]>([], [minArrayLengthValidator(this.minArrayLength)]),
+		tags: new FormControl<string[] | undefined>([], [minArrayLengthValidator(this.minArrayLength)]),
 	});
 
 	constructor(
@@ -35,9 +36,9 @@ export class TagInputComponent {
 	) { }
 
 	async ngOnInit() {
-		if (this.resetTagsObservable)
+		if (this.parentResetTagsObservable)
 			this.mySubscriptions.push(
-				this.resetTagsObservable.subscribe({
+				this.parentResetTagsObservable.subscribe({
 					next: () => this.resetTags()
 				})
 			);
@@ -46,6 +47,20 @@ export class TagInputComponent {
 			startWith(null),
 			map((tag: string | null) => (tag ? this.filterTags(tag) : this.availableTags.slice())),
 		);
+		if (this.tagsSubject)
+			this.mySubscriptions.push(
+				this.tagsSubject.asObservable().subscribe({
+					next: (tags) => {
+						this.availableTags.push(...this.tagFormField.get("tags")?.value || []);
+						this.tagFormField.get("tags")?.setValue(tags || []);
+						
+						if (tags) {
+							this.availableTags = this.availableTags.filter(tag => !tags.includes(tag));
+							this.tagFormField.get("tagInput")?.setValue(null);
+						}
+					}
+				})
+			);
 	}
 	
 	ngOnDestroy() {

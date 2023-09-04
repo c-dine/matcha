@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { environment } from '@environment/environment';
 import { ProfileFilters, UserProfile } from '@shared-models/profile.model';
+import { BehaviorSubject } from 'rxjs';
 import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
@@ -10,11 +12,12 @@ import { ProfileService } from 'src/app/service/profile.service';
 export class UserListComponent {
 
 	isLoading = true;
-	userList: UserProfile[] = [];
-	filters: ProfileFilters = {
+	filtersSubject = new BehaviorSubject<ProfileFilters>({
 		batchSize: 15,
 		offset: 0
-	};
+	});
+	userList: UserProfile[] = [];
+	environment = environment;
 
 	constructor(
 		private profileService: ProfileService
@@ -26,11 +29,12 @@ export class UserListComponent {
 
 	getUserList() {
 		this.isLoading = true;
-		this.profileService.getUserList(this.filters).subscribe({
+		let filters = this.filtersSubject.getValue();
+		this.profileService.getUserList(filters).subscribe({
 			next: (userList) => {
-				console.log(userList);
 				this.userList = userList;
-				this.filters.offset += userList.length;
+				filters.offset += userList.length;
+				this.filtersSubject.next(filters);
 				this.isLoading = false;
 			},
 			error: () => {
@@ -40,7 +44,15 @@ export class UserListComponent {
 	}
 
 	setFilters(filters: ProfileFilters) {
-		this.filters = filters;
+		this.filtersSubject.next(filters);
+		this.getUserList();
+	}
+
+	setTagFilter(tag: string) {
+		let filters = this.filtersSubject.getValue();
+		filters.tags = [tag];
+		filters.offset = 0;
+		this.filtersSubject.next(filters);
 		this.getUserList();
 	}
 }

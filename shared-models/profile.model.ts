@@ -5,6 +5,7 @@ export interface Profile {
     gender: string;
     sexualPreferences: string;
     birthDate: Date;
+	age?: number;
     biography: string;
 	fameRate?: number;
 	location?: GeoCoordinate;

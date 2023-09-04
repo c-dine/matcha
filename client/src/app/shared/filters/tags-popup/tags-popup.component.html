@@ -7,7 +7,7 @@
 		<div class="filter-popup-description">
 			{{description}}
 		</div>
-		<app-tag-input (addedTag)="setTags($event)" [minArrayLength]=3 [resetTagsObservable]="resetTagsSubject.asObservable()"></app-tag-input>
+		<app-tag-input (addedTag)="setTags($event)" [minArrayLength]=3 [parentResetTagsObservable]="resetTagsSubject" [tagsSubject]="tagsSubject"></app-tag-input>
 		<div class="popup-button-group">
 			<button class="custom-button cancel-button" (click)="onResetClick()">Reset</button>
 			<button class="custom-button submit-button" (click)="onApplyClick()">Apply</button>

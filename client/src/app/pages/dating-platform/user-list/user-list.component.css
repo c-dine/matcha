@@ -1,8 +1,87 @@
 .user-list-container {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .user-list-filter-bar {
 	width: 95%;
+}
+
+.user-list {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	padding: 0 20px;
+}
+
+.user-item {
+	width: 300px;
+	height: 250px;
+	border: solid thin var(--primary-lighter-color);
+	border-radius: 60px;
+	background-size: cover;
+	background-position: center;
+	color: white;	
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: 20px;
+	margin: 10px;
+	gap: 5px;
+}
+
+.user-item-container-details {
+	display: inline-flex;
+	justify-content: space-between;
+}
+
+.user-item-username {
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    justify-content: left;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: left;
+}
+
+.user-item-distance {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.user-item-fame {
+	display: flex;
+	align-items: center;
+}
+
+mat-icon {
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+}
+
+.heart-icon {
+	font-size: 18px;
+}
+
+.user-item-tags {
+	display: flex;
+	gap: 5px;
+}
+
+.tag-item {
+	border-radius: 10px;
+	border: solid thin var(--primary-lighter-color);
+	text-transform: lowercase;
+	font-size: 12px;
+	padding: 0 5px;
+	cursor: pointer;
+}
+
+.tag-item:hover {
+	border-color: var(--primary-color);
+	color: var(--primary-color);
 }

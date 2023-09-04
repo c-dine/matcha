@@ -22,6 +22,7 @@ export class ProfileService {
 			id: profile.id,
 			gender: profile.gender,
 			birthDate: profile.birth_date,
+			age: Math.floor((new Date().getTime() - new Date(profile.birth_date).getTime()) / (365.25 * 24 * 60 * 60 * 1000)),
 			sexualPreferences: profile.sexual_preferences,
 			biography: profile.biography,
 			fameRate: profile.fame_rate,
@@ -81,6 +82,7 @@ export class ProfileService {
 
 		return userlist.map(user => ({
 			...this.formatProfile(user as profile),
+			birthDate: undefined,
 			...(new AuthService(this.dbClient)).formatUser(user as user),
 			tags: user.tags.split(','),
 			picturesIds: {
