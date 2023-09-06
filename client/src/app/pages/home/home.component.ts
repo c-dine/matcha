@@ -56,10 +56,13 @@ export class HomeComponent {
 			});
 	}
 
-	onSignInClick() {
-		this.dialog.open(SigninDialogComponent, {
-		autoFocus: false
-		});
+	async onSignInClick() {
+		if (await this.authService.isLoggedIn())
+			this.router.navigate(['/app']);
+		else
+			this.dialog.open(SigninDialogComponent, {
+				autoFocus: false
+			});
 	}
 
 }
