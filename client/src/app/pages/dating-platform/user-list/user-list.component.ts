@@ -13,11 +13,14 @@ export class UserListComponent {
 
 	isLoading = true;
 	filtersSubject = new BehaviorSubject<ProfileFilters>({
-		batchSize: 15,
+		batchSize: 8,
 		offset: 0
 	});
 	userList: UserProfile[] = [];
 	environment = environment;
+
+	totalUserCount: number = 0;
+	page: number = 1;
 
 	constructor(
 		private profileService: ProfileService
@@ -29,12 +32,10 @@ export class UserListComponent {
 
 	getUserList() {
 		this.isLoading = true;
-		let filters = this.filtersSubject.getValue();
-		this.profileService.getUserList(filters).subscribe({
+		this.profileService.getUserList(this.filtersSubject.getValue()).subscribe({
 			next: (userList) => {
-				this.userList = userList;
-				filters.offset += userList.length;
-				this.filtersSubject.next(filters);
+				this.totalUserCount = Number(userList.totalUserCount);
+				this.userList = userList.userList;
 				this.isLoading = false;
 			},
 			error: () => {
@@ -44,6 +45,8 @@ export class UserListComponent {
 	}
 
 	setFilters(filters: ProfileFilters) {
+		if (!filters.offset)
+			this.page = 1;
 		this.filtersSubject.next(filters);
 		this.getUserList();
 	}
@@ -53,6 +56,24 @@ export class UserListComponent {
 		filters.tags = [tag];
 		filters.offset = 0;
 		this.filtersSubject.next(filters);
+		this.getUserList();
+	}
+
+	goToPreviousPage() {
+		if (this.page <= 1) return;
+		let filters = this.filtersSubject.getValue();
+		filters.offset = filters.offset - filters.batchSize;
+		this.filtersSubject.next(filters);
+		this.page--;
+		this.getUserList();
+	}
+
+	goToNextPage() {
+		if (this.page > this.totalUserCount / this.filtersSubject.getValue().batchSize + 1) return;
+		let filters = this.filtersSubject.getValue();
+		filters.offset = filters.offset + filters.batchSize;
+		this.filtersSubject.next(filters);
+		this.page++;
 		this.getUserList();
 	}
 }

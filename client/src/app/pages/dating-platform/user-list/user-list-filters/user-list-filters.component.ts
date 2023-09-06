@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { ProfileFilters } from "@shared-models/profile.model";
+import { ProfileFilters, UserListFilters } from "@shared-models/profile.model";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 
 @Component({
@@ -15,6 +15,10 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 	@Output() addedFilter = new EventEmitter<ProfileFilters>()
 
 	mySubcriptions: Subscription[] = [];
+
+	age = UserListFilters.age;
+	fame = UserListFilters.fame;
+	distance = UserListFilters.distance;
 
 	ngOnInit() {
 		this.mySubcriptions.push(
@@ -53,6 +57,18 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 
 	setDistanceFilter(distance: number | undefined) {
 		this.filters.distanceKilometers = distance;
+		this.filters.offset = 0;
+		this.addedFilter.emit(this.filters);
+	}
+
+	setOrderBy(event: any) {
+		this.filters.orderBy = event.value;
+		this.filters.offset = 0;
+		this.addedFilter.emit(this.filters);
+	}
+
+	setOrder(event: any) {
+		this.filters.order = event.value;
 		this.filters.offset = 0;
 		this.addedFilter.emit(this.filters);
 	}

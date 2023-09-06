@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
-import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserProfile } from "@shared-models/profile.model.js"
+import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
 import { TagService } from "../tag/tag.service.js";
 import { PictureService } from "../picture/picture.service.js";
@@ -42,7 +42,9 @@ export class ProfileService {
 			fameRateMax: !!filters.fameRateMax ? Number(filters.fameRateMax) : undefined,
 			fameRateMin: !!filters.fameRateMin ? Number(filters.fameRateMin) : undefined,
 			distanceKilometers: !!filters.distanceKilometers ? Number(filters.distanceKilometers) : undefined,
-			tags: filters.tags ? (filters.tags as string).split(',') : undefined
+			tags: filters.tags ? (filters.tags as string).split(',') : undefined,
+			orderBy: filters.orderBy,
+			order: filters.order
 		}
 	}
 
@@ -74,23 +76,26 @@ export class ProfileService {
 		return this.formatProfile(profiles[0]);
 	}
 
-	async getUserList(filters: ProfileFilters, userId: string): Promise<UserProfile[]> {
+	async getUserList(filters: ProfileFilters, userId: string): Promise<UserList> {
 		const userProfile = (await this.profileModel.findMany([{
 			user_id: userId
 		}]))[0];
 		const userlist = await this.profileModel.getUserList(filters, userProfile);
 
-		return userlist.map(user => ({
-			...this.formatProfile(user as profile),
-			birthDate: undefined,
-			...(new AuthService(this.dbClient)).formatUser(user as user),
-			tags: user.tags.split(','),
-			picturesIds: {
-				profilePicture: user.profile_picture_id,
-				additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
-			},
-			ditanceKm: user.distance_km
-		}));
+		return {
+				totalUserCount: (userlist as any)[0]?.total_user_count || 0,
+				userList: userlist.map(user => ({
+					...this.formatProfile(user as profile),
+					birthDate: undefined,
+					...(new AuthService(this.dbClient)).formatUser(user as user),
+					tags: user.tags.split(','),
+					picturesIds: {
+						profilePicture: user.profile_picture_id,
+						additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
+					},
+					ditanceKm: user.distance_km
+				}))
+		};
 	}
 
 	async createProfile(newProfile: Profile, userId: string): Promise<Profile> {

@@ -1,11 +1,17 @@
-.filters {
-	display: inline-flex;
-	align-items: center;
-	justify-content: space-evenly;
+.filters-settings-container {
+	display: flex;
+	flex-direction: column;
 	border-radius: 10px;
 	background-color: white;
 	margin: 15px 5px;
 	padding: 15px 0;
+	width: 100%;
+}
+
+.filters-container {
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-evenly;
 	width: 100%;
 }
 
@@ -17,4 +23,24 @@
 	font-weight: 600;
     margin-left: 5px;
     font-size: 13px;
+}
+
+.settings-container {
+	display: inline-flex;
+	gap: 30px;
+	padding: 0 25px;
+	padding-top: 10px;
+	font-weight: 800;
+	width: 100%;
+}
+
+.setting {
+	display: flex;
+	align-items: center;
+	max-width: 25%;
+}
+
+.setting-label {
+	min-width: 50px;
+	width: 30%;
 }

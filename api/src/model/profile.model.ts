@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ModelBase } from "./base.js";
-import { ProfileFilters } from "@shared-models/profile.model.js";
+import { Profile, ProfileFilters, UserListFilters } from "@shared-models/profile.model.js";
 
 export class ProfileModel extends ModelBase {
 
@@ -63,10 +63,12 @@ export class ProfileModel extends ModelBase {
 				"user".username,
 				"user".last_name,
 				"user".first_name
-		) SELECT *
+		)
+		SELECT *, COUNT(*) OVER () AS total_user_count
 		FROM profile_with_distance`
 		if (filters.distanceKilometers)
 			query += ` WHERE distance_km <= $${i++}`;
+		query += this.getOrderByQuery(filters);
 		query += ` LIMIT $${i++} OFFSET $${i++}`;
 
 		return query;
@@ -75,7 +77,6 @@ export class ProfileModel extends ModelBase {
 	private getSexualProfileFiltersQuery(userProfile: profile): string {
 		let query = " AND ";
 
-		console.log(userProfile)
 		switch (userProfile.sexual_preferences) {
 			case 'female':
 				query += `(profile.gender != 'male' AND (profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='binary'))`
@@ -89,6 +90,19 @@ export class ProfileModel extends ModelBase {
 				break;
 		}
 		return query;
+	}
+
+	private getOrderByQuery(filters: ProfileFilters) {
+		switch (filters.orderBy) {
+			case UserListFilters.age:
+				return ` ORDER BY birth_date ${filters.order === 'asc' ? 'DESC' : ''}`;
+			case UserListFilters.fame:
+				return ` ORDER BY fame_rate ${filters.order === 'asc' ? '' : 'DESC'}`;
+			case UserListFilters.distance:
+				return ` ORDER BY distance_km ${filters.order === 'asc' ? '' : 'DESC'}`;
+			default:
+				return "";
+		}
 	}
 
 	private getProfileFiltersQueryValues(filters: ProfileFilters) {

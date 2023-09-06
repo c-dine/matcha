@@ -24,4 +24,9 @@
 		</div>
 	</div>
 
+	<div class="pagination-container">
+		<span *ngIf="page > 1" (click)="goToPreviousPage()" class="pagination-button">< Previous</span>
+		<span *ngIf="page < totalUserCount / filtersSubject.getValue().batchSize" (click)="goToNextPage()" class="pagination-button"> Next ></span>
+	</div>
+
 </div>

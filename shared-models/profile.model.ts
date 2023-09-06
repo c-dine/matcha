@@ -20,6 +20,11 @@ export interface UserProfile extends Profile {
 	firstName: string;
 }
 
+export interface UserList {
+	userList: UserProfile[],
+	totalUserCount: number
+}
+
 export interface NavbarProfile {
 	firstName?: string;
 	lastName?: string;
@@ -42,10 +47,17 @@ export interface ProfileFilters {
 	fameRateMax?: number;
 	distanceKilometers?: number;
 	tags?: string[];
+	orderBy?: UserListFilters;
+	order?: 'asc' | 'desc';
 	batchSize: number;
 	offset: number;
 }
 
+export const enum UserListFilters {
+	age = 'age',
+	fame = 'fame',
+	distance = 'distance'
+}
 
 export interface ProfileFiltersRequest {
 	ageMin?: string | undefined;
@@ -54,6 +66,8 @@ export interface ProfileFiltersRequest {
 	fameRateMin?: string | undefined;
 	fameRateMax?: string | undefined;
 	tags?: string | undefined;
+	orderBy?: UserListFilters;
+	order?: 'asc' | 'desc';
 	batchSize: string | undefined;
 	offset: string | undefined;
 }
