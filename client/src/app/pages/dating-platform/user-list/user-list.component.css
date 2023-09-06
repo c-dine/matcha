@@ -1,18 +1,25 @@
 .user-list-container {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	align-items: center;
+	padding: 0 20px;
+}
+
+.spinner-container {
+	height: 50vh;
 }
 
 .user-list-filter-bar {
-	width: 95%;
+    width: 100%;
 }
 
 .user-list {
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content:space-between;
+	width: 100%;
 	gap: 20px;
-	padding: 0 20px;
 }
 
 .user-item {

@@ -23,24 +23,23 @@ export class ProfileModel extends ModelBase {
 					"user".username,
 					"user".last_name,
 					"user".first_name,
+					profile.id,
 					profile.gender,
 					profile.birth_date,
 					profile.sexual_preferences,
 					profile.biography,
 					profile.fame_rate,
-					profilePicture.id AS profile_picture_id,
+					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
+					STRING_AGG(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END, ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
-					STRING_AGG(additionnalPicture.id::TEXT, ',') AS additionnal_pictures_ids,
 					calculate_distance(profile.location_latitude, profile.location_longitude, ${userProfile.location_latitude}, ${userProfile.location_longitude}, 'K') as distance_km
 				FROM profile 
 				INNER JOIN "user" ON "user".id = profile.user_id
 				LEFT JOIN tag ON tag.id IN (
 					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
 				)
-				LEFT JOIN picture AS profilePicture ON profilePicture.profile_id = profile.id
-				LEFT JOIN picture AS additionnalPicture ON additionnalPicture.profile_id = profile.id
-					WHERE profilePicture.is_profile_picture=true
-					AND additionnalPicture.is_profile_picture=false`;
+				LEFT JOIN picture ON picture.profile_id = profile.id
+					WHERE profile.id != '${userProfile.id}'`;
 
 		if (filters.ageMin)
 			query += ` AND profile.birth_date <= $${i++}`;
@@ -59,18 +58,13 @@ export class ProfileModel extends ModelBase {
 		}
 		query += this.getSexualProfileFiltersQuery(userProfile);
 		query += `
-			GROUP BY 
+			GROUP BY
+				profile.id,
 				"user".username,
 				"user".last_name,
-				"user".first_name,
-				profile.gender,
-				profile.birth_date,
-				profile.sexual_preferences,
-				profile.biography,
-				profile.fame_rate,
-				profilePicture.id,
-				distance_km
-		) SELECT * FROM profile_with_distance`
+				"user".first_name
+		) SELECT *
+		FROM profile_with_distance`
 		if (filters.distanceKilometers)
 			query += ` WHERE distance_km <= $${i++}`;
 		query += ` LIMIT $${i++} OFFSET $${i++}`;
@@ -81,15 +75,17 @@ export class ProfileModel extends ModelBase {
 	private getSexualProfileFiltersQuery(userProfile: profile): string {
 		let query = " AND ";
 
+		console.log(userProfile)
 		switch (userProfile.sexual_preferences) {
-			case 'bisexual':
-				query += `profile.sexual_preferences = '${userProfile.gender}'`
-				break;
 			case 'female':
-				query += `profile.gender = 'female' AND profile.sexual_preferences = '${userProfile.gender}'`
+				query += `(profile.gender != 'male' AND (profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='binary'))`
 				break;
 			case 'male':
-				query += `profile.gender = 'male' AND profile.sexual_preferences = '${userProfile.gender}'`
+				query += `(profile.gender != 'female' AND (profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='binary'))`
+				break;
+			default:
+				if (userProfile.gender === 'binary') return " ";
+				query += `(profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='binary')`
 				break;
 		}
 		return query;

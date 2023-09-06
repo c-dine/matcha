@@ -87,7 +87,7 @@ export class ProfileService {
 			tags: user.tags.split(','),
 			picturesIds: {
 				profilePicture: user.profile_picture_id,
-				additionnalPicture: user.additionnal_pictures_ids.split(',')
+				additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
 			},
 			ditanceKm: user.distance_km
 		}));
