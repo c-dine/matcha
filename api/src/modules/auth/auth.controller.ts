@@ -68,6 +68,8 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 		const refreshToken = req.body.refreshToken;
 		const authService = new AuthService(req.dbClient);
 
+		if (!refreshToken)
+			throw new CustomError("Authentication error.", 400);
 		await jwt.verify(refreshToken, encryptionConfig.refreshSecret, async (err, decoded) => {
 			const user = await authService.getUser({ id: (decoded as any)?.userId });
 			if (err || !user)

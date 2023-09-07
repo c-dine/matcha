@@ -1,48 +1,53 @@
 import { Injectable } from '@angular/core';
 import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpErrorResponse,
-  HttpResponse,
+	HttpInterceptor,
+	HttpRequest,
+	HttpHandler,
+	HttpEvent,
+	HttpErrorResponse,
+	HttpResponse,
 } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, Subscription, of, throwError } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {
 
-	token: string | undefined;
+	isRefreshingToken = false;
 
 	constructor(
 		private snackBar: MatSnackBar,
 		private authService: AuthService
-	) {
-		this.authService.getAccessTokenObs().subscribe({
-			next: (token) => this.token = token
-		});
-	}
+	) {	}
 
 	intercept(
 		request: HttpRequest<any>,
 		next: HttpHandler
 	): Observable<HttpEvent<any>> {
-		const modifiedRequest = request.clone({
-				setHeaders: {
-					Authorization: `Bearer ${this.token}`,
-				},
-			});
+		const accessToken = this.authService.getAccessToken();
 
-		return next.handle(modifiedRequest).pipe(
+		return next.handle(accessToken ? this.addTokenToRequest(request, accessToken) : request).pipe(
 			catchError((error: HttpErrorResponse) => {
-				this.snackBar.open(error.error.error, 'Close', {
-					duration: 4000,
-					panelClass: "error-snackbar"
-				});
-				return throwError(() => error);
+				if (this.isRefreshingToken && error.status === 401) {
+					this.isRefreshingToken = false;
+					this.authService.logout();
+					return this.displayAndThrowError(error);
+				}
+				if (error.status === 401 && !request.url.includes("logIn")) {
+					this.isRefreshingToken = true;
+					return this.authService.refreshAccessToken().pipe(
+						switchMap(() => {
+							this.isRefreshingToken = false;
+							return next.handle(
+								this.addTokenToRequest(request, this.authService.getAccessToken() as string)
+							);
+						})
+					);
+				}
+				return this.displayAndThrowError(error);
 			}),
 			map((event: HttpEvent<any>) => {
 				if (event instanceof HttpResponse) {
@@ -56,5 +61,21 @@ export class HttpInterceptorService implements HttpInterceptor {
 				return event;
 			})
 		);
+	}
+
+	displayAndThrowError(error: HttpErrorResponse) {
+		this.snackBar.open(error.error.error, 'Close', {
+			duration: 4000,
+			panelClass: "error-snackbar"
+		});
+		return throwError(() => error);
+	}
+
+	addTokenToRequest(request: HttpRequest<any>, token: string) {
+		return request.clone({
+			setHeaders: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 	}
 }

@@ -6,7 +6,7 @@ import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AuthenticatedUser, User, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { error } from '@ant-design/icons-angular';
 
 @Injectable({
@@ -64,13 +64,8 @@ export class AuthService {
   	async isLoggedIn(): Promise<boolean> {
 		if (this.isTokenValid(this.accessTokenSubject.getValue()))
 			return true;
-		const refreshToken = this.getRefreshToken();
-		if (refreshToken && this.isTokenValid(refreshToken)) {
-			try {
-				await this.refreshAccessToken(refreshToken);
-				return true;
-			} catch (e: any) {}
-		}
+		if (this.getRefreshToken() && await firstValueFrom(this.refreshAccessToken()))
+			return true;
 		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
 		return false;         
@@ -97,14 +92,18 @@ export class AuthService {
 	    return Cookies.get("refreshToken");
   	}
 
-	async refreshAccessToken(refreshToken: string) {
-        const authenticatedUser = await firstValueFrom(
-			this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken })
-		);
-		if (!authenticatedUser)
-			throw new Error("Invalid refresh token.")
-		this.accessTokenSubject.next(authenticatedUser.token.access);
-		this.currentUserSubject.next(authenticatedUser as User);
+	getAccessToken(): string | undefined {
+		return this.accessTokenSubject.getValue();
+	}
+
+	refreshAccessToken() {
+        return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
+			.pipe(
+				tap((authenticatedUser: AuthenticatedUser) => {
+					this.accessTokenSubject.next(authenticatedUser.token.access);
+					this.currentUserSubject.next(authenticatedUser as User);
+				})
+			);
 	}
 
 	resetPassword(resetToken: string, password: string) {
