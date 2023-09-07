@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
+import { ageValidator, dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/service/profile.service';
@@ -37,7 +37,7 @@ export class FirstProfileFillingComponent {
 		sexualProfile: new FormGroup({
 			gender: new FormControl<string>('', [Validators.required]),
 			sexualPreferences: new FormControl<string>('', [Validators.required]),
-			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required, dateIsPastDateValidator()])
+			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required, dateIsPastDateValidator(), ageValidator(18)])
 		}),
 		personnalProfile: new FormGroup({
 			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),

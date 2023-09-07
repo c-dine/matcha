@@ -69,7 +69,6 @@ profileController.post("/setLocation", async (req: Request, res: Response, next:
 			location = await profileService.getLocationFromIpAddress(env.url.includes("localhost") ? await profileService.getLocalhostIpAddress() : req.ip);
 		await profileService.setProfileLocation(location, req.userId);
 
-		console.log(location)
 		res.status(200).json({ date: location });
 		next();
 	} catch (error: any) {

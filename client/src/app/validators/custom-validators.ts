@@ -1,7 +1,6 @@
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 
 export function minArrayLengthValidator(minLength: number): ValidatorFn {
-	console.log(minLength)
 	return (control: AbstractControl): { [key: string]: any } | null => {
 		const array = control.value as string[];
 		if (array && array.length < minLength)
@@ -19,3 +18,19 @@ export function dateIsPastDateValidator(date = new Date()): ValidatorFn {
 	};
 }
 
+export function ageValidator(age: number): ValidatorFn {
+	return (control: AbstractControl): { [key: string]: any } | null => {
+		const dateOfBirth = new Date(control.value);
+
+		if (isNaN(dateOfBirth.getTime()))
+			return { 'invalidDate': true };
+
+		const minBirthDate = new Date();
+		minBirthDate.setFullYear(minBirthDate.getFullYear() - age);
+
+		if (dateOfBirth > minBirthDate)
+			return { 'ageError': true };
+
+		return null;
+	};
+}
