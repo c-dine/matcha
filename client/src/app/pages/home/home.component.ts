@@ -25,7 +25,7 @@ export class HomeComponent {
 	) {}
 
 	ngOnInit() {
-		const params = this.route.queryParamMap.subscribe(params => {
+		this.route.queryParamMap.subscribe(params => {
 			if (params.has("resetToken"))
 				this.openResetPasswordDialog(String(params.get("resetToken")));
 			if (params.has("verificationToken"))

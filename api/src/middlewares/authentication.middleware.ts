@@ -8,7 +8,7 @@ export function authenticationHandler(req: Request, res: Response, next: NextFun
 		if (publicRoutes.includes(req.originalUrl))
 			return next();
 
-		const token = req.header('Authorization').split(" ")[1];
+		const token = req.header('Authorization')?.split(" ")[1];
 		const decoded = jwt.verify(token, encryptionConfig.accessSecret);
 		if (!token || !(decoded as any)?.userId) 
 			throw new Error();

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Router, UrlTree } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { ProfileService } from './profile.service';
-import { FirstProfileFillingComponent } from '../pages/home/first-profile-filling/first-profile-filling.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +10,6 @@ export class AuthGuard {
     constructor(
         private authService: AuthService,
         private profileService: ProfileService,
-		private dialog: MatDialog,
         private router: Router
     ) {}
 

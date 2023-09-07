@@ -112,6 +112,15 @@ export class ProfileService {
 		return this.formatProfile(createdProfile);
 	}
 
+	async setProfileLocation(location: GeoCoordinate, userId: string) {
+		return await this.profileModel.update([{
+			user_id: userId
+		}], {
+			location_latitude: location.latitude,
+			location_longitude: location.longitude
+		});
+	}
+
 	async getLocalhostIpAddress(): Promise<string> {
 		return (await fetch("https://api64.ipify.org\?format\=json")
 				.then(response => response.json())).ip;

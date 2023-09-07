@@ -4,7 +4,7 @@ import { ProfileService } from './profile.service.js';
 import { TagService } from '../tag/tag.service.js';
 import { PictureService } from '../picture/picture.service.js';
 import { env } from '../../config/config.js';
-import { Profile, ProfileFilters, ProfileFiltersRequest } from '@shared-models/profile.model.js';
+import { GeoCoordinate, Profile, ProfileFilters, ProfileFiltersRequest } from '@shared-models/profile.model.js';
 
 export const profileController = express();
 
@@ -52,6 +52,25 @@ profileController.post("/", async (req: Request, res: Response, next: NextFuncti
 		await pictureService.createProfilePictures(newProfile.picturesIds, createdProfile.id);
 		await tagService.linkTagsToProfile(createdProfile.id, newProfile.tags);
 		res.status(201).json({ data: newProfile });
+		next();
+	} catch (error: any) {
+		console.error(`Error while creating user profile: ${error}.`);
+		error.message = `Error while creating user profile.`;
+		next(error);
+	}
+});
+
+profileController.post("/setLocation", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const profileService = new ProfileService(req.dbClient);
+		let location: GeoCoordinate = req.body;
+		
+		if (!location)
+			location = await profileService.getLocationFromIpAddress(env.url.includes("localhost") ? await profileService.getLocalhostIpAddress() : req.ip);
+		await profileService.setProfileLocation(location, req.userId);
+
+		console.log(location)
+		res.status(200).json({ date: location });
 		next();
 	} catch (error: any) {
 		console.error(`Error while creating user profile: ${error}.`);

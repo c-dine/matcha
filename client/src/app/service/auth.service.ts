@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, firstValueFrom, of } from 'rxjs';
+import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AuthenticatedUser, User, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
-import { catchError, map, tap } from 'rxjs/operators';
-import { error } from '@ant-design/icons-angular';
+import { map, tap } from 'rxjs/operators';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +16,12 @@ export class AuthService {
 	private currentUserSubject: BehaviorSubject<User | undefined> = new BehaviorSubject<User | undefined>(undefined);
 	private accessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
+	geolocationWatchId = -1;
+
     constructor(
         private http: HttpClient,
-        private router: Router
+        private router: Router,
+		private profileService: ProfileService
     ) {}
 
 	getAccessTokenObs() {
@@ -34,6 +37,7 @@ export class AuthService {
 			.pipe(
 				map(user => {
 					this.setSession(user);
+					this.trackUserLocation();
 					return user;
 				})
 			);
@@ -44,6 +48,7 @@ export class AuthService {
 			.pipe(
 				map(user => {
 					this.setSession(user as AuthenticatedUser);
+					this.trackUserLocation();
 					return user;
 				})
 			);
@@ -56,6 +61,7 @@ export class AuthService {
 	}
 
   	logout(): void {
+		this.stopTrackingLocationChanges();
 		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
 		this.router.navigate(['/']);
@@ -117,5 +123,22 @@ export class AuthService {
 		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
 			verificationToken
 		});
+	}
+
+	trackUserLocation() {
+		if ("geolocation" in navigator) {
+			this.geolocationWatchId = navigator.geolocation.watchPosition(
+				async (position) => {
+					await firstValueFrom(this.profileService.setLocation({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude
+					}));
+				}
+			);
+		}
+	}
+
+	stopTrackingLocationChanges() {
+		navigator.geolocation.clearWatch(this.geolocationWatchId);
 	}
 }
