@@ -7,10 +7,10 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-reset-password',
-    templateUrl: './reset-password.component.html',
-    styleUrls: ['./reset-password.component.css', '../../../styles/dialog.css', '../../../styles/form.css', '../../../styles/buttons.css']
+    templateUrl: './reset-password-dialog.component.html',
+    styleUrls: ['./reset-password-dialog.component.css', '../../../styles/dialog.css', '../../../styles/form.css', '../../../styles/buttons.css']
 })
-export class ResetPasswordComponent {
+export class ResetPasswordDialogComponent {
 
     resetPasswordForm: FormGroup = new FormGroup({
 		password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -24,7 +24,7 @@ export class ResetPasswordComponent {
 		},
 		private dialog: MatDialog,
 		private snackBar: MatSnackBar,
-		private dialogRef: MatDialogRef<ResetPasswordComponent>,
+		private dialogRef: MatDialogRef<ResetPasswordDialogComponent>,
 		private authService: AuthService
 	) {}
 

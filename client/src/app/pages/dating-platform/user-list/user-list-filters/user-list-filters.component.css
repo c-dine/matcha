@@ -26,6 +26,13 @@
     font-size: 13px;
 }
 
+.reset-button {
+	margin-top: inherit;
+	color: var(--primary-color);
+	cursor: pointer;
+	margin-right: 10px;
+}
+
 .settings-container {
 	display: inline-flex;
 	padding-top: 10px;

@@ -38,6 +38,7 @@
 	padding: 20px;
 	margin: 10px;
 	gap: 5px;
+	cursor: pointer;
 }
 
 .user-item-container-details {

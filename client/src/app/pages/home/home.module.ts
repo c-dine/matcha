@@ -4,7 +4,7 @@ import { LoginDialogComponent } from "./login-dialog/login-dialog.component";
 import { PasswordRecoveryComponent } from "./login-dialog/password-recovery/password-recovery.component";
 import { LoginComponent } from "./login-dialog/login/login.component";
 import { SigninDialogComponent } from "./signin-dialog/signin-dialog.component";
-import { ResetPasswordComponent } from "./reset-password/reset-password.component";
+import { ResetPasswordDialogComponent } from "./reset-password-dialog/reset-password-dialog.component";
 import { VerifyEmailDialogComponent } from "./verify-email-dialog/verify-email-dialog.component";
 import { MatIconModule } from "@angular/material/icon";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -29,7 +29,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 		PasswordRecoveryComponent,
 		LoginComponent,
 		SigninDialogComponent,
-		ResetPasswordComponent,
+		ResetPasswordDialogComponent,
 		VerifyEmailDialogComponent,
 		FirstProfileFillingComponent
 	],

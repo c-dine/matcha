@@ -6,8 +6,8 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 	selector: 'app-user-list-filters',
 	templateUrl: './user-list-filters.component.html',
 	styleUrls: ['./user-list-filters.component.css']
-  })
-  export class UserListFiltersComponent {
+})
+export class UserListFiltersComponent {
 
 	@Input() filtersObservable!: Observable<ProfileFilters>;
 	filters!: ProfileFilters;
@@ -78,4 +78,4 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 		this.filters.offset = 0;
 		this.addedFilter.emit(this.filters);
 	}
-  }
+}

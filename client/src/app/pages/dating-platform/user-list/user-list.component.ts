@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { environment } from '@environment/environment';
 import { ProfileFilters, UserProfile } from '@shared-models/profile.model';
 import { BehaviorSubject } from 'rxjs';
@@ -23,7 +24,8 @@ export class UserListComponent {
 	page: number = 1;
 
 	constructor(
-		private profileService: ProfileService
+		private profileService: ProfileService,
+		private router: Router
 	) {}
 
 	ngOnInit() {
@@ -83,5 +85,10 @@ export class UserListComponent {
 		this.filtersSubject.next(filters);
 		this.page = page;
 		this.getUserList();
+	}
+
+	navigateToProfile(profileId: string | undefined) {
+		if (!profileId) return;
+		this.router.navigate([`/app/profile`], { queryParams: { id: profileId } });
 	}
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { BehaviorSubject, firstValueFrom, tap } from 'rxjs';
-import { GeoCoordinate, Profile, ProfileFilters, UserList } from "@shared-models/profile.model.js"
+import { GeoCoordinate, Profile, ProfileFilters, UserList, UserProfile } from "@shared-models/profile.model.js"
 import { buildHttpParams } from '../utils/http.utils';
 
 @Injectable({
@@ -21,6 +21,11 @@ export class ProfileService {
 			.pipe(
 				tap(profile => this.profileSubject.next(profile))
 			);
+	}
+	
+	getUserProfile(userProfileId: string) {
+		const params = buildHttpParams({ id: userProfileId});
+		return this.http.get<UserProfile | null>(`${environment.apiUrl}/profile/userProfile`, { params });
 	}
 
 	createProfile(newProfile: Profile) {

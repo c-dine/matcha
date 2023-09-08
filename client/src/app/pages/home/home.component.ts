@@ -4,7 +4,7 @@ import { SigninDialogComponent } from './signin-dialog/signin-dialog.component';
 import { AuthService } from 'src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginDialogComponent } from './login-dialog/login-dialog.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ResetPasswordDialogComponent } from './reset-password-dialog/reset-password-dialog.component';
 import { VerifyEmailDialogComponent } from './verify-email-dialog/verify-email-dialog.component';
 import { environment } from '@environment/environment';
 
@@ -34,7 +34,7 @@ export class HomeComponent {
 	}
 
 	openResetPasswordDialog(resetToken: string) {
-		this.dialog.open(ResetPasswordComponent, {
+		this.dialog.open(ResetPasswordDialogComponent, {
 			autoFocus: false,
 			data: { resetToken }
 		});

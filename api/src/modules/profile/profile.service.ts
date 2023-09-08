@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
-import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/profile.model.js"
+import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList, UserProfile } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
 import { TagService } from "../tag/tag.service.js";
 import { PictureService } from "../picture/picture.service.js";
@@ -48,32 +48,22 @@ export class ProfileService {
 		}
 	}
 
-	async getFullProfile(userId: string): Promise<Profile | undefined> {
-		try {
-			const tagService = new TagService(this.dbClient);
-			const pictureService = new PictureService(this.dbClient);
-			const profile = await this.getProfile(userId);
-			const tags = await tagService.getProfileTags(profile.id);
-			const pictures = await pictureService.getProfilePictures(profile.id);
-
-			return {
-				...profile,
-				picturesIds: pictures,
-				tags
-			}
-		} catch (error: any) {
-			return undefined;
-		}
-	}
-
-	async getProfile(userId: string): Promise<Profile> {
-		const profiles = await this.profileModel.findMany([{
+	async getUserProfile(userId: string, requestedUserProfileId?: string): Promise<UserProfile> {
+		const userProfile = (await this.profileModel.findMany([{
 			user_id: userId
-		}]);
-
-		if (!profiles[0])
-			throw new Error();
-		return this.formatProfile(profiles[0]);
+		}]))[0];
+		const requestedProfile = await this.profileModel.getUserProfile(requestedUserProfileId || userProfile.id, userProfile);
+		return {
+			...this.formatProfile(requestedProfile as profile),
+			birthDate: undefined,
+			...(new AuthService(this.dbClient)).formatUser(requestedProfile as user),
+			tags: requestedProfile.tags.split(','),
+			picturesIds: {
+				profilePicture: requestedProfile.profile_picture_id,
+				additionnalPicture: requestedProfile.additionnal_pictures_ids?.split(',') || []
+			},
+			ditanceKm: requestedProfile.distance_km
+		}
 	}
 
 	async getUserList(filters: ProfileFilters, userId: string): Promise<UserList> {

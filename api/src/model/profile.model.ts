@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ModelBase } from "./base.js";
-import { Profile, ProfileFilters, UserListFilters } from "@shared-models/profile.model.js";
+import { GeoCoordinate, Profile, ProfileFilters, UserListFilters } from "@shared-models/profile.model.js";
 
 export class ProfileModel extends ModelBase {
 
@@ -8,18 +8,27 @@ export class ProfileModel extends ModelBase {
 		super("profile", dbClient);
 	}
 
-	async getUserList(filters: ProfileFilters, userProfile: profile) {
-		const query = this.getProfileFiltersQuery(filters, userProfile);
-		const values = this.getProfileFiltersQueryValues(filters);
-        const result = await this.dbClient.query(query, values);
-		return result.rows;
+	async getUserProfile(requestedUserId: string, userProfile: profile) {
+		const query = this.getUserProfileQuery(requestedUserId, userProfile);
+        const result = await this.dbClient.query(query);
+		return result.rows[0];
 	}
 
-	private getProfileFiltersQuery(filters: ProfileFilters, userProfile: profile): string {
-		let i = 1;
+	private getUserProfileQuery(requestedUserId: string, userProfile: profile): string {
 		let query = `
-			WITH profile_with_distance AS (
-				SELECT 
+			${this.getUserProfileSelectQuery({ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude })}
+			WHERE profile.id = '${requestedUserId}'
+			GROUP BY
+				profile.id,
+				"user".username,
+				"user".last_name,
+				"user".first_name
+			`;
+		return query;
+	}
+
+	private getUserProfileSelectQuery(userLocation: GeoCoordinate) {
+		return `SELECT 
 					"user".username,
 					"user".last_name,
 					"user".first_name,
@@ -32,14 +41,28 @@ export class ProfileModel extends ModelBase {
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 					STRING_AGG(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END, ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
-					calculate_distance(profile.location_latitude, profile.location_longitude, ${userProfile.location_latitude}, ${userProfile.location_longitude}, 'K') as distance_km
+					calculate_distance(profile.location_latitude, profile.location_longitude, ${userLocation.latitude}, ${userLocation.longitude}, 'K') as distance_km
 				FROM profile 
 				INNER JOIN "user" ON "user".id = profile.user_id
 				LEFT JOIN tag ON tag.id IN (
 					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
 				)
-				LEFT JOIN picture ON picture.profile_id = profile.id
-					WHERE profile.id != '${userProfile.id}'`;
+				LEFT JOIN picture ON picture.profile_id = profile.id`
+	}
+
+	async getUserList(filters: ProfileFilters, userProfile: profile) {
+		const query = this.getUserListQuery(filters, userProfile);
+		const values = this.getUserListQueryValues(filters);
+        const result = await this.dbClient.query(query, values);
+		return result.rows;
+	}
+
+	private getUserListQuery(filters: ProfileFilters, userProfile: profile): string {
+		let i = 1;
+		let query = `
+			WITH profile_with_distance AS (
+				${this.getUserProfileSelectQuery({ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude })}
+				WHERE profile.id != '${userProfile.id}'`;
 
 		if (filters.ageMin)
 			query += ` AND profile.birth_date <= $${i++}`;
@@ -105,7 +128,7 @@ export class ProfileModel extends ModelBase {
 		}
 	}
 
-	private getProfileFiltersQueryValues(filters: ProfileFilters) {
+	private getUserListQueryValues(filters: ProfileFilters) {
 		const values = [];
 		const todaysDate = new Date();
 

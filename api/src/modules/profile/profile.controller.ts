@@ -4,16 +4,30 @@ import { ProfileService } from './profile.service.js';
 import { TagService } from '../tag/tag.service.js';
 import { PictureService } from '../picture/picture.service.js';
 import { env } from '../../config/config.js';
-import { GeoCoordinate, Profile, ProfileFilters, ProfileFiltersRequest } from '@shared-models/profile.model.js';
+import { GeoCoordinate, Profile, ProfileFilters, ProfileFiltersRequest, UserProfile } from '@shared-models/profile.model.js';
 
 export const profileController = express();
 
 profileController.get("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const profileService = new ProfileService(req.dbClient);
-		const profile = await profileService.getFullProfile(req.userId);
+		const profile = await profileService.getUserProfile(req.userId);
 
-		res.status(200).json({ data: profile || null });
+		res.status(200).json({ data: profile as Profile || null });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching user profile: ${error}.`);
+		error.message = `Error while fetching user profile.`;
+		next(error);
+	}
+});
+
+profileController.get("/userProfile", async (req: Request<any, any, any, { id: string }>, res: Response, next: NextFunction) => {
+	try {
+		const profileService = new ProfileService(req.dbClient);
+		const profile = await profileService.getUserProfile(req.userId, req.query.id);
+
+		res.status(200).json({ data: profile as UserProfile || null });
 		next();
 	} catch (error: any) {
 		console.error(`Error while fetching user profile: ${error}.`);
