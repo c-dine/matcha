@@ -43,10 +43,9 @@
 
 .setting-label {
 	text-align: right;
-	padding-right: 10px;
-	min-width: 50px;
-	width: 30%;
+	padding: 0 10px;
 	font-size: 12px;
+	white-space: nowrap;
 }
 
 :host::ng-deep .settings-container .mat-mdc-text-field-wrapper {

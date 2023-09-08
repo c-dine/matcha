@@ -72,4 +72,10 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 		this.filters.offset = 0;
 		this.addedFilter.emit(this.filters);
 	}
+
+	setBatchSize(event: any) {
+		this.filters.batchSize = event.value;
+		this.filters.offset = 0;
+		this.addedFilter.emit(this.filters);
+	}
   }

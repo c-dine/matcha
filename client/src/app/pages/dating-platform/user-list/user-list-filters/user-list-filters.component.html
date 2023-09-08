@@ -59,6 +59,20 @@
 				</mat-select>
 			</mat-form-field>
 		</div>
+		
+		<div class="setting">
+			<div class="setting-label">Display items</div>
+			<mat-form-field appearance="outline">
+				<mat-select (selectionChange)="setBatchSize($event)">
+					<mat-option value=4>4</mat-option>
+					<mat-option value=8>8</mat-option>
+					<mat-option value=20>20</mat-option>
+					<mat-option value=30>30</mat-option>
+					<mat-option value=50>50</mat-option>
+					<mat-option value=100>100</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
 
 	</div>
 </div>
