@@ -76,4 +76,12 @@ export class UserListComponent {
 		this.page++;
 		this.getUserList();
 	}
+
+	changePage(page: number) {
+		let filters = this.filtersSubject.getValue();
+		filters.offset = (page - 1) * filters.batchSize ;
+		this.filtersSubject.next(filters);
+		this.page = page;
+		this.getUserList();
+	}
 }

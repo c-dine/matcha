@@ -28,3 +28,8 @@ label {
 	--mdc-radio-selected-hover-icon-color: var(--primary-color);
 	--mdc-radio-selected-focus-icon-color: var(--primary-color);
 }
+
+::ng-deep .mat-mdc-text-field-wrapper {
+    height: 50px;
+    flex: auto;
+}

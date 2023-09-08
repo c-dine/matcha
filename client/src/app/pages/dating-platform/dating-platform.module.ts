@@ -29,6 +29,7 @@ import { SharedModule } from "../../shared/shared.module";
 import { UserListFiltersComponent } from './user-list/user-list-filters/user-list-filters.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import {MatSelectModule} from '@angular/material/select';
 	MatRadioModule,
 	MatTooltipModule,
 	SharedModule,
-	MatSelectModule
+	MatSelectModule,
+	NgxPaginationModule
   ]
 })
 export class DatingPlatformModule { }

@@ -106,3 +106,7 @@ mat-icon {
 	color: var(--primary-color);
 	text-decoration: underline;
 }
+
+::ng-deep .ngx-pagination .current {
+	background: var(--primary-color) !important;
+}
