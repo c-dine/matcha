@@ -5,7 +5,6 @@ import { DatingPlatformComponent } from './dating-platform.component';
 import { ChatComponent } from './chat/chat.component';
 import { DatingComponent } from './dating/dating.component';
 import { ProfileComponent } from './profile/profile.component';
-import { ImageSliderComponent } from './dating/image-slider/image-slider.component';
 import { DatingButtonComponent } from './dating/dating-button/dating-button.component';
 import { DatingCardDescriptionComponent } from './dating/dating-card-description/dating-card-description.component';
 import { DatingCardPassionsComponent } from './dating/dating-card-passions/dating-card-passions.component';
@@ -37,7 +36,6 @@ import {NgxPaginationModule} from 'ngx-pagination';
     ChatComponent,
     DatingComponent,
     ProfileComponent,
-    ImageSliderComponent,
     DatingButtonComponent,
     DatingCardDescriptionComponent,
     DatingCardPassionsComponent,

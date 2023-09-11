@@ -4,6 +4,7 @@ import { environment } from '@environment/environment';
 import { ProfileFilters, UserProfile } from '@shared-models/profile.model';
 import { BehaviorSubject } from 'rxjs';
 import { ProfileService } from 'src/app/service/profile.service';
+import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
   selector: 'app-user-list',
@@ -19,6 +20,7 @@ export class UserListComponent {
 	});
 	userList: UserProfile[] = [];
 	environment = environment;
+	getFirebasePictureUrl = getFirebasePictureUrl;
 
 	totalUserCount: number = 0;
 	page: number = 1;

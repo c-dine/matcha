@@ -4,6 +4,7 @@ import { NavbarProfile } from '@shared-models/profile.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
 import { ProfileService } from 'src/app/service/profile.service';
+import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
   selector: 'app-user-informations',
@@ -34,7 +35,7 @@ export class UserInformationsComponent implements OnInit {
 		this.mySubscriptions.push(this.profileService.getProfileObs().subscribe({
 			next: (profile) => {
 				if (!profile) return;
-				this.profile.profilePictureUrl = `${environment.firebaseUrl}${profile.picturesIds?.profilePicture}?alt=media`;
+				this.profile.profilePictureUrl = getFirebasePictureUrl(profile.picturesIds?.profilePicture as string);
 				this.profile.fameRate = profile.fameRate;
 			}
 		}))

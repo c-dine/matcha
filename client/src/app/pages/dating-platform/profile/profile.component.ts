@@ -5,6 +5,7 @@ import { environment } from '@environment/environment';
 import { UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
 import { ProfileService } from 'src/app/service/profile.service';
+import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
   selector: 'app-profile',
@@ -47,5 +48,14 @@ export class ProfileComponent {
 
 	onGoBackClick() {
 		this.location.back();
+	}
+
+	getPicturesUrl() {
+		return [
+			getFirebasePictureUrl(this.profile?.picturesIds?.profilePicture),
+			...this.profile?.picturesIds?.additionnalPicture ?
+				this.profile?.picturesIds?.additionnalPicture?.map(getFirebasePictureUrl)
+				: []
+		];
 	}
 }

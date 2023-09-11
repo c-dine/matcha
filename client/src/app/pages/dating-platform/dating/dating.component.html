@@ -1,6 +1,8 @@
 <div class="dating-page-container">
 	<div class="dating-card-container">
-		<app-image-slider></app-image-slider>
+		<div class="image-slider">
+			<app-image-slider [picturesUrl]="picturesUrl"></app-image-slider>
+		</div>
 		<app-dating-card-description
 			(clicked)="onDatingButtonClick()"
 			[firstName]="firstName"

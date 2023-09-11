@@ -25,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SliderPopupComponent } from './filters/slider-popup/slider-popup.component';
 import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
+import { ImageSliderComponent } from './image-slider/image-slider.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
 	ProfilePicturesComponent,
 	DoubleSliderPopupComponent,
 	SliderPopupComponent,
-	TagsPopupComponent
+	TagsPopupComponent,
+	ImageSliderComponent
   ],
   imports: [
     CommonModule,
@@ -67,7 +69,8 @@ import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
 	ProfilePicturesComponent,
 	SliderPopupComponent,
 	DoubleSliderPopupComponent,
-	TagsPopupComponent
+	TagsPopupComponent,
+	ImageSliderComponent
   ]
 })
 export class SharedModule { }

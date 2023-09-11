@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="pictures-container rounded-box">
-		<img class="profile-picture" [src]="environment.firebaseUrl + profile?.picturesIds?.profilePicture + '?alt=media'" />
+		<app-image-slider [picturesUrl]="getPicturesUrl()"></app-image-slider>
 	</div>
 
 		
