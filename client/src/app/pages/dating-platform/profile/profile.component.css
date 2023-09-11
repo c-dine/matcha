@@ -1,0 +1,110 @@
+.user-profile-container {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	grid-template-rows: repeat(20, 1fr);
+	grid-gap: 10px;
+	height: calc(100% - 40px);
+	margin: 20px 20px 20px 20px;
+}
+
+.rounded-box {
+	border-radius: 10px;
+	background-color: white;
+}
+
+.back-button {
+	display: flex;
+	align-items: center;
+	padding-left: 20px;
+	grid-row: 1 / 2;
+	grid-column: 1 / 2;
+	font-weight: 800;
+	cursor: pointer;
+}
+
+.pictures-container {
+	display: flex;
+	justify-content: center;
+	grid-row: 2 / 12;
+	grid-column: 1 / 2;
+	z-index: 1;
+	border-radius: 20px;
+}
+
+.profile-picture {
+	border-radius: 20px;
+	max-width: 100%;
+	min-width: 100%;
+	object-fit: cover;
+}
+
+.user-card-container {
+	padding: 20px;
+	grid-row: 12 / 21;
+	grid-column: 1 / 2;
+	overflow-y: auto;
+}
+
+.action-buttons {
+	display: flex;
+	justify-content: space-evenly;
+	margin-bottom: 20px;
+}
+
+mat-icon {
+	color: var(--primary-color);
+}
+
+.action-buttons mat-icon {
+	cursor: pointer;
+	border: solid thin var(--primary-color);
+	border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	padding: 5px;
+	background-color: var(--primary-lighter-color);
+	width:auto;
+}
+
+.user-card-detail {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.label {
+	margin-bottom: 0;
+	padding-left: 20px;
+}
+
+.details-label {
+	grid-row: 1 / 2;
+	grid-column: 2 / 3;
+}
+
+.details-container {
+	padding: 30px;
+	grid-row: 2 / 6;
+	grid-column: 2 / 3;
+	overflow-y: auto;
+}
+
+.tags-container {
+	margin-top: 10px;
+	gap: 10px;
+}
+
+.user-description-label {
+	grid-row: 6 / 7;
+	grid-column: 2 / 3;
+}
+
+.user-description-container {
+	padding: 30px;
+	word-break: break-all;
+	overflow-y: auto;
+	grid-row: 7 / 21;
+	grid-column: 2 / 3;
+}

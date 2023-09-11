@@ -1,6 +1,9 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '@environment/environment';
 import { UserProfile } from '@shared-models/profile.model';
+import { firstValueFrom } from 'rxjs';
 import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
@@ -10,21 +13,39 @@ import { ProfileService } from 'src/app/service/profile.service';
 })
 export class ProfileComponent {
 
+	environment = environment;
 	profile: UserProfile | null = null;
 
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private profileService: ProfileService
+		private profileService: ProfileService,
+		private location: Location
 	) { }
 
 	ngOnInit() {
 		this.route.queryParamMap.subscribe(async params => {
 			if (params.has("id"))
 				this.profileService.getUserProfile(params.get("id") as string).subscribe({
-					next: (profile)=> this.profile = profile,
-					error: () => this.router.navigate(["/app/userList"])
-				});		
+					next: (profile) => this.profile = profile,
+					error: async () => await this.getCurrentUserProfile()
+				});
+			else
+				this.getCurrentUserProfile();
 		})
+	}
+
+	async getCurrentUserProfile() {
+		const currentUserId = (await firstValueFrom(this.profileService.getProfileObs()))?.id;
+		if (!currentUserId)
+			this.router.navigate(["/app/userList"]);
+		this.profileService.getUserProfile(currentUserId as string).subscribe({
+			next: (profile) => this.profile = profile,
+			error: () => this.router.navigate(["/app/userList"])
+		});
+	}
+
+	onGoBackClick() {
+		this.location.back();
 	}
 }

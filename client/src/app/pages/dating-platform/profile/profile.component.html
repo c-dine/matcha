@@ -1,3 +1,48 @@
-<div>
-	{{profile?.username}}
+<div class="user-profile-container">
+	
+	<div class="back-button rounded-box" (click)="onGoBackClick()">
+		<mat-icon>keyboard_arrow_left</mat-icon> Go back
+	</div>
+
+	<div class="pictures-container rounded-box">
+		<img class="profile-picture" [src]="environment.firebaseUrl + profile?.picturesIds?.profilePicture + '?alt=media'" />
+	</div>
+
+		
+	<div class="user-card-container rounded-box">
+		<div class="action-buttons">
+			<mat-icon matTooltip='Like'>favorite</mat-icon>
+			<mat-icon matTooltip='Message'>message</mat-icon>
+			<mat-icon matTooltip='Block'>block</mat-icon>
+			<mat-icon matTooltip='Report'>flag</mat-icon>
+		</div>
+
+		<h1>{{profile?.username}}</h1>
+		<div class="user-card-detail">
+			<mat-icon> place</mat-icon>
+			<span>{{profile?.ditanceKm?.toFixed(1)}}km away</span>
+		</div>
+		<div class="user-card-detail">
+			<mat-icon>perm_identity</mat-icon>
+			<span>{{profile?.gender}}, {{profile?.age}} yo</span>
+		</div>
+		<div class="user-card-detail">
+			<mat-icon>favorite</mat-icon>
+			<span>{{profile?.fameRate}} %</span>
+		</div>
+	</div>
+
+	<h1 class="details-label label">Details</h1>
+	<div class="details-container rounded-box">
+		Interested by <b>{{profile?.sexualPreferences === 'binary' ? 'all.' : profile?.sexualPreferences + 's.'}}</b>
+		<div class="tags-container">
+			<div class="tag-item" *ngFor="let tag of profile?.tags">#{{tag}}</div>
+		</div>
+	</div>
+
+	<h1 class="user-description-label label">Description</h1>
+	<div class="user-description-container rounded-box">
+		{{profile?.biography}}
+	</div>
+
 </div>

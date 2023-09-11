@@ -49,3 +49,24 @@ h3 {
 	width: 100%;
 	height: 100%;
 }
+
+.tags-container {
+	display: flex;
+	gap: 5px;
+	overflow-x: auto;
+	padding-bottom: 10px;
+}
+
+.tag-item {
+	border-radius: 10px;
+	border: solid thin var(--primary-lighter-color);
+	text-transform: lowercase;
+	font-size: 12px;
+	padding: 0 5px;
+	cursor: pointer;
+}
+
+.tag-item:hover {
+	border-color: var(--primary-color);
+	color: var(--primary-color);
+}
