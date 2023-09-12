@@ -65,6 +65,13 @@ export class ModelBase {
 		return result.rows[0];
 	}
 
+	async delete(where: { [key: string]: any }[]) {
+		const query = `DELETE FROM "${this.table}" ${this.getWhereQuery(where)}`;
+		const values = where.flatMap(orObject => Object.values(orObject));
+		const result = await this.dbClient.query(query, values);
+		return result.rows;
+	}
+
 	private getCreateQuery(data: { [key: string]: any }) {
 		let createQuery = "(";
 

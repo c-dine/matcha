@@ -12,7 +12,7 @@
 				[ngStyle]="{'background-image': 'linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(' + getFirebasePictureUrl(user.picturesIds?.profilePicture) + ')'}"
 				(click)="navigateToProfile(user.id)">
 			<div class="user-item-container-details">
-				<span class="user-item-username">{{ user.username }} <ng-container class="user-item-age" *ngIf="user.age">({{user.age}} ans)</ng-container></span>
+				<span class="user-item-username">{{ user.username }} <ng-container class="user-item-age" *ngIf="user.birthDate">({{getAge(user.birthDate)}} ans)</ng-container></span>
 				<span class="user-item-distance">{{ user.ditanceKm?.toFixed(0) }}km</span>
 			</div>
 			<div class="user-item-fame">

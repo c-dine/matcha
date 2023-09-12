@@ -7,20 +7,32 @@ export class TagService {
 
 	dbClient: PoolClient;
 	tagModel: TagModel;
+	profileTagAssoModel: ProfileTagAssoModel;
 
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
 		this.tagModel = new TagModel(this.dbClient);
+		this.profileTagAssoModel = new ProfileTagAssoModel(this.dbClient);
+	}
+
+	async updateProfileTags(profileId: string, tags: string[]) {
+		await this.unlinkTagsFromProfile(profileId);
+		await this.linkTagsToProfile(profileId, tags);
 	}
 
 	async linkTagsToProfile(profileId: string, tags: string[]) {
 		const upsertedTags = await this.upsertTags(tags);
-		const profileTagAssoModel = new ProfileTagAssoModel(this.dbClient);
 
-		await profileTagAssoModel.createMany(upsertedTags.map(tag => ({
+		await this.profileTagAssoModel.createMany(upsertedTags.map(tag => ({
 			profile_id: profileId,
 			tag_id: tag.id
 		})));
+	}
+
+	private async unlinkTagsFromProfile(profileId: string) {
+		await this.profileTagAssoModel.delete([{
+			profile_id: profileId
+		}]);
 	}
 
 	async upsertTags(labels: string[]): Promise<Tag[]> {
@@ -38,8 +50,7 @@ export class TagService {
 	}
 
 	async getProfileTags(profileId: string): Promise<string[]> {
-		const profileTagAssoModel = new ProfileTagAssoModel(this.dbClient);
-		const tagIds = (await profileTagAssoModel.findMany([{
+		const tagIds = (await this.profileTagAssoModel.findMany([{
 			profile_id: profileId
 		}], ["tag_id"])).map(profileTagAsso => profileTagAsso.tag_id);
 

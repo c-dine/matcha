@@ -16,6 +16,7 @@ export class TagInputComponent {
 
 	@Input() parentResetTagsObservable!: Observable<void>;
 	@Input() tagsSubject!: BehaviorSubject<string[] | undefined>;
+	@Input() parentTagsInput!: string[] | undefined;
 	@Input() label!: string;
 	@Input() minArrayLength!: number;
 	@Output() addedTag = new EventEmitter<string[]>();
@@ -61,6 +62,8 @@ export class TagInputComponent {
 					}
 				})
 			);
+		if (this.parentTagsInput)
+			this.tagFormField.get("tags")?.setValue(this.parentTagsInput);
 	}
 	
 	ngOnDestroy() {

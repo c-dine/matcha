@@ -51,6 +51,23 @@ profileController.get("/userList", async (req: Request<any, any, any, ProfileFil
 	}
 });
 
+profileController.put("/", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		let updatedProfileData: Profile = req.body;
+		const tagService = new TagService(req.dbClient);
+		const profileService = new ProfileService(req.dbClient);
+		
+		console.log(updatedProfileData)
+		const updatedProfile: Profile = await profileService.updateProfile(updatedProfileData, req.userId);
+		await tagService.updateProfileTags(updatedProfile.id, updatedProfileData.tags);
+		res.status(200).json({ data: updatedProfile, message: "Profile successfully updated." });
+		next();
+	} catch (error: any) {
+		console.error(error);
+		error.message = `Error while updating user profile.`;
+		next(error);
+	}
+});
 
 profileController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {

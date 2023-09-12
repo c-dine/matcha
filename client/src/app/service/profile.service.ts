@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { BehaviorSubject, firstValueFrom, tap } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom, tap } from 'rxjs';
 import { GeoCoordinate, Profile, ProfileFilters, UserList, UserProfile } from "@shared-models/profile.model.js"
 import { buildHttpParams } from '../utils/http.utils';
 
@@ -16,20 +16,27 @@ export class ProfileService {
         private http: HttpClient
     ) {}
 
-	private getProfile() {
+	private getProfile(): Observable<Profile | null> {
 		return this.http.get<Profile | null>(`${environment.apiUrl}/profile/`)
 			.pipe(
 				tap(profile => this.profileSubject.next(profile))
 			);
 	}
 	
-	getUserProfile(userProfileId: string) {
+	getUserProfile(userProfileId: string): Observable<UserProfile | null> {
 		const params = buildHttpParams({ id: userProfileId});
 		return this.http.get<UserProfile | null>(`${environment.apiUrl}/profile/userProfile`, { params });
 	}
 
-	createProfile(newProfile: Profile) {
+	createProfile(newProfile: Profile): Observable<Profile | null> {
 		return this.http.post<Profile | null>(`${environment.apiUrl}/profile/`, newProfile)
+			.pipe(
+				tap(profile => this.profileSubject.next(profile))
+			);
+	}
+
+	updateProfile(updatedProfile: Profile): Observable<Profile> {
+		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile)
 			.pipe(
 				tap(profile => this.profileSubject.next(profile))
 			);
@@ -39,11 +46,11 @@ export class ProfileService {
 		return this.http.post<any>(`${environment.apiUrl}/profile/setLocation`, location);
 	}
 
-	getProfileObs() {
+	getProfileObs(): Observable<Profile | null> {
 		return this.profileSubject.asObservable();
 	}
 
-	getUserList(filters: ProfileFilters) {
+	getUserList(filters: ProfileFilters): Observable<UserList> {
 		const params = buildHttpParams(filters);
 		return this.http.get<UserList>(`${environment.apiUrl}/profile/userList`, {
 			params

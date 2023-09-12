@@ -1,4 +1,4 @@
-<div class="user-profile-container">
+<form class="user-profile-container" *ngIf="profile" [formGroup]="profileForm">
 	
 	<div class="back-button" (click)="onGoBackClick()">
 		<mat-icon>keyboard_arrow_left</mat-icon> Go back
@@ -10,62 +10,89 @@
 
 		
 	<div class="user-card-container rounded-box">
-		<div class="action-buttons">
+		<div class="action-buttons" *ngIf="profile.id !== currentUserProfile?.id">
 			<mat-icon matTooltip='Like'>favorite</mat-icon>
 			<mat-icon matTooltip='Message'>message</mat-icon>
 			<mat-icon matTooltip='Block'>block</mat-icon>
 			<mat-icon matTooltip='Report'>flag</mat-icon>
 		</div>
 
-		<h1>{{profile?.username}}</h1>
+		<h1>{{profile.username}}</h1>
 		<div class="user-card-detail">
 			<mat-icon> place</mat-icon>
-			<span>{{profile?.ditanceKm?.toFixed(1)}}km away</span>
+			<span>{{profile.ditanceKm?.toFixed(1)}}km away</span>
 		</div>
 		<div class="user-card-detail">
-			<mat-icon>{{profile?.gender === 'binary' ? 'transgender' : profile?.gender}}</mat-icon>
-			<span>{{profile?.gender}}</span>
+			<mat-icon>{{profile.gender === 'binary' ? 'transgender' : profile.gender}}</mat-icon>
+			<span *ngIf="!isEditMode">{{profile.gender}}</span>
+			<mat-radio-group aria-label="Select an option" name="gender" matInput *ngIf="isEditMode" formControlName="gender">
+				<mat-radio-button value="female">Woman</mat-radio-button>
+				<mat-radio-button value="male">Man</mat-radio-button>
+				<mat-radio-button value="binary">Binary</mat-radio-button>
+			</mat-radio-group>
 		</div>
 		<div class="user-card-detail">
 			<mat-icon>perm_identity</mat-icon>
-			<span>{{profile?.age}} yo</span>
+			<span *ngIf="!isEditMode">{{formatDate(profile.birthDate, 'dd-MM-YYYY', 'en-US')}} ({{getAge(profile.birthDate)}} yo)</span>
+			<mat-form-field appearance="outline" *ngIf="isEditMode">
+				<input matInput name="birthDate" [matDatepicker]="picker" formControlName="birthDate">
+				<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker #picker></mat-datepicker>
+			</mat-form-field>
 		</div>
 
 		<button (click)="onEditProfile()" class="custom-button submit-button" 
-				*ngIf="currentUserProfile?.id === profile?.id && !isEditMode">Edit profile</button>
-		<button (click)="onSubmitProfile()" class="custom-button cancel-button" 
-				*ngIf="currentUserProfile?.id === profile?.id && isEditMode">Submit</button>
+				*ngIf="currentUserProfile?.id === profile.id && !isEditMode">Edit profile</button>
+		<button (click)="onSubmitProfile()" class="custom-button submit-button" 
+				*ngIf="currentUserProfile?.id === profile.id && isEditMode">Submit</button>
+		<button (click)="onCancelEditProfile()" class="custom-button cancel-button" 
+				*ngIf="currentUserProfile?.id === profile.id && isEditMode">Cancel</button>
 	</div>
 
 
 	<div class="stats-container rounded-box fame-rate-container">
-		{{profile?.fameRate}}%
+		{{profile.fameRate}}%
 		<span class="stats-label">fame rate</span>
 	</div>
 	
 	<div class="stats-container rounded-box likes-container">
-		{{profile?.fameRate}}
+		{{profile.fameRate}}
 		<span class="stats-label">likes</span>
 	</div>
 	
 	<div class="stats-container rounded-box matches-container">
-		{{profile?.fameRate}}
+		{{profile.fameRate}}
 		<span class="stats-label">matches</span>
 	</div>
 
 	<h1 class="details-label label">Details</h1>
 	<div class="details-container rounded-box">
 		<ng-container *ngIf="!isEditMode">
-			Interested by <b>{{profile?.sexualPreferences === 'binary' ? 'all.' : profile?.sexualPreferences + 's.'}}</b>
+			Interested by <b>{{profile.sexualPreferences === 'binary' ? 'all.' 
+				: profile.sexualPreferences === 'male' ? 'men.' : 'women.'}}</b>
 			<div class="tags-container">
-				<div class="tag-item" *ngFor="let tag of profile?.tags">#{{tag}}</div>
+				<div class="tag-item" *ngFor="let tag of profile.tags">#{{tag}}</div>
 			</div>
+		</ng-container>
+
+		<ng-container *ngIf="isEditMode">
+			Interested by
+			<mat-radio-group formControlName="sexualPreferences" aria-label="Select an option" name="sexualPreferences">
+				<mat-radio-button value="female">Women</mat-radio-button>
+				<mat-radio-button value="male">Men</mat-radio-button>
+				<mat-radio-button value="binary">All</mat-radio-button>
+			</mat-radio-group>
+			<app-tag-input [parentTagsInput]="profile.tags" (addedTag)="setTags($event)" [minArrayLength]=3 label="Tags"></app-tag-input>
 		</ng-container>
 	</div>
 
 	<h1 class="user-description-label label">Description</h1>
 	<div class="user-description-container rounded-box">
-		<ng-container *ngIf="!isEditMode">{{profile?.biography}}</ng-container>
+		<ng-container *ngIf="!isEditMode">{{profile.biography}}</ng-container>
+		<mat-form-field appearance="outline" *ngIf="isEditMode">
+			<mat-label>Tell the world a bit more about you (50-500 characters)</mat-label>
+			<textarea matInput formControlName="biography" maxlength="500" name="biography"></textarea>
+		</mat-form-field>
 	</div>
 
-</div>
+</form>

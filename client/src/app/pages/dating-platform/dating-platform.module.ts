@@ -29,6 +29,8 @@ import { UserListFiltersComponent } from './user-list/user-list-filters/user-lis
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,9 @@ import {NgxPaginationModule} from 'ngx-pagination';
 	MatTooltipModule,
 	SharedModule,
 	MatSelectModule,
-	NgxPaginationModule
+	NgxPaginationModule,
+	MatDatepickerModule,
+	MatNativeDateModule
   ]
 })
 export class DatingPlatformModule { }

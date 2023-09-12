@@ -2,8 +2,6 @@ import { PoolClient } from "pg";
 import { ProfileModel } from "../../model/profile.model.js";
 import { Profile, GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList, UserProfile } from "@shared-models/profile.model.js"
 import { env } from "../../config/config.js";
-import { TagService } from "../tag/tag.service.js";
-import { PictureService } from "../picture/picture.service.js";
 import { AuthService } from "../auth/auth.service.js";
 
 export class ProfileService {
@@ -22,7 +20,6 @@ export class ProfileService {
 			id: profile.id,
 			gender: profile.gender,
 			birthDate: profile.birth_date,
-			age: Math.floor((new Date().getTime() - new Date(profile.birth_date).getTime()) / (365.25 * 24 * 60 * 60 * 1000)),
 			sexualPreferences: profile.sexual_preferences,
 			biography: profile.biography,
 			fameRate: profile.fame_rate,
@@ -55,7 +52,6 @@ export class ProfileService {
 		const requestedProfile = await this.profileModel.getUserProfile(requestedUserProfileId || userProfile.id, userProfile);
 		return {
 			...this.formatProfile(requestedProfile as profile),
-			birthDate: undefined,
 			...(new AuthService(this.dbClient)).formatUser(requestedProfile as user),
 			tags: requestedProfile.tags.split(','),
 			picturesIds: {
@@ -100,6 +96,19 @@ export class ProfileService {
 		});
 
 		return this.formatProfile(createdProfile);
+	}
+
+	async updateProfile(updatedProfileData: Profile, userId: string): Promise<Profile> {
+		const updatedProfile = await this.profileModel.update([{
+			user_id: userId
+		}], {
+			gender: updatedProfileData.gender,
+			birth_date: updatedProfileData.birthDate,
+			sexual_preferences: updatedProfileData.sexualPreferences,
+			biography: updatedProfileData.biography,
+		});
+
+		return this.formatProfile(updatedProfile[0]);
 	}
 
 	async setProfileLocation(location: GeoCoordinate, userId: string) {
