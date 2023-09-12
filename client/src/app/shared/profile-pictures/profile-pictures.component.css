@@ -9,9 +9,14 @@
 	gap: 10px;
 }
 
-.profile-picture {
-	width: 150px !important;
-	height: 170px !important;
+.additionnal-picture-container {
+	width: 130px;
+	height: 150px;
+}
+
+.profile-picture-container {
+	width: 150px;
+	height: 170px;
 }
 
 .picture-center-icon {

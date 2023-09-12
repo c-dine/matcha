@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/service/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DisplayableProfilePictures, PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model';
+import { DisplayableProfilePictures, ProfilePicturesIds } from '@shared-models/picture.model';
 import { PictureService } from 'src/app/service/picture.service';
 import { GeoCoordinate, Profile } from '@shared-models/profile.model';
 

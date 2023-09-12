@@ -4,7 +4,7 @@
 
 	<input hidden #pictureInput type="file" (change)="uploadPicture($event)">
 
-	<div class="profile-picture rounded-rectangular-container">
+	<div class="profile-picture-container rounded-rectangular-container">
 		<div class="rounded-rectangular-image"
 			[style.background-image]="pictures.profilePicture?.url ? 'url(' + pictures.profilePicture?.url + ')' : ''">
 			<mat-icon *ngIf="!pictures.profilePicture?.url" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
@@ -14,7 +14,7 @@
 
 	<div class="additionnal-pictures-container">
 
-		<div class="rounded-rectangular-container">
+		<div class="rounded-rectangular-container additionnal-picture-container image1">
 			<div class="rounded-rectangular-image"
 				[style.background-image]="pictures.additionnalPictures[0] ? 'url(' + pictures.additionnalPictures[0].url + ')' : ''">
 				<mat-icon *ngIf="!pictures.additionnalPictures[0]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
@@ -22,7 +22,7 @@
 			</div>
 		</div>
 
-		<div class="rounded-rectangular-container">
+		<div class="rounded-rectangular-container additionnal-picture-container image2">
 			<div class="rounded-rectangular-image"
 				[style.background-image]="pictures.additionnalPictures[1] ? 'url(' + pictures.additionnalPictures[1].url + ')' : ''">
 				<mat-icon *ngIf="!pictures.additionnalPictures[1]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		
-		<div class="rounded-rectangular-container">
+		<div class="rounded-rectangular-container additionnal-picture-container image3">
 			<div class="rounded-rectangular-image"
 				[style.background-image]="pictures.additionnalPictures[2] ? 'url(' + pictures.additionnalPictures[2].url + ')' : ''">
 				<mat-icon *ngIf="!pictures.additionnalPictures[2]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>
@@ -38,7 +38,7 @@
 			</div>
 		</div>
 		
-		<div class="rounded-rectangular-container">
+		<div class="rounded-rectangular-container additionnal-picture-container image4">
 			<div class="rounded-rectangular-image"
 				[style.background-image]="pictures.additionnalPictures[3] ? 'url(' + pictures.additionnalPictures[3].url + ')' : ''">
 				<mat-icon *ngIf="!pictures.additionnalPictures[3]" (click)="pictureInput.click()" class="picture-center-icon">add</mat-icon>

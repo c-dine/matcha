@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '@environment/environment';
+import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { Profile, UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
 import { ProfileService } from 'src/app/service/profile.service';
@@ -23,8 +24,8 @@ export class ProfileComponent {
 	environment = environment;
 	profile: UserProfile | null = null;
 
-
 	profileForm!: FormGroup;
+	pictures!: DisplayableProfilePictures;
 
 	currentUserProfile!: Profile | null;
 	isEditMode = false;
@@ -46,7 +47,7 @@ export class ProfileComponent {
 					error: async () => await this.getCurrentUserProfile()
 				});
 			else
-				this.getCurrentUserProfile();
+				await this.getCurrentUserProfile();
 		});
 	}
 
@@ -55,6 +56,10 @@ export class ProfileComponent {
 			next: (profile) => {
 				this.profile = profile;
 				this.initForm();
+				this.pictures = {
+					profilePicture: { url: getFirebasePictureUrl(profile?.picturesIds?.profilePicture) },
+					additionnalPictures: profile?.picturesIds?.additionnalPicture?.map(id => ({ url: getFirebasePictureUrl(id)})) || []
+				};
 			},
 			error: () => this.router.navigate(["/app/userList"])
 		});
@@ -112,5 +117,9 @@ export class ProfileComponent {
 	setTags(tags: string[]) {
 		if (!this.profileForm) return;
 		this.profileForm.get("tags")?.setValue(tags);
+	}
+	
+	updatePictures(pictures: DisplayableProfilePictures) {
+		this.pictures = pictures;
 	}
 }

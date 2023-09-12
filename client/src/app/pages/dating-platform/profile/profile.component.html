@@ -5,7 +5,8 @@
 	</div>
 
 	<div class="pictures-container rounded-box">
-		<app-image-slider [picturesUrl]="getPicturesUrl()"></app-image-slider>
+		<app-image-slider [picturesUrl]="getPicturesUrl()" *ngIf="!isEditMode"></app-image-slider>
+		<app-profile-pictures [pictures]="pictures" (updatedPictures)="updatePictures($event)" *ngIf="isEditMode"></app-profile-pictures>
 	</div>
 
 		

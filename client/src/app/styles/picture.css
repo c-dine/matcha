@@ -20,8 +20,6 @@
 }
 
 .rounded-rectangular-container {
-	width: 130px;
-	height: 150px;
 	border-radius: 10px;
 	overflow: hidden;
 	display: flex;
