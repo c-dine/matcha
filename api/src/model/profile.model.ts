@@ -39,7 +39,7 @@ export class ProfileModel extends ModelBase {
 					profile.biography,
 					profile.fame_rate,
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
-					STRING_AGG(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END, ',') AS additionnal_pictures_ids,
+					STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
 					calculate_distance(profile.location_latitude, profile.location_longitude, ${userLocation.latitude}, ${userLocation.longitude}, 'K') as distance_km
 				FROM profile 

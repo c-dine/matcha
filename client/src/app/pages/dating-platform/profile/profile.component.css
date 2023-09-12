@@ -23,12 +23,11 @@
 }
 
 .pictures-container {
-	display: flex;
-	justify-content: center;
 	grid-row: 2 / 12;
 	grid-column: 1 / 2;
 	z-index: 1;
 	border-radius: 20px;
+	overflow: hidden;
 }
 
 .profile-picture {
@@ -77,6 +76,7 @@ mat-icon {
 .label {
 	margin-bottom: 0;
 	padding-left: 20px;
+	font-weight: 900;
 }
 
 .details-label {
