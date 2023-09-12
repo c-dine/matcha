@@ -14,9 +14,10 @@
     height: 40px;
     display: flex;
     justify-content: center;
-    font-weight: 500;
     background-color: white;
     color: var(--primary-text-color);
+	font-weight: 600;
+	font-size: 15px;
 }
 
 .custom-button:hover {

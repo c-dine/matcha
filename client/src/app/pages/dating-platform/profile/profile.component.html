@@ -23,26 +23,49 @@
 			<span>{{profile?.ditanceKm?.toFixed(1)}}km away</span>
 		</div>
 		<div class="user-card-detail">
-			<mat-icon>perm_identity</mat-icon>
-			<span>{{profile?.gender}}, {{profile?.age}} yo</span>
+			<mat-icon>{{profile?.gender === 'binary' ? 'transgender' : profile?.gender}}</mat-icon>
+			<span>{{profile?.gender}}</span>
 		</div>
 		<div class="user-card-detail">
-			<mat-icon>favorite</mat-icon>
-			<span>{{profile?.fameRate}} %</span>
+			<mat-icon>perm_identity</mat-icon>
+			<span>{{profile?.age}} yo</span>
 		</div>
+
+		<button (click)="onEditProfile()" class="custom-button submit-button" 
+				*ngIf="currentUserProfile?.id === profile?.id && !isEditMode">Edit profile</button>
+		<button (click)="onSubmitProfile()" class="custom-button cancel-button" 
+				*ngIf="currentUserProfile?.id === profile?.id && isEditMode">Submit</button>
+	</div>
+
+
+	<div class="stats-container rounded-box fame-rate-container">
+		{{profile?.fameRate}}%
+		<span class="stats-label">fame rate</span>
+	</div>
+	
+	<div class="stats-container rounded-box likes-container">
+		{{profile?.fameRate}}
+		<span class="stats-label">likes</span>
+	</div>
+	
+	<div class="stats-container rounded-box matches-container">
+		{{profile?.fameRate}}
+		<span class="stats-label">matches</span>
 	</div>
 
 	<h1 class="details-label label">Details</h1>
 	<div class="details-container rounded-box">
-		Interested by <b>{{profile?.sexualPreferences === 'binary' ? 'all.' : profile?.sexualPreferences + 's.'}}</b>
-		<div class="tags-container">
-			<div class="tag-item" *ngFor="let tag of profile?.tags">#{{tag}}</div>
-		</div>
+		<ng-container *ngIf="!isEditMode">
+			Interested by <b>{{profile?.sexualPreferences === 'binary' ? 'all.' : profile?.sexualPreferences + 's.'}}</b>
+			<div class="tags-container">
+				<div class="tag-item" *ngFor="let tag of profile?.tags">#{{tag}}</div>
+			</div>
+		</ng-container>
 	</div>
 
 	<h1 class="user-description-label label">Description</h1>
 	<div class="user-description-container rounded-box">
-		{{profile?.biography}}
+		<ng-container *ngIf="!isEditMode">{{profile?.biography}}</ng-container>
 	</div>
 
 </div>
