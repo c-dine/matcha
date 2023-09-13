@@ -9,12 +9,6 @@ export class ModelBase {
 		this.dbClient = dbClient;
 	}
 
-	private getSelectQuery(select?: string[]) {
-		return select?.length ?
-			select.reduce((query, arg) => query += query.length ? `, ${arg}` : arg, "")
-			: "*";
-	}
-
 	async findById(id: string, select?: string[]) {
 		const query = `SELECT ${this.getSelectQuery(select)} FROM "${this.table}" WHERE id = $1`;
 		const values = [id];
@@ -65,11 +59,17 @@ export class ModelBase {
 		return result.rows[0];
 	}
 
-	async delete(where: { [key: string]: any }[]) {
-		const query = `DELETE FROM "${this.table}" ${this.getWhereQuery(where)}`;
+	async delete(where: { [key: string]: any }[], select?: string[]) {
+		const query = `DELETE FROM "${this.table}" ${this.getWhereQuery(where)} RETURNING ${this.getSelectQuery(select)}`;
 		const values = where.flatMap(orObject => Object.values(orObject));
 		const result = await this.dbClient.query(query, values);
 		return result.rows;
+	}
+	
+	private getSelectQuery(select?: string[]) {
+		return select?.length ?
+			select.reduce((query, arg) => query += query.length ? `, ${arg}` : arg, "")
+			: "*";
 	}
 
 	private getCreateQuery(data: { [key: string]: any }) {

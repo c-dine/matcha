@@ -4,6 +4,7 @@ export interface PresignedPictureUrl {
 }
 
 export interface DisplayablePicture {
+	id?: string,
 	url?: string,
 	file?: File
 };

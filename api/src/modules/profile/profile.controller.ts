@@ -56,11 +56,12 @@ profileController.put("/", async (req: Request, res: Response, next: NextFunctio
 		let updatedProfileData: Profile = req.body;
 		const tagService = new TagService(req.dbClient);
 		const profileService = new ProfileService(req.dbClient);
+		const pictureService = new PictureService(req.dbClient);
 		
-		console.log(updatedProfileData)
 		const updatedProfile: Profile = await profileService.updateProfile(updatedProfileData, req.userId);
 		await tagService.updateProfileTags(updatedProfile.id, updatedProfileData.tags);
-		res.status(200).json({ data: updatedProfile, message: "Profile successfully updated." });
+		await pictureService.updateProfilePictures(updatedProfileData.picturesIds, updatedProfile.id);
+		res.status(200).json({ data: { ...updatedProfileData, id: updatedProfile.id }, message: "Profile successfully updated." });
 		next();
 	} catch (error: any) {
 		console.error(error);
@@ -82,7 +83,7 @@ profileController.post("/", async (req: Request, res: Response, next: NextFuncti
 		const createdProfile: Profile = await profileService.createProfile(newProfile, req.userId);
 		await pictureService.createProfilePictures(newProfile.picturesIds, createdProfile.id);
 		await tagService.linkTagsToProfile(createdProfile.id, newProfile.tags);
-		res.status(201).json({ data: newProfile });
+		res.status(201).json({ data: { newProfile, id: createdProfile.id } });
 		next();
 	} catch (error: any) {
 		console.error(`Error while creating user profile: ${error}.`);

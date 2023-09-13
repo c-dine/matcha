@@ -78,8 +78,13 @@ export class FirstProfileFillingComponent {
 	async onSubmit() {
 		this.isLoading = true;
 
-		const picturesIds = await this.uploadAndGetPicturesIds();
+		const picturesIds = await this.pictureService.uploadAndGetPicturesIds(this.pictures);
 		if (!picturesIds) {
+			this.firstFillingProfileMode = FirstFillingProfileMode.INTRO;
+			this.snackBar.open("Error uploading picture. Try again.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
 			this.isLoading = false;
 			return;
 		}
@@ -103,26 +108,6 @@ export class FirstProfileFillingComponent {
 
 	setTags(tags: string[]) {
 		this.profileForm.get("personnalProfile.tags")?.setValue(tags);
-	}
-
-	async uploadAndGetPicturesIds(): Promise<ProfilePicturesIds | undefined> {
-		const presignedPictures = await firstValueFrom(this.pictureService.generateMultipleUploadUrl(this.pictures.additionnalPictures.length + 1));
-		try {
-			await this.uploadPicture(presignedPictures[presignedPictures.length - 1].uploadUrl, this.pictures.profilePicture?.file);
-			for (let i = 0; i < this.pictures.additionnalPictures.length; i++)
-				await this.uploadPicture(presignedPictures[i].uploadUrl, this.pictures.additionnalPictures[i].file);
-			return {
-				profilePicture: presignedPictures[presignedPictures.length - 1].id,
-				additionnalPicture: presignedPictures.slice(0, this.pictures.additionnalPictures.length).map(picture => picture.id)
-			}
-		} catch (error: any) {
-			this.firstFillingProfileMode = FirstFillingProfileMode.INTRO;
-			this.snackBar.open("Error uploading picture. Try again.", "Close", {
-				duration: 4000,
-				panelClass: "error-snackbar"
-			});
-			return undefined;
-		}
 	}
 
 	canGoNext() {
@@ -157,16 +142,5 @@ export class FirstProfileFillingComponent {
 
 	updatePictures(pictures: DisplayableProfilePictures) {
 		this.pictures = pictures;
-	}
-
-	async uploadPicture(uploadUrl: string, file?: File) {
-		if (!file) throw new Error();
-		await fetch(uploadUrl, {
-			method: 'PUT',
-			body: file,
-			headers: {
-				'Content-Type': "image/jpeg",
-			}
-		});
 	}
 }

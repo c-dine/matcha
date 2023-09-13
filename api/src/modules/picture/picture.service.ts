@@ -34,20 +34,48 @@ export class PictureService {
 		return { id: fileName, uploadUrl };
 	}
 
+	async updateProfilePictures(profilePictures: ProfilePicturesIds, profileId: string) {
+		const actualProfilePicturesIds = await this.getProfilePictures(profileId);
+		const picturesIdsToDelete = [
+			...profilePictures.profilePicture === actualProfilePicturesIds.profilePicture ? [] : [actualProfilePicturesIds.profilePicture],
+			...actualProfilePicturesIds.additionnalPicture.filter(id => !profilePictures.additionnalPicture.includes(id))
+		];
+		const picturesToCreate: ProfilePicturesIds = {
+			profilePicture: profilePictures.profilePicture === actualProfilePicturesIds.profilePicture ? undefined : profilePictures.profilePicture,
+			additionnalPicture: profilePictures.additionnalPicture.filter(id => !actualProfilePicturesIds.additionnalPicture.includes(id))
+		};
+
+		await this.deleteProfilePictures(picturesIdsToDelete, profileId);
+		await this.createProfilePictures(picturesToCreate, profileId);
+	}
+
 	async getProfilePictures(profileId: string): Promise<ProfilePicturesIds> {
 		const profilePictures = await this.pictureModel.findMany([{
 			profile_id: profileId
 		}]);
 
 		return {
-			profilePicture: profilePictures.find(picture => picture.is_profile_picture === true).id,
+			profilePicture: profilePictures.find(picture => picture.is_profile_picture === true)?.id,
 			additionnalPicture: profilePictures.filter(picture => picture.is_profile_picture === false).map(picture => picture.id)
+		}
+	}
+
+	async deleteProfilePictures(picturesIdsToDelete: string[], profileId: string) {
+		const deletedPicturesIds = (await this.pictureModel.delete(
+			picturesIdsToDelete.map(id => ({
+				profile_id: profileId,
+				id
+			})), ["id"])).map(picture => picture.id);
+		try {
+			deletedPicturesIds.forEach(id => bucket.file(id).delete());
+		} catch (e: any) {
+			console.log("Error while deleting pictures from firebase.")
 		}
 	}
 
 	async createProfilePictures(profilePictures: ProfilePicturesIds, profileId: string) {
 		await this.pictureModel.createMany([
-			this.getPictureCreateQuery(profilePictures.profilePicture, profileId, true),
+			...profilePictures.profilePicture ? [this.getPictureCreateQuery(profilePictures.profilePicture, profileId, true)] : [],
 			...profilePictures.additionnalPicture.map(pictureId => this.getPictureCreateQuery(pictureId, profileId, false))
 		]);
 	}

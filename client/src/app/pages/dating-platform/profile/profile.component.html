@@ -1,4 +1,6 @@
-<form class="user-profile-container" *ngIf="profile" [formGroup]="profileForm">
+<app-spinner *ngIf="isLoading"></app-spinner>
+
+<form class="user-profile-container" *ngIf="profile && !isLoading" [formGroup]="profileForm">
 	
 	<div class="back-button" (click)="onGoBackClick()">
 		<mat-icon>keyboard_arrow_left</mat-icon> Go back

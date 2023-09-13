@@ -7,6 +7,7 @@ import { environment } from '@environment/environment';
 import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { Profile, UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
+import { PictureService } from 'src/app/service/picture.service';
 import { ProfileService } from 'src/app/service/profile.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
@@ -29,13 +30,15 @@ export class ProfileComponent {
 
 	currentUserProfile!: Profile | null;
 	isEditMode = false;
+	isLoading = false;
 
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
 		private profileService: ProfileService,
 		private location: Location,
-		private snackBar: MatSnackBar
+		private snackBar: MatSnackBar,
+		private pictureService: PictureService
 	) { }
 
 	async ngOnInit() {
@@ -56,16 +59,18 @@ export class ProfileComponent {
 			next: (profile) => {
 				this.profile = profile;
 				this.initForm();
-				this.pictures = {
-					profilePicture: { url: getFirebasePictureUrl(profile?.picturesIds?.profilePicture) },
-					additionnalPictures: profile?.picturesIds?.additionnalPicture?.map(id => ({ url: getFirebasePictureUrl(id)})) || []
-				};
 			},
 			error: () => this.router.navigate(["/app/userList"])
 		});
 	}
 
 	initForm() {
+		this.pictures = {
+			profilePicture: this.currentUserProfile?.picturesIds?.profilePicture ? 
+				{ id: this.currentUserProfile?.picturesIds?.profilePicture, url: getFirebasePictureUrl(this.currentUserProfile?.picturesIds?.profilePicture) }
+				: undefined,
+			additionnalPictures: this.currentUserProfile?.picturesIds?.additionnalPicture?.map(id => ({ id, url: getFirebasePictureUrl(id)})) || []
+		};
 		this.profileForm  = new FormGroup({
 			gender: new FormControl<string>(this.currentUserProfile?.gender || "", [Validators.required]),
 			sexualPreferences: new FormControl<string>(this.currentUserProfile?.sexualPreferences || "", [Validators.required]),
@@ -93,20 +98,39 @@ export class ProfileComponent {
 	}
 
 	async onSubmitProfile() {
-		this.isEditMode = false;
-		if (this.profileForm?.invalid){
+		this.isLoading = true;
+		if (!this.profile || this.profileForm?.invalid) {
+			this.isLoading = false;
 			this.snackBar.open("Invalid profile.", "Close", {
 				duration: 4000,
 				panelClass: "error-snackbar"
 			});
 			return;
 		}
-		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile(this.profileForm?.getRawValue() as Profile));
+		if (!this.pictures.profilePicture && this.pictures.additionnalPictures.length) {
+			this.pictures.profilePicture = this.pictures.additionnalPictures[0];
+			this.pictures.additionnalPictures.splice(0, 1);
+		}
+		this.profile.picturesIds = await this.pictureService.uploadAndGetPicturesIds(this.pictures);
+		if (!this.profile.picturesIds){
+			this.isLoading = false;
+			this.snackBar.open("An error occurred while uploading the pictures.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return;
+		}
+
+		this.isEditMode = false;
+		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
+				...this.profileForm?.getRawValue(),
+				picturesIds: this.profile.picturesIds
+			} as Profile));
 		this.profile = {
 			...this.profile,
 			...this.currentUserProfile as UserProfile
 		};
-		this.isEditMode = false;
+		this.isLoading = false;
 	}
 
 	onCancelEditProfile() {
