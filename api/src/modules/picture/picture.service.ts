@@ -61,16 +61,13 @@ export class PictureService {
 	}
 
 	async deleteProfilePictures(picturesIdsToDelete: string[], profileId: string) {
+		if (!picturesIdsToDelete.length) return;
 		const deletedPicturesIds = (await this.pictureModel.delete(
 			picturesIdsToDelete.map(id => ({
 				profile_id: profileId,
 				id
 			})), ["id"])).map(picture => picture.id);
-		try {
-			deletedPicturesIds.forEach(id => bucket.file(id).delete());
-		} catch (e: any) {
-			console.log("Error while deleting pictures from firebase.")
-		}
+		deletedPicturesIds.forEach(id => bucket.file(id).delete());
 	}
 
 	async createProfilePictures(profilePictures: ProfilePicturesIds, profileId: string) {
