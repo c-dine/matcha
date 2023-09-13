@@ -72,7 +72,6 @@ export class ProfileService {
 				totalUserCount: (userlist as any)[0]?.total_user_count || 0,
 				userList: userlist.map(user => ({
 					...this.formatProfile(user as profile),
-					birthDate: undefined,
 					...(new AuthService(this.dbClient)).formatUser(user as user),
 					tags: user.tags.split(','),
 					picturesIds: {
