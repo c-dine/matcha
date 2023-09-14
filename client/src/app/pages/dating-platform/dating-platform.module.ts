@@ -31,6 +31,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { SettingsComponent } from './settings/settings.component';
+import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     ChatMessageComponent,
     ProfileComponent,
 	UserListComponent,
-	UserListFiltersComponent
+	UserListFiltersComponent,
+	SettingsComponent
   ],
   imports: [
     CommonModule,
@@ -70,7 +73,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 	MatSelectModule,
 	NgxPaginationModule,
 	MatDatepickerModule,
-	MatNativeDateModule
+	MatNativeDateModule,
+	MatTableModule
   ]
 })
 export class DatingPlatformModule { }

@@ -54,6 +54,16 @@ export class AuthService {
 			);
     }
 
+	updateUser(updatedUser: User): Observable<User> {
+		return this.http.put<User>(environment.apiUrl + '/auth/', updatedUser)
+			.pipe(
+				map(user => {
+					this.currentUserSubject.next(user);
+					return user;
+				})
+			);
+	}
+
 	setSession(user: AuthenticatedUser) {
 		this.setRefreshToken(user.token.refresh || "");
 		this.accessTokenSubject.next(user.token.access);
@@ -106,6 +116,7 @@ export class AuthService {
         return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
 			.pipe(
 				tap((authenticatedUser: AuthenticatedUser) => {
+					console.log(authenticatedUser);
 					this.accessTokenSubject.next(authenticatedUser.token.access);
 					this.currentUserSubject.next(authenticatedUser as User);
 				})

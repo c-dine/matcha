@@ -20,7 +20,10 @@
 			<mat-icon matTooltip='Report'>flag</mat-icon>
 		</div>
 
-		<h1>{{profile.username}}</h1>
+		<h1>
+			{{profile.username}}
+			<span class="user-subtitle">({{profile.firstName}} {{profile.lastName}})</span>
+		</h1>
 		<div class="user-card-detail">
 			<mat-icon> place</mat-icon>
 			<span>{{profile.ditanceKm?.toFixed(1)}}km away</span>

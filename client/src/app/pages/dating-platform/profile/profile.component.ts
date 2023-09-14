@@ -30,7 +30,7 @@ export class ProfileComponent {
 
 	currentUserProfile!: Profile | null;
 	isEditMode = false;
-	isLoading = false;
+	isLoading = true;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -46,11 +46,13 @@ export class ProfileComponent {
 		this.route.queryParamMap.subscribe(async params => {
 			if (params.has("id"))
 				this.profileService.getUserProfile(params.get("id") as string).subscribe({
-					next: (profile) => this.profile = profile,
-					error: async () => await this.getCurrentUserProfile()
+					next: (profile) => { this.profile = profile; this.isLoading = false; },
+					error: async () => { await this.getCurrentUserProfile(); this.isLoading = false; },
 				});
-			else
+			else {
 				await this.getCurrentUserProfile();
+				this.isLoading = false;
+			}
 		});
 	}
 

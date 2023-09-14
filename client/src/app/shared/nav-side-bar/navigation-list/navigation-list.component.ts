@@ -37,7 +37,7 @@ export class NavigationListComponent {
 
   settingsNav: NavigationButton = {
     title: 'Settings',
-    path: '/settings',
+    path: '/app/settings',
     iconName: "settings"
   }
 

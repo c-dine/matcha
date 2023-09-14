@@ -1,0 +1,81 @@
+<div class="settings-container">
+
+	<h1 class="user-details-label">User details</h1>
+	<div class="user-details-container rounded-box">
+		<div class="user-details-field-labels">
+			<span class="field-label">First name</span>
+			<span class="field-label">Last name</span>
+			<span class="field-label">Username</span>
+			<span class="field-label">Mail address</span>
+		</div>
+		<div class="user-details-field-values">
+			<ng-container *ngIf="!isUserDetailsEditMode">
+				<span class="field-value">{{currentUser?.firstName}}</span>
+				<span class="field-value">{{currentUser?.lastName}}</span>
+				<span class="field-value">{{currentUser?.username}}</span>
+				<span class="field-value">{{currentUser?.email}}</span>
+			</ng-container>
+			<ng-container *ngIf="isUserDetailsEditMode && userForm" [formGroup]="userForm">
+					<mat-form-field appearance="outline">
+						<input matInput type="text" id="firstName" formControlName="firstName" required>
+						<mat-error *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+							Please enter a valid first name.
+						</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<input matInput type="text" id="lastName" formControlName="lastName" required>
+						<mat-error *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+							Please enter a valid last name.
+						</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<input matInput type="text" id="username" formControlName="username" required>
+						<mat-error *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+							Please enter a valid username.
+						</mat-error>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<input matInput type="text" id="email" formControlName="email" required>
+						<mat-error *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+							Please enter a valid mail address.
+						</mat-error>
+					</mat-form-field>
+
+			</ng-container>
+			</div>
+		<div class="user-details-actions">
+			<mat-icon 	*ngIf="!isUserDetailsEditMode" 
+						matTooltip="Edit user details" 
+						(click)="onEditUserDetails()"
+						>edit</mat-icon>
+			<mat-icon	*ngIf="isUserDetailsEditMode"
+						matTooltip="Submit"
+						(click)="oSubmitUserDetails()"
+						>check</mat-icon>
+			<mat-icon	*ngIf="isUserDetailsEditMode"
+						matTooltip="Cancel"
+						(click)="onCancelUserDetails()"
+						>delete_outline</mat-icon>
+		</div>
+	</div>
+
+	<h1 class="visit-history-label">Visit history</h1>
+	<div class="visit-history-container rounded-box">
+	</div>
+
+	<h1 class="password-label">Password</h1>
+	<div class="password-container rounded-box">
+	</div>
+
+	<h1 class="blacklist-label">Blacklist</h1>
+	<div class="blacklist-container rounded-box">
+	</div>
+
+	<h1 class="reportlist-label">Reported users</h1>
+	<div class="reportlist-container rounded-box">
+	</div>
+
+</div>

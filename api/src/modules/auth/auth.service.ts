@@ -10,11 +10,13 @@ import { CustomError } from "../../utils/error.util.js";
 export class AuthService {
 
 	dbClient: PoolClient;
+	userModel: UserModel;
 	
 	RESET_PASSWORD_TIME_LIMIT_MINUTES = 15;
 
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
+		this.userModel = new UserModel(dbClient);
 	}
 
 	formatUser(createdUser: user): User {
@@ -48,9 +50,8 @@ export class AuthService {
 		whereQuery: { [ key: string ]: any },
 		select?: string[]
 	) {
-		const userModel = new UserModel(this.dbClient);
 		const user = (
-			await userModel.findMany([whereQuery],
+			await this.userModel.findMany([whereQuery],
 			select
 		))[0];
 		return user ? this.formatUser(user) : undefined;
@@ -59,8 +60,7 @@ export class AuthService {
 	async createUser(
 		userData: NewUser
 	): Promise<User> {
-		const userModel = new UserModel(this.dbClient);
-		const newUser = await userModel.create({
+		const newUser = await this.userModel.create({
 			username: userData.username,
 			last_name: userData.lastName,
 			first_name: userData.firstName,
@@ -70,15 +70,23 @@ export class AuthService {
 		return newUser ? this.formatUser(newUser) : undefined;
 	}
 	
+	async updateUser(updatedUser: User, userId: string) {
+		await this.userModel.updateById(userId, {
+			first_name: updatedUser.firstName,
+			last_name: updatedUser.lastName,
+			email: updatedUser.email,
+			username: updatedUser.username
+		});
+	}
+
 	async getLoggedUser(
 		userAuthData: {
 			username: string,
 			password: string
 		}
 	): Promise<User> {
-		const userModel = new UserModel(this.dbClient);
 		const loggedUser = (
-			await userModel.findMany([{
+			await this.userModel.findMany([{
 				username: userAuthData.username,
 			}],
 			["id", "last_name", "first_name", "email", "username", "password"]

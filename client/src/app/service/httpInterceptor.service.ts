@@ -38,8 +38,10 @@ export class HttpInterceptorService implements HttpInterceptor {
 				}
 				if (error.status === 401 && !request.url.includes("logIn")) {
 					this.isRefreshingToken = true;
+					console.log("Refreshing access token...");
 					return this.authService.refreshAccessToken().pipe(
 						switchMap(() => {
+							console.log("Token got refreshed.");
 							this.isRefreshingToken = false;
 							return next.handle(
 								this.addTokenToRequest(request, this.authService.getAccessToken() as string)

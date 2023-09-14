@@ -2,7 +2,7 @@ import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { encryptionConfig } from '../../config/config.js';
-import { NewUser } from '@shared-models/user.model.js'
+import { NewUser, User } from '@shared-models/user.model.js'
 import { AuthService } from './auth.service.js';
 import { MailService } from '../mail/mail.service.js';
 import { CustomError } from '../../utils/error.util.js';
@@ -122,6 +122,21 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 	} catch (error: any) {
 		console.error(`Error while verifying email: ${error}`);
 		error.message = "Error while verifying email."; 
+		next(error);
+	}
+});
+
+authController.put("/", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const updatedUser = req.body as User;
+		const authService = new AuthService(req.dbClient);
+
+		await authService.updateUser(updatedUser, req.userId);
+		res.status(200).json({ message: "User details successfully updated.", data: updatedUser });
+		next();
+	} catch (error: any) {
+		console.error(`Error while creating user: ${error}`);
+		error.message = "Username or email already taken."; 
 		next(error);
 	}
 });
