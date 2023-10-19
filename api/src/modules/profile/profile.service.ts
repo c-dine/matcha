@@ -45,10 +45,11 @@ export class ProfileService {
 		}
 	}
 
-	async getUserProfile(userId: string, requestedUserProfileId?: string): Promise<UserProfile> {
+	async getUserProfile(userId: string, requestedUserProfileId?: string): Promise<UserProfile | undefined> {
 		const userProfile = (await this.profileModel.findMany([{
 			user_id: userId
 		}]))[0];
+		if (!requestedUserProfileId && !userProfile?.id) return undefined;
 		const requestedProfile = await this.profileModel.getUserProfile(requestedUserProfileId || userProfile.id, userProfile);
 		return {
 			...this.formatProfile(requestedProfile as profile),
