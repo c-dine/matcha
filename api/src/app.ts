@@ -22,7 +22,7 @@ export const bucket = admin.storage().bucket();
 bucket.setMetadata(firebaseMetadata);
 
 app.use(cors({
-	origin: '*'
+	origin: env.url
 }));
 app.set("trust proxy", true);
 
