@@ -42,10 +42,11 @@ services:
 
   postgres:
     container_name: matcha_postgres
-    image: postgres:15.3
+    build: 
+      context: ./postgres
+      dockerfile: Dockerfile
     tty: true
     volumes:
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"

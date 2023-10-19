@@ -100,16 +100,6 @@ CREATE TABLE IF NOT EXISTS "notification" (
     FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO public.tag (label) VALUES ('Vegan');
-INSERT INTO public.tag (label) VALUES ('Queer');
-INSERT INTO public.tag (label) VALUES ('Food');
-INSERT INTO public.tag (label) VALUES ('Technology');
-INSERT INTO public.tag (label) VALUES ('Travel');
-INSERT INTO public.tag (label) VALUES ('Sport');
-INSERT INTO public.tag (label) VALUES ('Nerd');
-INSERT INTO public.tag (label) VALUES ('Drink');
-INSERT INTO public.tag (label) VALUES ('Party');
-
 CREATE OR REPLACE FUNCTION calculate_distance(lat1 float, lon1 float, lat2 float, lon2 float, units varchar)
 RETURNS float AS $dist$
     DECLARE
@@ -141,3 +131,16 @@ RETURNS float AS $dist$
         END IF;
     END;
 $dist$ LANGUAGE plpgsql;
+
+-- Data Initialisation --
+
+INSERT INTO public.tag (label) VALUES ('Vegan');
+INSERT INTO public.tag (label) VALUES ('Queer');
+INSERT INTO public.tag (label) VALUES ('Food');
+INSERT INTO public.tag (label) VALUES ('Technology');
+INSERT INTO public.tag (label) VALUES ('Travel');
+INSERT INTO public.tag (label) VALUES ('Sport');
+INSERT INTO public.tag (label) VALUES ('Nerd');
+INSERT INTO public.tag (label) VALUES ('Drink');
+INSERT INTO public.tag (label) VALUES ('Party');
+

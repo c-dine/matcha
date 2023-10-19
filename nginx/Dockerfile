@@ -6,6 +6,6 @@ RUN apt-get -y update \
 
 COPY conf/nginx.conf /etc/nginx/conf.d/default.conf 
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
