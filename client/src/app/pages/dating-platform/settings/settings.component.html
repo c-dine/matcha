@@ -2,13 +2,13 @@
 
 	<h1 class="user-details-label">User details</h1>
 	<div class="user-details-container rounded-box">
-		<div class="user-details-field-labels">
+		<div class="form-field-labels">
 			<span class="field-label">First name</span>
 			<span class="field-label">Last name</span>
 			<span class="field-label">Username</span>
 			<span class="field-label">Mail address</span>
 		</div>
-		<div class="user-details-field-values">
+		<div class="form-field-values">
 			<ng-container *ngIf="!isUserDetailsEditMode">
 				<span class="field-value">{{currentUser?.firstName}}</span>
 				<span class="field-value">{{currentUser?.lastName}}</span>
@@ -46,18 +46,18 @@
 
 			</ng-container>
 			</div>
-		<div class="user-details-actions">
+		<div class="form-actions">
 			<mat-icon 	*ngIf="!isUserDetailsEditMode" 
 						matTooltip="Edit user details" 
 						(click)="onEditUserDetails()"
 						>edit</mat-icon>
 			<mat-icon	*ngIf="isUserDetailsEditMode"
 						matTooltip="Submit"
-						(click)="oSubmitUserDetails()"
+						(click)="onSubmitUserDetails()"
 						>check</mat-icon>
 			<mat-icon	*ngIf="isUserDetailsEditMode"
 						matTooltip="Cancel"
-						(click)="onCancelUserDetails()"
+						(click)="onCancelUserDetailsEdit()"
 						>close</mat-icon>
 		</div>
 	</div>
@@ -68,6 +68,44 @@
 
 	<h1 class="password-label">Password</h1>
 	<div class="password-container rounded-box">
+		<div class="form-field-labels" *ngIf="passwordForm">
+			<span class="field-label">Last password</span>
+			<span class="field-label">New password</span>
+			<span class="field-label">Repeat new password</span>
+		</div>
+		<div class="form-field-values">
+			<ng-container *ngIf="passwordForm" [formGroup]="passwordForm">
+					<mat-form-field appearance="outline">
+						<input matInput type="password" id="lastPassword" formControlName="lastPassword" required>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<input matInput type="password" id="newPassword" formControlName="newPassword" required>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<input matInput type="password" id="repeatNewPassword" formControlName="repeatNewPassword" required>
+						<mat-error *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+							Password must be at least 8 characters, must contain at least 1 uppercase and 1 digit.
+						</mat-error>
+					</mat-form-field>
+
+			</ng-container>
+			</div>
+		<div class="form-actions">
+			<mat-icon 	*ngIf="!isPasswordEditMode" 
+						matTooltip="Edit password" 
+						(click)="onEditPassword()"
+						>edit</mat-icon>
+			<mat-icon	*ngIf="isPasswordEditMode"
+						matTooltip="Submit"
+						(click)="onSubmitPassword()"
+						>check</mat-icon>
+			<mat-icon	*ngIf="isPasswordEditMode"
+						matTooltip="Cancel"
+						(click)="onCancelPasswordEdit()"
+						>close</mat-icon>
+		</div>
 	</div>
 
 	<h1 class="blacklist-label">Blacklist</h1>

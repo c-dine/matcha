@@ -81,14 +81,16 @@ export class AuthService {
 
 	async getLoggedUser(
 		userAuthData: {
-			username: string,
+			username?: string,
+			id?: string,
 			password: string
 		}
 	): Promise<User> {
 		const loggedUser = (
-			await this.userModel.findMany([{
-				username: userAuthData.username,
-			}],
+			await this.userModel.findMany([
+				{ username: userAuthData.username, },
+				{ id: userAuthData.id, }
+			],
 			["id", "last_name", "first_name", "email", "username", "password"]
 		))[0];
 		if (!loggedUser || !(await this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password)))
@@ -102,25 +104,29 @@ export class AuthService {
 		});
 	}
 
-	async resetPassword(resetToken: string, password: string, dbClient: PoolClient) {
+	async resetPassword(resetToken: string, password: string) {
 		const decodedToken = decryptToken(resetToken, encryptionConfig.resetPasswordSecret, encryptionConfig.resetPasswordIV);
 		
 		if (Date.now() - new Date(decodedToken.timeStamp).getTime() > this.RESET_PASSWORD_TIME_LIMIT_MINUTES * 60 * 1000)
 			throw new CustomError("Expired link.", 403);
 		
-		const userModel = new UserModel(dbClient);
-		await userModel.updateById(decodedToken.userId, {
-			password: await this.encryptPassword(password)
+		await this.updatePassword(password, decodedToken.userId);
+	}
+
+	async updatePassword(newPassword: string, userId: string) {
+		const userModel = new UserModel(this.dbClient);
+		await userModel.updateById(userId, {
+			password: await this.encryptPassword(newPassword)
 		});
 	}
 
-	async verifyEmail(verificationToken: string, dbClient: PoolClient) : Promise<boolean> {
+	async verifyEmail(verificationToken: string) : Promise<boolean> {
 		const decodedToken = decryptToken(
 			verificationToken,
 			encryptionConfig.mailActivationSecret,
 			encryptionConfig.mailActivationIV
 		);
-		const userModel = new UserModel(dbClient);
+		const userModel = new UserModel(this.dbClient);
 		const updatedUsers = await userModel.update([{
 			id: decodedToken.userId,
 			email: decodedToken.email

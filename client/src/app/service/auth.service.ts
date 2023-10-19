@@ -64,6 +64,13 @@ export class AuthService {
 			);
 	}
 
+	updatePassword(lastPassword: string, newPassword: string): Observable<void> {
+		return this.http.put<void>(environment.apiUrl + '/auth/updatePassword', {
+			lastPassword,
+			newPassword
+		});
+	}
+
 	setSession(user: AuthenticatedUser) {
 		this.setRefreshToken(user.token.refresh || "");
 		this.accessTokenSubject.next(user.token.access);
@@ -116,7 +123,6 @@ export class AuthService {
         return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
 			.pipe(
 				tap((authenticatedUser: AuthenticatedUser) => {
-					console.log(authenticatedUser);
 					this.accessTokenSubject.next(authenticatedUser.token.access);
 					this.currentUserSubject.next(authenticatedUser as User);
 				})
