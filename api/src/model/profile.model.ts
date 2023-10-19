@@ -99,8 +99,8 @@ export class ProfileModel extends ModelBase {
 
 	private getSexualProfileFiltersQuery(userProfile: profile): string {
 		let query = " AND ";
-		const userSexualPreference = userProfile.gender === 'binary' ? '' 
-			: `(profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='binary')`;
+		const userSexualPreference = userProfile.gender === 'undefined' ? '' 
+			: `(profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='undefined')`;
 
 		switch (userProfile.sexual_preferences) {
 			case 'female':
@@ -110,7 +110,7 @@ export class ProfileModel extends ModelBase {
 				query += `(profile.gender != 'female' ${userSexualPreference.length ? ' AND' + userSexualPreference : ''})`
 				break;
 			default:
-				if (userProfile.gender === 'binary') return " ";
+				if (userProfile.gender === 'undefined') return " ";
 				query += userSexualPreference;
 				break;
 		}
