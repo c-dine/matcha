@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS "user" (
 
 CREATE TABLE IF NOT EXISTS "profile" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "gender" VARCHAR(100) DEFAULT 'Not specified',
+    "gender" VARCHAR(100) DEFAULT 'undefined',
     "birth_date" DATE,
-    "sexual_preferences" VARCHAR(100) DEFAULT 'bisexual',
+    "sexual_preferences" VARCHAR(100) DEFAULT 'undefined',
     "biography" VARCHAR(510),
     "location_latitude" FLOAT NULL,
 	"location_longitude" FLOAT NULL,
