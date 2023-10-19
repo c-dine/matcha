@@ -10,10 +10,11 @@
             <mat-label>Password</mat-label>
             <input matInput [(ngModel)]="password" name="password" type="password" required>
 		</mat-form-field>
+        
+        <a (click)="recoverPassword()" class="password-recovery">Trouble logging in ?</a>
+        <div class="button-group">
+            <button mat-dialog-close class="custom-button cancel-button">Cancel</button>
+            <button (click)="onSubmit()" class="custom-button submit-button">Log in</button>
+        </div>
     </form>
-</div>
-<a (click)="recoverPassword()" class="password-recovery">Trouble logging in ?</a>
-<div class="button-group">
-    <button mat-dialog-close class="custom-button cancel-button">Cancel</button>
-    <button (click)="onSubmit()" class="custom-button submit-button">Log in</button>
 </div>
