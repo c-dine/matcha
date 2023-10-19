@@ -144,3 +144,47 @@ INSERT INTO public.tag (label) VALUES ('Nerd');
 INSERT INTO public.tag (label) VALUES ('Drink');
 INSERT INTO public.tag (label) VALUES ('Party');
 
+-- Generate 20 couples of user profiles
+-- Générer 20 couples de profils utilisateur
+DO $$ 
+DECLARE 
+    genders varchar[] := ARRAY['male', 'female', 'undefined'];
+    first_names varchar[] := ARRAY['Charles', 'Marie', 'Jean', 'Sophie', 'Pierre', 'Julie', 'Thomas', 'Laura', 'Nicolas', 'Emma', 'Paul', 'Alice', 'Antoine', 'Céline', 'Lucas', 'Charlotte', 'Alexandre', 'Eléonore', 'Louis', 'Amélie'];
+    last_names varchar[] := ARRAY['Dupont', 'Martin', 'Lefebvre', 'Dubois', 'Moreau', 'Laurent', 'Girard', 'Roux', 'Fontaine', 'Garnier', 'Faure', 'Lemoine', 'Rousseau', 'Leroy', 'Adam', 'Bertrand', 'Garcia', 'Fournier', 'Mercier', 'Blanc'];
+    fn_index integer;
+    ln_index integer;
+    f_name varchar;
+    l_name varchar;
+    u_name varchar;
+    birth_date date;
+    location_latitude float;
+    location_longitude float;
+BEGIN
+    FOR i IN 1..20 LOOP
+        -- Set first_name and last_name based on the loop index
+        SELECT first_names[i] INTO f_name;
+        SELECT last_names[i] INTO l_name;
+        
+        -- Create the username from the first letter of first_name and last_name
+        SELECT left(f_name, 1) || l_name INTO u_name;
+
+        -- Generate a random birth_date between 1970-01-01 and 2003-12-31
+        SELECT (to_date('1970-01-01', 'YYYY-MM-DD') + trunc(random() * 12000) * '1 day'::interval) INTO birth_date;
+
+        -- Generate random location_latitude and location_longitude
+        SELECT random() * 180 - 90 INTO location_latitude;
+        SELECT random() * 360 - 180 INTO location_longitude;
+
+        -- Insérer un utilisateur
+        INSERT INTO "user" ("id", "username", "last_name", "first_name", "email", "password", "verified_account")
+        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2b$10$NFdgmiKxlmkUdoW7sk/WI.UyedzkJRADZpLDtByV2ci1Bb33P4vAi', TRUE);
+
+        -- Générer des valeurs aléatoires pour gender et sexual_preferences
+        SELECT array_agg(x ORDER BY random()) INTO genders FROM unnest(genders) t(x);
+        SELECT array_agg(x ORDER BY random()) INTO genders FROM unnest(genders) t(x);
+
+        -- Insérer un profil correspondant à l'utilisateur
+        INSERT INTO "profile" ("id", "gender", "birth_date", "sexual_preferences", "biography", "location_latitude", "location_longitude", "fame_rate", "user_id")
+        VALUES (uuid_generate_v4(), genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 100, (SELECT "id" FROM "user" WHERE "username" = u_name));
+    END LOOP;
+END $$;
