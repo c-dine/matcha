@@ -4,7 +4,7 @@ import { mailController } from './modules/mail/mail.controller.js';
 import { profileController } from './modules/profile/profile.controller.js';
 import { tagController } from './modules/tag/tag.controller.js';
 import { pictureController } from './modules/picture/picture.controller.js';
-import { blacklistController } from './modules/blacklist/blacklist.controller.js';
+import { blacklistController } from './modules/interactions/blacklist/blacklist.controller.js';
 
 export const routes: { [route: string]: Router } = {
     "/auth": authController,

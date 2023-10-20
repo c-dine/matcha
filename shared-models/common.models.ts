@@ -36,7 +36,7 @@ export interface View {
 export interface Blacklist {
 	id?: string;
 	profileId?: string;
-	blacklistedProfileId?: string;
+	targetProfileId?: string;
 	date?: Date;
 }
 

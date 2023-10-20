@@ -6,6 +6,10 @@ export interface User {
 	username: string;
 }
 
+export interface UserWithProfileId extends User {
+	profileId: string;
+}
+
 export interface AuthenticatedUser extends User {
 	token: {
 		refresh?: string,

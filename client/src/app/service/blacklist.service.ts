@@ -1,38 +1,52 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { Blacklisted } from '@shared-models/blacklist.model';
-import { BehaviorSubject, tap } from 'rxjs';
+import { Interaction } from '@shared-models/interactions.model';
+import { BehaviorSubject, Observable, firstValueFrom, tap } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class BlacklistService {
 
-	private blacklist: BehaviorSubject<Blacklisted[] | undefined> = new BehaviorSubject<Blacklisted[] | undefined>(undefined);
+	private blacklist: BehaviorSubject<Interaction[]> = new BehaviorSubject<Interaction[]>([]);
 
 	constructor(
 		private http: HttpClient
-	) { }
+	) { 
+		firstValueFrom(this.getBlacklist());
+	}
+
+	getBlacklistObs(): Observable<Interaction[]> {
+		return this.blacklist.asObservable();
+	}
 
 	getBlacklist() {
-		return this.http.get<Blacklisted[]>(`${environment.apiUrl}/blacklist/`)
+		return this.http.get<Interaction[]>(`${environment.apiUrl}/blacklist/`)
 			.pipe(
-				tap((blacklist: Blacklisted[]) => this.blacklist.next(blacklist))
+				tap((blacklist: Interaction[]) => this.blacklist.next(blacklist))
 			);
 	}
 
-	addBlacklisted(blacklistedUserId: string) {
-		let blacklist = this.blacklist.value;
-		blacklist?.push({ blacklistedUserId, date: new Date() });
-		this.blacklist.next(blacklist);
-		return this.http.post<Blacklisted>(`${environment.apiUrl}/blacklist/`, blacklistedUserId);
+	addBlacklisted(targetProfileId: string) {
+		return this.http.post<Interaction>(`${environment.apiUrl}/blacklist/`, { targetProfileId })
+			.pipe(
+				tap(blacklisted => {
+					const blacklist = this.blacklist.value;
+					blacklist.push(blacklisted);
+					this.blacklist.next(blacklist);
+				})
+			);
 	}
 
-	deleteBlacklisted(blacklistedUserId: string) {
+	deleteBlacklisted(targetProfileId: string) {
 		let blacklist = this.blacklist.value;
-		blacklist = blacklist?.filter((blacklisted) => blacklisted.blacklistedUserId !== blacklistedUserId);
+		blacklist = blacklist?.filter((blacklisted) => blacklisted.targetProfileId !== targetProfileId);
 		this.blacklist.next(blacklist);
-		return this.http.delete<void>(`${environment.apiUrl}/blacklist/${blacklistedUserId}`);
+		return this.http.delete<void>(`${environment.apiUrl}/blacklist/${targetProfileId}`);
+	}
+
+	isProfileBlocked(profileId: string): boolean {
+		return !!this.blacklist.value.find((blacklisted) => blacklisted.targetProfileId === profileId);
 	}
 }

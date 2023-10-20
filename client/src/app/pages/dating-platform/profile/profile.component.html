@@ -16,7 +16,8 @@
 		<div class="action-buttons" *ngIf="profile.id !== currentUserProfile?.id">
 			<mat-icon matTooltip='Like'>favorite</mat-icon>
 			<mat-icon matTooltip='Message'>message</mat-icon>
-			<mat-icon matTooltip='Block'>block</mat-icon>
+			<mat-icon matTooltip='Block' (click)="onBlacklistUserClick()" *ngIf="!isProfileBlacklisted()">block</mat-icon>
+			<mat-icon matTooltip='Unblock' (click)="onUnblacklistUserClick()" *ngIf="isProfileBlacklisted()">lock_open</mat-icon>
 			<mat-icon matTooltip='Report'>flag</mat-icon>
 		</div>
 

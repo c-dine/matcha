@@ -110,6 +110,10 @@
 
 	<h1 class="blacklist-label">Blacklist</h1>
 	<div class="blacklist-container rounded-box">
+		<div *ngIf="!blacklist.length">No blacklisted users.</div>
+		<div *ngIf="blacklist.length">
+			<div *ngFor="let blacklisted of blacklist">{{blacklisted.username}}</div>
+		</div>
 	</div>
 
 	<h1 class="reportlist-label">Reported users</h1>
