@@ -34,3 +34,13 @@ export function ageValidator(age: number): ValidatorFn {
 		return null;
 	};
 }
+
+export function passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
+	if (control.value == null || control.value === '')
+		return null;
+
+	const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+	if (!passwordRegex.test(control.value))
+		return { invalidPassword: true };
+	return null;
+}

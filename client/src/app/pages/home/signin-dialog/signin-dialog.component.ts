@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { passwordValidator } from 'src/app/validators/custom-validators';
 
 @Component({
     selector: 'app-signin-dialog',
@@ -22,7 +23,7 @@ export class SigninDialogComponent {
 		firstName: new FormControl('', Validators.required),
 		lastName: new FormControl('', Validators.required),
 		email: new FormControl('', [Validators.required, Validators.email]),
-		password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+		password: new FormControl('', [Validators.required, passwordValidator]),
     });
 
     onSubmit() {
