@@ -143,7 +143,7 @@ export class ProfileService {
 		const matchingProfiles = 
 			await this.profileModel.getMatchingProfiles(currentUserProfile, filters);
 		return {
-			totalUserCount: (matchingProfiles as any)[0]?.total_user_count || 0,
+			totalUserCount: matchingProfiles.length,
 			userList: matchingProfiles.map(user => ({
 				...this.formatProfile(user as profile),
 				...(new AuthService(this.dbClient)).formatUser(user as user),

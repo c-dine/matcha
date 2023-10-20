@@ -4,7 +4,7 @@
             <h3 class="dating-name">{{ firstName }} {{ lastName }}</h3>
             <div class="dating-flex-row">
                 <mat-icon class="dating-card-description-location-icon">location_on</mat-icon>
-                <p class="dating-location">{{ location }}</p>
+                <p class="dating-location">{{ distance | number : '1.1-1' }} km from you</p>
             </div>
         </div>
         <div class="dating-flex-row-reversed gap-10 dating-width-90">
@@ -13,6 +13,6 @@
         </div>
     </div>
     <div class="dating-width-80">
-        <p class="dating-resume">{{ resume }}</p>
+        <p class="dating-resume">{{ biography }}</p>
     </div>
 </div>

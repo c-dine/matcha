@@ -16,10 +16,10 @@ export class DatingCardDescriptionComponent {
   lastName!: string;
 
   @Input()
-  location!: string;
+  distance!: number | undefined;
 
   @Input()
-  resume!: string;
+  biography!: string;
 
   @Output()
   clicked: EventEmitter<any> = new EventEmitter();

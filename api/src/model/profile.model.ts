@@ -165,7 +165,6 @@ export class ProfileModel extends ModelBase {
 		const query = this.getMatchingProfileQuery(currentUserProfile);
 		const filterValues = this.getUserListQueryValues(filters);
 		const result = await this.dbClient.query(query, filterValues);
-
 		return result.rows;
 	}
 
@@ -179,6 +178,8 @@ export class ProfileModel extends ModelBase {
 			currentUserProfile
 		)}
 			WHERE profile.id != '${currentUserProfile.id}'
+			AND profile.gender = '${currentUserProfile.sexual_preferences}'
+			AND profile.sexual_preferences = '${currentUserProfile.gender}'
 			GROUP BY
 				profile.id,
 				"user".username,

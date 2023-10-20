@@ -1,15 +1,29 @@
-<div class="dating-page-container">
-	<div class="dating-card-container">
-		<div class="image-slider">
-			<app-image-slider [picturesUrl]="picturesUrl"></app-image-slider>
-		</div>
-		<app-dating-card-description
-			(clicked)="onDatingButtonClick()"
-			[firstName]="firstName"
-			[lastName]="lastName"
-			[location]="location"
-			[resume]="resume"
-		/>
-		<app-dating-card-passions/>
-	</div>
+<div *ngIf="hasMatchingProfiles(); then matchFound else noMatchFound">
+
 </div>
+
+<ng-template #matchFound>
+	<div class="dating-page-container">
+		<div class="dating-card-container" *ngIf="!isLoading">
+			<div class="image-slider">
+				<app-image-slider [picturesUrl]="picturesIdsToPicturesUrls(matchingProfiles[0].picturesIds)"></app-image-slider>
+			</div>
+			<app-dating-card-description
+				(clicked)="onDatingButtonClick()"
+				[firstName]="matchingProfiles[0].firstName"
+				[lastName]="matchingProfiles[0].lastName"
+				[distance]="matchingProfiles[0].ditanceKm"
+				[biography]="matchingProfiles[0].biography"
+			/>
+			<app-dating-card-passions
+				[tags]="matchingProfiles[0].tags"
+			/>
+		</div>
+	</div>
+</ng-template>
+<ng-template #noMatchFound>
+	<div class="dating-page-container">
+		No match found.
+	</div>
+</ng-template>
+
