@@ -54,7 +54,7 @@ export class ProfileService {
 		return {
 			...this.formatProfile(requestedProfile as profile),
 			...(new AuthService(this.dbClient)).formatUser(requestedProfile as user),
-			tags: requestedProfile.tags.split(','),
+			tags: requestedProfile.tags?.split(',') || [],
 			picturesIds: {
 				profilePicture: requestedProfile.profile_picture_id,
 				additionnalPicture: requestedProfile.additionnal_pictures_ids?.split(',') || []
@@ -74,7 +74,7 @@ export class ProfileService {
 				userList: userlist.map(user => ({
 					...this.formatProfile(user as profile),
 					...(new AuthService(this.dbClient)).formatUser(user as user),
-					tags: user.tags.split(','),
+					tags: user.tags?.split(',') || [],
 					picturesIds: {
 						profilePicture: user.profile_picture_id,
 						additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
