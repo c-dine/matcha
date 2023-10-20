@@ -26,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { SliderPopupComponent } from './filters/slider-popup/slider-popup.component';
 import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
 import { ImageSliderComponent } from './image-slider/image-slider.component';
+import { UsersWithActionTableComponent } from './users-with-action-table/users-with-action-table.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { ImageSliderComponent } from './image-slider/image-slider.component';
 	DoubleSliderPopupComponent,
 	SliderPopupComponent,
 	TagsPopupComponent,
-	ImageSliderComponent
+	ImageSliderComponent,
+	UsersWithActionTableComponent
   ],
   imports: [
     CommonModule,
@@ -70,7 +72,8 @@ import { ImageSliderComponent } from './image-slider/image-slider.component';
 	SliderPopupComponent,
 	DoubleSliderPopupComponent,
 	TagsPopupComponent,
-	ImageSliderComponent
+	ImageSliderComponent,
+	UsersWithActionTableComponent
   ]
 })
 export class SharedModule { }

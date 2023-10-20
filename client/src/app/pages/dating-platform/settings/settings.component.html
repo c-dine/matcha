@@ -109,13 +109,13 @@
 	</div>
 
 	<h1 class="blacklist-label">Blacklist</h1>
-	<div class="blacklist-container rounded-box">
-		<div *ngIf="!blacklist.length">No blacklisted users.</div>
-		<div *ngIf="blacklist.length">
-			<div *ngFor="let blacklisted of blacklist">{{blacklisted.username}}</div>
-		</div>
+	<div class="blacklist-container rounded-box" *ngIf="!blacklist.length">
+		<div>No blacklisted users.</div>
 	</div>
-
+	<div class="blacklist-container" *ngIf="blacklist.length">
+		<app-users-with-action-table [users]="blacklist" actionLabel="Unblock" (action)="unblacklist($event)"></app-users-with-action-table>
+	</div>
+	
 	<h1 class="reportlist-label">Reported users</h1>
 	<div class="reportlist-container rounded-box">
 	</div>

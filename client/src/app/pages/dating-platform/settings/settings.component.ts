@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Interaction } from "@shared-models/interactions.model";
 import { User } from "@shared-models/user.model";
-import { Subscription } from "rxjs";
+import { Subscription, firstValueFrom } from "rxjs";
 import { AuthService } from "src/app/service/auth.service";
 import { BlacklistService } from "src/app/service/blacklist.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
@@ -133,5 +133,10 @@ export class SettingsComponent {
 				},
 				error: () => {}
 			});
+	}
+
+	// BLACKLIST
+	async unblacklist(profileId: string) {
+		await firstValueFrom(this.blacklistService.deleteBlacklisted(profileId));
 	}
 }

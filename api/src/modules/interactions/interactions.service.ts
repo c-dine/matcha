@@ -37,7 +37,8 @@ export class InteractionsService {
 		const associatedUser = (await authService.getUsersFromProfileIds([targetProfileId]))[0];
 		await this.interactionsModel.create({
 			target_profile_id: targetProfileId,
-			user_id: userId
+			user_id: userId,
+			date: new Date()
 		});
 		return {
 			profilePicId: (await pictureService.getProfilePictures(targetProfileId)).profilePicture || undefined,
