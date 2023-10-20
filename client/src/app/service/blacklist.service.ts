@@ -31,8 +31,8 @@ export class BlacklistService {
 
 	deleteBlacklisted(blacklistedUserId: string) {
 		let blacklist = this.blacklist.value;
-		blacklist?.filter((blacklisted) => blacklisted.blacklistedUserId !== blacklistedUserId);
+		blacklist = blacklist?.filter((blacklisted) => blacklisted.blacklistedUserId !== blacklistedUserId);
 		this.blacklist.next(blacklist);
-		return this.http.delete<void>(`${environment.apiUrl}/blacklist/?blacklistedUserId=${blacklistedUserId}`);
+		return this.http.delete<void>(`${environment.apiUrl}/blacklist/${blacklistedUserId}`);
 	}
 }

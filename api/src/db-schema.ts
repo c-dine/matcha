@@ -29,29 +29,29 @@ interface picture {
 
 interface like {
 	id: string;
-	profile_id: string;
-	liked_profile_id: string;
+	user_id: string;
+	liked_user_id: string;
 	date?: Date;
 }
 
 interface view {
 	id: string;
-	profile_id: string;
-	viewed_profile_id: string;
+	user_id: string;
+	viewed_user_id: string;
 	date?: Date;
 }
 
 interface blacklist {
 	id: string;
-	profile_id: string;
-	blacklisted_profile_id: string;
+	user_id: string;
+	blacklisted_user_id: string;
 	date?: Date;
 }
 
 interface fakeReport {
 	id: string;
-	profile_id: string;
-	fake_reported_profile_id: string;
+	user_id: string;
+	fake_reported_user_id: string;
 	date?: Date;
 }
 
@@ -67,8 +67,8 @@ interface user {
 
 interface message {
 	id: string;
-	from_profile_id: string;
-	to_profile_id: string;
+	from_user_id: string;
+	to_user_id: string;
 	message?: string;
 	date?: Date;
 }
@@ -76,8 +76,8 @@ interface message {
 interface notification {
 	id: string;
 	is_viewed?: boolean;
-	from_profile_id: string;
-	to_profile_id: string;
+	from_user_id: string;
+	to_user_id: string;
 	type?: string;
 	date?: Date;
 }

@@ -22,7 +22,7 @@ blacklistController.post("/", async (req: Request, res: Response, next: NextFunc
 	try {
 		const blacklistedUserId = req.body;
 		const blacklistService = new BlacklistService(req.dbClient);
-		await blacklistService.addBlacklist(req.userId, blacklistedUserId);
+		await blacklistService.addBlacklisted(req.userId, blacklistedUserId);
 
 		res.status(201).json({ 
 			data: {
@@ -39,7 +39,7 @@ blacklistController.post("/", async (req: Request, res: Response, next: NextFunc
 	}
 });
 
-blacklistController.delete("/?:blacklistedUserId", async (req: Request, res: Response, next: NextFunction) => {
+blacklistController.delete("/:blacklistedUserId", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const blacklistedUserId = req.params.blacklistedUserId;
 		const blacklistService = new BlacklistService(req.dbClient);
