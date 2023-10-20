@@ -45,59 +45,59 @@ CREATE TABLE IF NOT EXISTS "picture" (
 
 CREATE TABLE IF NOT EXISTS "like" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "liked_profile_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
+    "liked_user_id" UUID NOT NULL,
     "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("liked_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("liked_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "view" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "viewed_profile_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
+    "viewed_user_id" UUID NOT NULL,
     "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("viewed_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("viewed_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "blacklist" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "blacklisted_profile_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
+    "blacklisted_user_id" UUID NOT NULL,
     "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("blacklisted_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("blacklisted_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "fake_report" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "fake_reported_profile_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
+    "fake_reported_user_id" UUID NOT NULL,
     "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("fake_reported_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("fake_reported_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "messages" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "from_profile_id" UUID NOT NULL,
-    "to_profile_id" UUID NOT NULL,
+    "from_user_id" UUID NOT NULL,
+    "to_user_id" UUID NOT NULL,
     "message" VARCHAR(510) NOT NULL,
     "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("from_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("from_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("to_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "notification" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "is_viewed" BOOLEAN DEFAULT FALSE,
-    "from_profile_id" UUID NOT NULL,
-    "to_profile_id" UUID NOT NULL,
+    "from_user_id" UUID NOT NULL,
+    "to_user_id" UUID NOT NULL,
     "type" VARCHAR(510) NOT NULL,
     "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("from_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("from_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("to_user_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE OR REPLACE FUNCTION calculate_distance(lat1 float, lon1 float, lat2 float, lon2 float, units varchar)
