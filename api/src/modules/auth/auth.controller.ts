@@ -98,7 +98,7 @@ authController.post("/resetPassword", async (req: Request, res: Response, next: 
 		const password = req.body.password;
 		const authService = new AuthService(req.dbClient);
 
-		await authService.resetPassword(resetToken, password, req.dbClient);
+		await authService.resetPassword(resetToken, password);
 
 		res.status(200).json({ message: "Password successfully reset."});
 		next();
@@ -113,7 +113,7 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 	try {
 		const verificationToken = req.body.verificationToken;
 		const authService = new AuthService(req.dbClient);
-		const emailIsValid = await authService.verifyEmail(verificationToken, req.dbClient);
+		const emailIsValid = await authService.verifyEmail(verificationToken);
 		
 		if (!emailIsValid)
 			throw new Error();
@@ -137,6 +137,29 @@ authController.put("/", async (req: Request, res: Response, next: NextFunction) 
 	} catch (error: any) {
 		console.error(`Error while creating user: ${error}`);
 		error.message = "Username or email already taken."; 
+		next(error);
+	}
+});
+
+authController.put("/updatePassword", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const newPassword = req.body.newPassword;
+		const lastPassword = req.body.lastPassword;
+		const userId = req.userId;
+		const authService = new AuthService(req.dbClient);
+
+		try {
+			await authService.getLoggedUser({ id: userId, password: lastPassword });
+		} catch (e: any) {
+			throw new CustomError("Last password doesn't match the one stored in the database.", 400);
+		}
+		await authService.updatePassword(newPassword, userId);
+
+		res.status(200).json({ message: "Password successfully updated."});
+		next();
+	} catch (error: any) {
+		console.error(`Error while updating password: ${error}`);
+		error.message = error.message || "Error while updating password.";
 		next(error);
 	}
 });

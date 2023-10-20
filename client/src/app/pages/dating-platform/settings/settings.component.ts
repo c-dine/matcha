@@ -2,8 +2,9 @@ import { Component } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { User } from "@shared-models/user.model";
-import { Subscription } from "rxjs";
+import { Subscription, firstValueFrom } from "rxjs";
 import { AuthService } from "src/app/service/auth.service";
+import { passwordValidator } from "src/app/validators/custom-validators";
 
 @Component({
 	selector: 'app-settings',
@@ -14,7 +15,9 @@ export class SettingsComponent {
 
 	currentUser: User | undefined;
 	userForm!: FormGroup;
+	passwordForm!: FormGroup;
 	isUserDetailsEditMode = false;
+	isPasswordEditMode = false;
 
 	mySubscriptions: Subscription[] = [];
 
@@ -29,6 +32,15 @@ export class SettingsComponent {
 				next: (user) => this.currentUser = user
 			})
 		);
+		this.initPasswordForm();
+		this.passwordForm.disable();
+	}
+
+	// USER DETAILS
+
+	onCancelUserDetailsEdit() {
+		this.isUserDetailsEditMode = false;
+		this.initUserForm();
 	}
 
 	onEditUserDetails() {
@@ -36,7 +48,16 @@ export class SettingsComponent {
 		this.initUserForm();
 	}
 
-	oSubmitUserDetails() {
+	initUserForm() {
+		this.userForm = new FormGroup({
+			firstName: new FormControl(this.currentUser?.firstName),
+			lastName: new FormControl(this.currentUser?.lastName),
+			email: new FormControl(this.currentUser?.email, [Validators.required, Validators.email]),
+			username: new FormControl(this.currentUser?.username, [Validators.required]),
+		});
+	}
+
+	onSubmitUserDetails() {
 		if (this.userForm.invalid) {
 			this.snackBar.open("Some fields have invalid values.", "Close", {
 				duration: 4000,
@@ -49,17 +70,54 @@ export class SettingsComponent {
 		});
 	}
 
-	onCancelUserDetails() {
-		this.isUserDetailsEditMode = false;
-		this.initUserForm();
+	// PASSWORD
+
+	onCancelPasswordEdit() {
+		this.isPasswordEditMode = false;
+		this.initPasswordForm();
+		this.passwordForm.disable();
 	}
 
-	initUserForm() {
-		this.userForm = new FormGroup({
-			firstName: new FormControl(this.currentUser?.firstName),
-			lastName: new FormControl(this.currentUser?.lastName),
-			email: new FormControl(this.currentUser?.email, [Validators.required, Validators.email]),
-			username: new FormControl(this.currentUser?.username, [Validators.required]),
+	onEditPassword() {
+		this.isPasswordEditMode = true;
+		this.passwordForm.enable();
+		this.initPasswordForm();
+	}
+
+	initPasswordForm() {
+		this.passwordForm = new FormGroup({
+			lastPassword: new FormControl('', Validators.required),
+			newPassword: new FormControl('', [Validators.required, passwordValidator]),
+			repeatNewPassword: new FormControl('', [Validators.required, passwordValidator]),
 		});
+	}
+
+	async onSubmitPassword() {
+		if (this.passwordForm.get('newPassword')?.value !== this.passwordForm.get('repeatNewPassword')?.value) {
+			this.snackBar.open("Passwords don't match.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return;
+		}
+		if (this.passwordForm.get('newPassword')?.invalid) {
+			this.snackBar.open("Password must be at least 8 characters, must contain at least 1 uppercase and 1 digit.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return;
+		}
+		this.authService.updatePassword(
+			this.passwordForm.get('lastPassword')?.value,
+			this.passwordForm.get('newPassword')?.value
+			)
+			.subscribe({
+				next: () => { 
+					this.isPasswordEditMode = false;
+					this.initPasswordForm();
+					this.passwordForm.disable();
+				},
+				error: () => {}
+			});
 	}
 }

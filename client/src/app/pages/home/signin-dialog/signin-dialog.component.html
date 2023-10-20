@@ -39,16 +39,17 @@
                 <mat-label for="password">Password</mat-label>
                 <input matInput type="password" id="password" formControlName="password" required>
 				<mat-error *ngIf="newUserForm.get('password')?.invalid && newUserForm.get('password')?.touched">
-					Password must be at least 6 characters.
-				</mat-error>
+                    Password must be at least 8 characters, must contain at least 1 uppercase and 1 digit.
+                </mat-error>
             </mat-form-field>
+
+            <div class="button-group">
+                <button mat-dialog-close class="custom-button cancel-button">Cancel</button>
+                <button (click)="onSubmit()" class="custom-button submit-button">Sign in</button>
+            </div>
         
         </form>
   
-    </div>
-    <div class="button-group">
-        <button mat-dialog-close class="custom-button cancel-button">Cancel</button>
-        <button (click)="onSubmit()" class="custom-button submit-button">Sign in</button>
     </div>
 
 </div>
