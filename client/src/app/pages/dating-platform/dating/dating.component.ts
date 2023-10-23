@@ -4,6 +4,8 @@ import { ProfileService } from 'src/app/service/profile.service';
 import { Profile, ProfileFilters, UserList, UserProfile } from '@shared-models/profile.model';
 import { picturesIdsToPicturesUrls } from 'src/app/utils/picture.utils';
 
+import { SocketService } from 'src/app/service/socket.service';
+
 @Component({
 	selector: 'app-dating',
 	templateUrl: './dating.component.html',
@@ -18,6 +20,7 @@ export class DatingComponent implements OnInit {
 
 	constructor(
 		private profileService: ProfileService,
+		private socketService: SocketService,
 	) {
 		this.isLoading = true;
 		this.picturesUrl = [];
