@@ -8,7 +8,6 @@ import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
 import { map, tap } from 'rxjs/operators';
 import { ProfileService } from './profile.service';
-import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +20,6 @@ export class AuthService {
 
     constructor(
         private http: HttpClient,
-        private router: Router,
 		private profileService: ProfileService
     ) {}
 

@@ -84,7 +84,10 @@ export class ProfileModel extends ModelBase {
 		}
 		query += ` AND profile.id NOT IN (
 			SELECT target_profile_id FROM blacklist WHERE blacklist.user_id = '${userProfile.user_id}'
-		)`;
+			)`;
+		query += ` AND "user".id NOT IN (
+			SELECT user_id FROM blacklist WHERE blacklist.target_profile_id = '${userProfile.id}'
+			)`;
 		query += this.getSexualProfileFiltersQuery(userProfile);
 		query += `
 			GROUP BY
