@@ -8,6 +8,7 @@ import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
 import { map, tap } from 'rxjs/operators';
 import { ProfileService } from './profile.service';
+import { Location } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +82,7 @@ export class AuthService {
 		this.stopTrackingLocationChanges();
 		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
-		this.router.navigate(['/']);
+		window.location.reload();
 	}
 
   	async isLoggedIn(): Promise<boolean> {
