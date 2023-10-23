@@ -21,14 +21,17 @@ export class InteractionsService {
 		const targetedProfileIds = list.map(element => element.target_profile_id);
 		const targetedUsers = await authService.getUsersFromProfileIds(targetedProfileIds);
 		const targetProfilePictures = await pictureService.getProfilePicIdsOfProfileIds(targetedProfileIds);
-		return targetedUsers.map(targetedUser => ({
-			profilePicId: targetProfilePictures.find(pic => pic.profileId === targetedUser.profileId)?.id || undefined,
-			username: targetedUser.username,
-			lastName: targetedUser.lastName,
-			firstName: targetedUser.firstName,
-			targetProfileId: targetedUser.profileId,
-			date: list.find(element => element.target_profile_id === targetedUser.profileId).date
-		}));
+		return list.map(datedProfileIdsList => {
+			const targetedUser = targetedUsers.find(user => user.profileId === datedProfileIdsList.target_profile_id);
+			return {
+				profilePicId: targetProfilePictures.find(pic => pic.profileId === targetedUser.profileId)?.id || undefined,
+				username: targetedUser.username,
+				lastName: targetedUser.lastName,
+				firstName: targetedUser.firstName,
+				targetProfileId: targetedUser.profileId,
+				date: list.find(element => element.target_profile_id === targetedUser.profileId).date
+			}
+		});
 	}
 
 	async addElement(userId: string, targetProfileId: string): Promise<Interaction> {

@@ -6,7 +6,7 @@
             <tr class="table-header-row">
                 <th class="table-header-first-column">USER</th>
                 <th>DATE</th>
-                <th></th>
+                <th *ngIf="actionLabel"></th>
             </tr>
         </thead>
 
@@ -25,9 +25,9 @@
                     </div>
                 </td>
 
-                <td>{{formatDate(user.date, 'dd-MM-YYYY', 'en-US')}}</td>
+                <td>{{formatDate(user.date, 'dd-MM-YYYY HH:mm', 'en-US')}}</td>
 
-                <td class="action-column">
+                <td class="action-column" *ngIf="actionLabel">
                     <button class="custom-button cancel-button" (click)="onActionClick(user.targetProfileId)">{{actionLabel}}</button>
                 </td>
 

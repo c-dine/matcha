@@ -7,6 +7,7 @@ import { Subscription, firstValueFrom } from "rxjs";
 import { AuthService } from "src/app/service/auth.service";
 import { BlacklistService } from "src/app/service/blacklist.service";
 import { FakeReportService } from "src/app/service/fake-report.service";
+import { ViewService } from "src/app/service/view.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
 
 @Component({
@@ -24,6 +25,7 @@ export class SettingsComponent {
 
 	blacklist!: Interaction[];
 	fakeReportList!: Interaction[];
+	viewsList!: Interaction[];
 
 	mySubscriptions: Subscription[] = [];
 
@@ -31,6 +33,7 @@ export class SettingsComponent {
 		private authService: AuthService,
 		private blacklistService: BlacklistService,
 		private fakeReportService: FakeReportService,
+		private viewService: ViewService,
 		private snackBar: MatSnackBar
 	) { }
 
@@ -48,6 +51,11 @@ export class SettingsComponent {
 		this.mySubscriptions.push(
 			this.fakeReportService.getFakeReportListObs().subscribe({
 				next: (fakeReportList) => this.fakeReportList = fakeReportList
+			})
+		);
+		this.mySubscriptions.push(
+			this.viewService.getViewsListObs().subscribe({
+				next: (viewsList) => this.viewsList = viewsList
 			})
 		);
 		this.initPasswordForm();
