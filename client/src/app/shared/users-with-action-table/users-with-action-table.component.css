@@ -73,5 +73,6 @@ thead {
 
 .action-column {
 	display: flex;
-	justify-content: center;
+	justify-content: right;
+	margin-right: 20px;
 }
