@@ -26,13 +26,13 @@ tr {
 	border-bottom: thin solid lightgray;
 }
 
-tr:last-child {
-	border-bottom: none;
-}
-
 td, th {
 	height: 40px;
 	overflow: auto;
+}
+
+thead {
+	border-bottom: thick solid lightgray;
 }
 
 .user-column {
