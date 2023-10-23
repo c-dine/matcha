@@ -46,11 +46,10 @@ export class ProfileService {
 	}
 
 	async getUserProfile(userId: string, requestedUserProfileId?: string): Promise<UserProfile | undefined> {
-		const userProfile = (await this.profileModel.findMany([{
-			user_id: userId
-		}]))[0];
-		if (!requestedUserProfileId && !userProfile?.id) return undefined;
-		const requestedProfile = await this.profileModel.getUserProfile(requestedUserProfileId || userProfile.id, userProfile);
+		const currentUserProfile = await this.getCurrentUserProfile(userId);
+		if (!requestedUserProfileId && !currentUserProfile?.id) return undefined;
+		const requestedProfile = 
+			await this.profileModel.getUserProfile(requestedUserProfileId || currentUserProfile.id, currentUserProfile);
 		return {
 			...this.formatProfile(requestedProfile as profile),
 			...(new AuthService(this.dbClient)).formatUser(requestedProfile as user),
@@ -64,10 +63,8 @@ export class ProfileService {
 	}
 
 	async getUserList(filters: ProfileFilters, userId: string): Promise<UserList> {
-		const userProfile = (await this.profileModel.findMany([{
-			user_id: userId
-		}]))[0];
-		const userlist = await this.profileModel.getUserList(filters, userProfile);
+		const currentUserProfile = await this.getCurrentUserProfile(userId);
+		const userlist = await this.profileModel.getUserList(filters, currentUserProfile);
 
 		return {
 				totalUserCount: (userlist as any)[0]?.total_user_count || 0,
@@ -137,5 +134,32 @@ export class ProfileService {
 		} catch (error: any) {
 			console.error("Can't locate user.")
 		}
+	}
+
+	async getMatchingProfiles(userId: string, filters: ProfileFilters): Promise<UserList> {
+		const currentUserProfile = await this.getCurrentUserProfile(userId);
+		if (!currentUserProfile?.id)
+			return undefined;
+		const matchingProfiles = 
+			await this.profileModel.getMatchingProfiles(currentUserProfile, filters);
+		return {
+			totalUserCount: matchingProfiles.length,
+			userList: matchingProfiles.map(user => ({
+				...this.formatProfile(user as profile),
+				...(new AuthService(this.dbClient)).formatUser(user as user),
+				tags: user.tags?.split(',') || [],
+				picturesIds: {
+					profilePicture: user.profile_picture_id,
+					additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
+				},
+				ditanceKm: user.distance_km
+			}))
+		} 
+	}
+
+	private async getCurrentUserProfile(userId: string): Promise<profile | undefined>  {
+		return (await this.profileModel.findMany([{
+			user_id: userId
+		}]))[0];
 	}
 }

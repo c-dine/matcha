@@ -57,6 +57,13 @@ export class ProfileService {
 		});
 	}
 
+	getMatchingProfiles(filters: ProfileFilters): Observable<UserList> {
+		const params = buildHttpParams(filters);
+		return this.http.get<UserList>(`${environment.apiUrl}/profile/matchingProfiles`, {
+			params
+		});
+	}
+
 	async userHasProfile(): Promise<boolean> {
 		return !!(await firstValueFrom(this.getProfile()));
 	}

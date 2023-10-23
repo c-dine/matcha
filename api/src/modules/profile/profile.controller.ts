@@ -51,6 +51,22 @@ profileController.get("/userList", async (req: Request<any, any, any, ProfileFil
 	}
 });
 
+profileController.get("/matchingProfiles", async (req: Request<any, any, any, ProfileFiltersRequest>, res: Response, next: NextFunction) => {
+	try {
+		const batchSize = '5';
+		const profileService = new ProfileService(req.dbClient);
+		const filters: ProfileFilters = profileService.formatProfileFilters({...req.query, batchSize: batchSize});
+		const matchingProfiles = await profileService.getMatchingProfiles(req.userId, filters);
+
+		res.status(200).json({ data: matchingProfiles });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching matching profiles: ${error}.`);
+		error.message = `Error while fetching matching profiles.`;
+		next(error);
+	}
+});
+
 profileController.put("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		let updatedProfileData: Profile = req.body;

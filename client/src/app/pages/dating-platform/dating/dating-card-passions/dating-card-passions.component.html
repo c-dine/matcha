@@ -2,9 +2,9 @@
     <h3 class="dating-subtitle">
         Passions
     </h3>
-    <div class="dating-chips-container">
-        <mat-chip *ngFor="let passion of passionsTag">
-            # {{ passion.name }}
+    <div *ngIf="tags" class="dating-chips-container">
+        <mat-chip *ngFor="let tag of tags">
+            # {{ tag }}
         </mat-chip>
     </div>
 </div>

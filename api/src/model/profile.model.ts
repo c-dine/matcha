@@ -8,15 +8,18 @@ export class ProfileModel extends ModelBase {
 		super("profile", dbClient);
 	}
 
-	async getUserProfile(requestedUserId: string, userProfile: profile) {
-		const query = this.getUserProfileQuery(requestedUserId, userProfile);
-        const result = await this.dbClient.query(query);
+	async getUserProfile(requestedUserId: string, currentUserProfile: profile) {
+		const query = this.getUserProfileQuery(requestedUserId, currentUserProfile);
+		const result = await this.dbClient.query(query);
 		return result.rows[0];
 	}
 
-	private getUserProfileQuery(requestedUserId: string, userProfile: profile): string {
+	private getUserProfileQuery(requestedUserId: string, currentUserProfile: profile): string {
 		let query = `
-			${this.getUserProfileSelectQuery({ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude })}
+			${this.getUserProfileSelectQuery({
+			latitude: currentUserProfile.location_latitude,
+			longitude: currentUserProfile.location_longitude
+		})}
 			WHERE profile.id = '${requestedUserId}'
 			GROUP BY
 				profile.id,
@@ -53,7 +56,7 @@ export class ProfileModel extends ModelBase {
 	async getUserList(filters: ProfileFilters, userProfile: profile) {
 		const query = this.getUserListQuery(filters, userProfile);
 		const values = this.getUserListQueryValues(filters);
-        const result = await this.dbClient.query(query, values);
+		const result = await this.dbClient.query(query, values);
 		return result.rows;
 	}
 
@@ -99,7 +102,7 @@ export class ProfileModel extends ModelBase {
 
 	private getSexualProfileFiltersQuery(userProfile: profile): string {
 		let query = " AND ";
-		const userSexualPreference = userProfile.gender === 'undefined' ? '' 
+		const userSexualPreference = userProfile.gender === 'undefined' ? ''
 			: `(profile.sexual_preferences = '${userProfile.gender}' OR profile.sexual_preferences='undefined')`;
 
 		switch (userProfile.sexual_preferences) {
@@ -156,5 +159,76 @@ export class ProfileModel extends ModelBase {
 		values.push(filters.offset);
 
 		return values;
+	}
+
+	async getMatchingProfiles(currentUserProfile: profile, filters: ProfileFilters) {
+		const query = this.getMatchingProfileQuery(currentUserProfile);
+		const filterValues = this.getUserListQueryValues(filters);
+		const result = await this.dbClient.query(query, filterValues);
+		return result.rows;
+	}
+
+	private getMatchingProfileQuery(currentUserProfile: profile): string {
+		let paramNb = 1
+		let query = `
+			${this.getMatchingProfileSelectQuery({
+			latitude: currentUserProfile.location_latitude,
+			longitude: currentUserProfile.location_longitude
+		},
+			currentUserProfile
+		)}
+			WHERE profile.id != '${currentUserProfile.id}'
+			AND profile.gender = '${currentUserProfile.sexual_preferences}'
+			AND profile.sexual_preferences = '${currentUserProfile.gender}'
+			GROUP BY
+				profile.id,
+				"user".username,
+				"user".last_name,
+				"user".first_name
+			ORDER BY
+				matching_rate DESC
+			LIMIT $${paramNb++} OFFSET $${paramNb++};`;
+		return query;
+	}
+
+	private getMatchingProfileSelectQuery(userLocation: GeoCoordinate, currentUserProfile: profile): string {
+		let commonTagscount = `(
+			SELECT COUNT(*) FROM (
+				SELECT matching_user_tag.label
+				FROM profile_tag_asso
+				JOIN tag AS matching_user_tag ON matching_user_tag.id = tag_id
+				WHERE profile_id = profile.id
+				INTERSECT
+				SELECT current_user_tag.label
+				FROM profile_tag_asso
+				JOIN tag AS current_user_tag ON current_user_tag.id = tag_id
+				WHERE profile_id = '${currentUserProfile.id}'
+			) AS common_tags
+		)`;
+		let distance = `calculate_distance(profile.location_latitude, profile.location_longitude, ${userLocation.latitude}, ${userLocation.longitude}, 'K')`
+		let fameRateDelta = `ABS(profile.fame_rate - ${currentUserProfile.fame_rate})`
+		let matchingFormula = `${commonTagscount} + 1 / (${distance} + ${fameRateDelta} + 1)`
+
+		return `SELECT 
+			"user".username,
+			"user".last_name,
+			"user".first_name,
+			profile.id,
+			profile.gender,
+			profile.birth_date,
+			profile.sexual_preferences,
+			profile.biography,
+			profile.fame_rate,
+			MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
+			STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
+			STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
+			${distance} as distance_km,
+			${matchingFormula} AS matching_rate
+		FROM profile 
+		INNER JOIN "user" ON "user".id = profile.user_id
+		LEFT JOIN tag ON tag.id IN (
+			SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
+		)
+		LEFT JOIN picture ON picture.profile_id = profile.id`
 	}
 }

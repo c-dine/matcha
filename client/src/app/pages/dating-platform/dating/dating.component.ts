@@ -1,23 +1,59 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
+import { ProfileService } from 'src/app/service/profile.service';
+import { Profile, ProfileFilters, UserList, UserProfile } from '@shared-models/profile.model';
+import { picturesIdsToPicturesUrls } from 'src/app/utils/picture.utils';
 
 @Component({
-  selector: 'app-dating',
-  templateUrl: './dating.component.html',
-  styleUrls: ['./dating.component.css']
+	selector: 'app-dating',
+	templateUrl: './dating.component.html',
+	styleUrls: ['./dating.component.css']
 })
-export class DatingComponent {
-  firstName: string = 'Celine';
-  lastName: string = 'Dine';
-  location: string = '1cm from you'
-  resume: string = "Je m'appelle celine et je ne pense qu'a manger. Ca fait seulement 1 jour que j'ai commence mon regime et j'en peux deja plus... pfiou c'est trop dur"
-  picturesUrl = [
-	"https://images.unsplash.com/photo-1682687218608-5e2522b04673?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-	"https://plus.unsplash.com/premium_photo-1681406994502-bb673c265877?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-	"https://images.unsplash.com/photo-1682687221006-b7fd60cf9dd0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
-  ]
+export class DatingComponent implements OnInit {
+	isLoading: boolean;
+	matchingProfiles!: UserProfile[];
+	filters: ProfileFilters;
+	picturesUrl!: string[];
+	picturesIdsToPicturesUrls = picturesIdsToPicturesUrls;
 
-  onDatingButtonClick() {
-    console.log("test");
-  }
+	constructor(
+		private profileService: ProfileService,
+	) {
+		this.isLoading = true;
+		this.picturesUrl = [];
+		this.filters = {
+			batchSize: 5,
+			offset: 0
+		};
+	}
+
+	async ngOnInit() {
+		this.getMatchingProfiles();
+	}
+
+	onDatingButtonClick() {
+		this.matchingProfiles = this.matchingProfiles.slice(1, this.matchingProfiles.length);
+		if (!this.matchingProfiles.length) {
+			this.getMatchingProfiles();
+		}
+	}
+
+	private getMatchingProfiles() {
+		this.isLoading = true;
+		this.profileService.getMatchingProfiles(this.filters).subscribe({
+			next: (userList: UserList) => {
+				console.log(userList.totalUserCount);
+				this.filters.offset += userList.totalUserCount;
+				this.matchingProfiles = userList.userList;
+				this.isLoading = false;
+			},
+			error: () => {
+				this.isLoading = false;
+			}
+		})
+	}
+
+	hasMatchingProfiles() {
+		return this.matchingProfiles?.length;
+	}
 }
