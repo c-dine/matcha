@@ -27,4 +27,10 @@ export class ViewService {
 				tap((viewsList: Interaction[]) => this.viewsList.next(viewsList))
 			);
 	}
+
+	async addView(view: Interaction) {
+		const viewsListCopy = this.viewsList.value || [];
+		viewsListCopy.push(view);
+		this.viewsList.next(viewsListCopy);
+	}
 }

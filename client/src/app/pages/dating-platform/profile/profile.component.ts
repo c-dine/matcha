@@ -11,6 +11,7 @@ import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
 import { PictureService } from 'src/app/service/picture.service';
 import { ProfileService } from 'src/app/service/profile.service';
+import { ViewService } from 'src/app/service/view.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
 import { ageValidator, dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
@@ -42,7 +43,8 @@ export class ProfileComponent {
 		private snackBar: MatSnackBar,
 		private pictureService: PictureService,
 		private blacklistService: BlacklistService,
-		private fakeReportService: FakeReportService
+		private fakeReportService: FakeReportService,
+		private viewService: ViewService
 	) { }
 
 	async ngOnInit() {
@@ -50,7 +52,19 @@ export class ProfileComponent {
 		this.route.queryParamMap.subscribe(async params => {
 			if (params.has("id"))
 				this.profileService.getUserProfile(params.get("id") as string).subscribe({
-					next: (profile) => { this.profile = profile; this.isLoading = false; },
+					next: (profile) => {
+						this.profile = profile;
+						if (profile?.id)
+							this.viewService.addView({
+								profilePicId: profile.picturesIds?.profilePicture,
+								targetProfileId: profile.id,
+								date: new Date(),
+								lastName: profile.lastName,
+								firstName: profile.firstName,
+								username: profile.username
+							});
+						this.isLoading = false;
+					},
 					error: async () => { await this.getCurrentUserProfile(); this.isLoading = false; },
 				});
 			else {
