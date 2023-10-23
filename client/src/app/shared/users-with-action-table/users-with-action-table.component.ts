@@ -20,7 +20,11 @@ export class UsersWithActionTableComponent {
     
     constructor(
         private router: Router
-    ) {    }
+    ) {}
+
+    ngOnInit() {
+        this.users.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
 
 	navigateToProfile(profileId: string | undefined) {
 		if (!profileId) return;
