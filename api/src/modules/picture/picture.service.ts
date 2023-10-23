@@ -84,4 +84,14 @@ export class PictureService {
 			is_profile_picture: isProfilePicture
 		}
 	}
+
+	async getProfilePicIdsOfProfileIds(profileIds: string[]) {
+		return (await this.pictureModel.findMany(profileIds.map(id => ({
+			profile_id: id,
+			is_profile_picture: true
+		})))).map(picture => ({
+			id: picture.id,
+			profileId: picture.profile_id
+		}));
+	}
 }

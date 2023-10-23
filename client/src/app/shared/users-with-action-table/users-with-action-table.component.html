@@ -1,0 +1,38 @@
+
+<div class="users-with-action-table-container rounded-box">
+    <table>
+
+        <thead>
+            <tr class="table-header-row">
+                <th class="table-header-first-column">USER</th>
+                <th>DATE</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let user of users" class="user-row">
+
+                <td class="user-column" (click)="navigateToProfile(user.targetProfileId)">
+                    <div class="user-avatar-container">
+                        <div class="rounded-circle-container">
+                            <img [src]="getFirebasePictureUrl(user.profilePicId)" class="rounded-circle-image">
+                        </div>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-details-name">{{user.firstName}} {{user.lastName}}</div>
+                        <div class="user-details-username">@{{user.username}}</div>
+                    </div>
+                </td>
+
+                <td>{{formatDate(user.date, 'dd-MM-YYYY', 'en-US')}}</td>
+
+                <td class="action-column">
+                    <button class="custom-button cancel-button" (click)="onActionClick(user.targetProfileId)">{{actionLabel}}</button>
+                </td>
+
+            </tr>
+        </tbody>
+
+    </table>
+</div>

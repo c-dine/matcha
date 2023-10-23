@@ -1,4 +1,4 @@
-import { NewUser, User } from "@shared-models/user.model.js";
+import { NewUser, User, UserWithProfileId } from "@shared-models/user.model.js";
 import { UserModel } from '../../model/user.model.js';
 import { PoolClient } from "pg";
 import bcrypt from 'bcrypt';
@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { decryptToken } from "../../utils/encryption.util.js";
 import { encryptionConfig } from "../../config/config.js";
 import { CustomError } from "../../utils/error.util.js";
+import { ProfileModel } from "../../model/profile.model.js";
 
 export class AuthService {
 
@@ -55,6 +56,22 @@ export class AuthService {
 			select
 		))[0];
 		return user ? this.formatUser(user) : undefined;
+	}
+
+	async getUsersFromProfileIds(profileIds: string[]): Promise<UserWithProfileId[]> {
+		if (!profileIds.length) return [];
+		const profileModel = new ProfileModel(this.dbClient);
+		const usersAndProfileIds = await profileModel.findMany(
+				profileIds.map(id => ({ id })),
+				["id", "user_id"]
+			);
+		const matchingUsers = await this.userModel.findMany(
+				usersAndProfileIds.map(ids => ({ id: ids.user_id }))
+			);
+		return matchingUsers.map(user => ({
+			...this.formatUser(user),
+			profileId: usersAndProfileIds.find(ids => ids.user_id === user.id).id
+		}));
 	}
 
 	async createUser(

@@ -1,9 +1,11 @@
 import { Component } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { Interaction } from "@shared-models/interactions.model";
 import { User } from "@shared-models/user.model";
 import { Subscription, firstValueFrom } from "rxjs";
 import { AuthService } from "src/app/service/auth.service";
+import { BlacklistService } from "src/app/service/blacklist.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
 
 @Component({
@@ -19,10 +21,13 @@ export class SettingsComponent {
 	isUserDetailsEditMode = false;
 	isPasswordEditMode = false;
 
+	blacklist!: Interaction[];
+
 	mySubscriptions: Subscription[] = [];
 
 	constructor(
 		private authService: AuthService,
+		private blacklistService: BlacklistService,
 		private snackBar: MatSnackBar
 	) { }
 
@@ -32,8 +37,17 @@ export class SettingsComponent {
 				next: (user) => this.currentUser = user
 			})
 		);
+		this.mySubscriptions.push(
+			this.blacklistService.getBlacklistObs().subscribe({
+				next: (blacklist) => this.blacklist = blacklist
+			})
+		);
 		this.initPasswordForm();
 		this.passwordForm.disable();
+	}
+
+	ngOnDestroy() {
+		this.mySubscriptions.forEach(subscription => subscription.unsubscribe());
 	}
 
 	// USER DETAILS
@@ -119,5 +133,10 @@ export class SettingsComponent {
 				},
 				error: () => {}
 			});
+	}
+
+	// BLACKLIST
+	async unblacklist(profileId: string) {
+		await firstValueFrom(this.blacklistService.deleteBlacklisted(profileId));
 	}
 }
