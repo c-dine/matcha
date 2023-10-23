@@ -29,7 +29,7 @@ export class InteractionsService {
 				lastName: targetedUser.lastName,
 				firstName: targetedUser.firstName,
 				targetProfileId: targetedUser.profileId,
-				date: list.find(element => element.target_profile_id === targetedUser.profileId).date
+				date: datedProfileIdsList.date
 			}
 		});
 	}
