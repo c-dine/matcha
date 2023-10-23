@@ -29,29 +29,29 @@ interface picture {
 
 interface like {
 	id: string;
-	profile_id: string;
-	liked_profile_id: string;
+	user_id: string;
+	target_profile_id: string;
 	date?: Date;
 }
 
 interface view {
 	id: string;
-	profile_id: string;
-	viewed_profile_id: string;
+	user_id: string;
+	target_profile_id: string;
 	date?: Date;
 }
 
 interface blacklist {
 	id: string;
-	profile_id: string;
-	blacklisted_profile_id: string;
+	user_id: string;
+	target_profile_id: string;
 	date?: Date;
 }
 
 interface fakeReport {
 	id: string;
-	profile_id: string;
-	fake_reported_profile_id: string;
+	user_id: string;
+	target_profile_id: string;
 	date?: Date;
 }
 

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "profile" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "gender" VARCHAR(100) DEFAULT 'undefined',
-    "birth_date" DATE,
+    "birth_date" TIMESTAMP,
     "sexual_preferences" VARCHAR(100) DEFAULT 'undefined',
     "biography" VARCHAR(510),
     "location_latitude" FLOAT NULL,
@@ -45,38 +45,38 @@ CREATE TABLE IF NOT EXISTS "picture" (
 
 CREATE TABLE IF NOT EXISTS "like" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "liked_profile_id" UUID NOT NULL,
-    "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("liked_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "user_id" UUID NOT NULL,
+    "target_profile_id" UUID NOT NULL,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "view" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "viewed_profile_id" UUID NOT NULL,
-    "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("viewed_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "user_id" UUID NOT NULL,
+    "target_profile_id" UUID NOT NULL,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "blacklist" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "blacklisted_profile_id" UUID NOT NULL,
-    "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("blacklisted_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "user_id" UUID NOT NULL,
+    "target_profile_id" UUID NOT NULL,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "fake_report" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
-    "fake_reported_profile_id" UUID NOT NULL,
-    "date" DATE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("fake_reported_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "user_id" UUID NOT NULL,
+    "target_profile_id" UUID NOT NULL,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "messages" (
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS "messages" (
     "from_profile_id" UUID NOT NULL,
     "to_profile_id" UUID NOT NULL,
     "message" VARCHAR(510) NOT NULL,
-    "date" DATE DEFAULT CURRENT_TIMESTAMP,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("from_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS "notification" (
     "from_profile_id" UUID NOT NULL,
     "to_profile_id" UUID NOT NULL,
     "type" VARCHAR(510) NOT NULL,
-    "date" DATE DEFAULT CURRENT_TIMESTAMP,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("from_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );

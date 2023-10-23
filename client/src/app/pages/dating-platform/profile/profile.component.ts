@@ -7,6 +7,7 @@ import { environment } from '@environment/environment';
 import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { Profile, UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
+import { BlacklistService } from 'src/app/service/blacklist.service';
 import { PictureService } from 'src/app/service/picture.service';
 import { ProfileService } from 'src/app/service/profile.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
@@ -38,7 +39,8 @@ export class ProfileComponent {
 		private profileService: ProfileService,
 		private location: Location,
 		private snackBar: MatSnackBar,
-		private pictureService: PictureService
+		private pictureService: PictureService,
+		private blacklistService: BlacklistService
 	) { }
 
 	async ngOnInit() {
@@ -147,5 +149,19 @@ export class ProfileComponent {
 	
 	updatePictures(pictures: DisplayableProfilePictures) {
 		this.pictures = pictures;
+	}
+
+	async onBlacklistUserClick() {
+		if (this.profile?.id)
+			await firstValueFrom(this.blacklistService.addBlacklisted(this.profile?.id));
+	}
+
+	async onUnblacklistUserClick() {
+		if (this.profile?.id)
+			await firstValueFrom(this.blacklistService.deleteBlacklisted(this.profile?.id));
+	}
+
+	isProfileBlacklisted() {
+		return this.blacklistService.isProfileBlocked(this.profile?.id || "");
 	}
 }

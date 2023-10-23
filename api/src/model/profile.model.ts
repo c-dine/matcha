@@ -82,6 +82,9 @@ export class ProfileModel extends ModelBase {
 						) GROUP BY profile_id HAVING COUNT(DISTINCT tag_id) = ${filters.tags.length}
 					)`
 		}
+		query += ` AND profile.id NOT IN (
+			SELECT target_profile_id FROM blacklist WHERE blacklist.user_id = '${userProfile.user_id}'
+		)`;
 		query += this.getSexualProfileFiltersQuery(userProfile);
 		query += `
 			GROUP BY
@@ -97,6 +100,7 @@ export class ProfileModel extends ModelBase {
 		query += this.getOrderByQuery(filters);
 		query += ` LIMIT $${i++} OFFSET $${i++}`;
 
+		console.log(query)
 		return query;
 	}
 
