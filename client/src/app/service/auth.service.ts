@@ -1,98 +1,74 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AuthenticatedUser, User, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
 import { map, tap } from 'rxjs/operators';
-import { ProfileService } from './profile.service';
+import { UserService } from './user.service';
+import { ChatSocketService } from './socket/chatSocket.service';
+import { ActivitySocketService } from './socket/activitySocket.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class AuthService {
-	private currentUserSubject: BehaviorSubject<User | undefined> = new BehaviorSubject<User | undefined>(undefined);
-	private accessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
+	constructor(
+		private http: HttpClient,
+		private router: Router,
+		private userService: UserService,
+		private chatSocket: ChatSocketService,
+		private activitySocket: ActivitySocketService,
+	) { }
 
-	geolocationWatchId = -1;
-
-    constructor(
-        private http: HttpClient,
-        private router: Router,
-		private profileService: ProfileService
-    ) {}
-
-	getAccessTokenObs() {
-		return this.accessTokenSubject.asObservable();
-	}
-	
-	getCurrentUserObs() {
-		return this.currentUserSubject.asObservable();
-	}
-
-	signIn(newUser: NewUser): Observable<AuthenticatedUser>  {
+	signIn(newUser: NewUser): Observable<AuthenticatedUser> {
 		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/signIn', newUser)
 			.pipe(
 				map(user => {
 					this.setSession(user);
-					this.trackUserLocation();
+					this.userService.trackUserLocation();
 					return user;
 				})
 			);
 	}
 
-    login(userAuthData: { username: string, password: string }): Observable<AuthenticatedUser> {
+	login(userAuthData: { username: string, password: string }): Observable<AuthenticatedUser> {
 		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/logIn', userAuthData)
 			.pipe(
 				map(user => {
 					this.setSession(user as AuthenticatedUser);
-					this.trackUserLocation();
+					this.userService.trackUserLocation();
 					return user;
 				})
 			);
-    }
-
-	updateUser(updatedUser: User): Observable<User> {
-		return this.http.put<User>(environment.apiUrl + '/auth/', updatedUser)
-			.pipe(
-				map(user => {
-					this.currentUserSubject.next(user);
-					return user;
-				})
-			);
-	}
-
-	updatePassword(lastPassword: string, newPassword: string): Observable<void> {
-		return this.http.put<void>(environment.apiUrl + '/auth/updatePassword', {
-			lastPassword,
-			newPassword
-		});
 	}
 
 	setSession(user: AuthenticatedUser) {
 		this.setRefreshToken(user.token.refresh || "");
-		this.accessTokenSubject.next(user.token.access);
-		this.currentUserSubject.next(user as User);
+		this.userService.setAccessTokenObs(user.token.access);
+		this.userService.setCurrentUserObs(user as User);
 	}
 
-  	logout(): void {
-		this.stopTrackingLocationChanges();
-		this.accessTokenSubject.next(undefined);
+	logout(): void {
+		this.userService.stopTrackingLocationChanges();
+		this.userService.setAccessTokenObs(undefined);
 		this.removeRefreshToken();
 		this.router.navigate(['/']);
+		this.chatSocket.disconnect();
+		this.activitySocket.disconnect();
 	}
 
-  	async isLoggedIn(): Promise<boolean> {
-		if (this.isTokenValid(this.accessTokenSubject.getValue()))
+	async isLoggedIn(): Promise<boolean> {
+		if (this.isTokenValid(this.userService.getAccessTokenValue()))
 			return true;
 		if (this.getRefreshToken() && await firstValueFrom(this.refreshAccessToken()))
 			return true;
-		this.accessTokenSubject.next(undefined);
+		this.userService.setAccessTokenObs(undefined);
 		this.removeRefreshToken();
-		return false;         
-  	}
+		return false;
+	}
 
 	isTokenValid(token?: string): boolean {
 		if (token) {
@@ -107,55 +83,25 @@ export class AuthService {
 		Cookies.set("refreshToken", token);
 	}
 
-	removeRefreshToken() {	
+	removeRefreshToken() {
 		Cookies.remove("refreshToken");
 	}
 
-  	getRefreshToken(): string | undefined {
-	    return Cookies.get("refreshToken");
-  	}
+	getRefreshToken(): string | undefined {
+		return Cookies.get("refreshToken");
+	}
 
 	getAccessToken(): string | undefined {
-		return this.accessTokenSubject.getValue();
+		return this.userService.getAccessTokenValue();
 	}
 
 	refreshAccessToken() {
-        return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
+		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
 			.pipe(
 				tap((authenticatedUser: AuthenticatedUser) => {
-					this.accessTokenSubject.next(authenticatedUser.token.access);
-					this.currentUserSubject.next(authenticatedUser as User);
+					this.userService.setAccessTokenObs(authenticatedUser.token.access);
+					this.userService.setCurrentUserObs(authenticatedUser as User);
 				})
 			);
-	}
-
-	resetPassword(resetToken: string, password: string) {
-		return this.http.post<string>(environment.apiUrl + '/auth/resetPassword', {
-			resetToken,
-			password
-		});
-	}
-
-	verifyEmail(verificationToken: string) {
-		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
-			verificationToken
-		});
-	}
-
-	trackUserLocation() {
-		if ("geolocation" in navigator) {
-			this.geolocationWatchId = navigator.geolocation.watchPosition(
-				async (position) => {
-					await firstValueFrom(this.profileService.setLocation({
-						latitude: position.coords.latitude,
-						longitude: position.coords.longitude
-					}));
-				}
-			);
-		}
-	}
-
-	stopTrackingLocationChanges() {
-		navigator.geolocation.clearWatch(this.geolocationWatchId);
 	}
 }

@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { ProfileService } from 'src/app/service/profile.service';
 import { Profile, ProfileFilters, UserList, UserProfile } from '@shared-models/profile.model';
 import { picturesIdsToPicturesUrls } from 'src/app/utils/picture.utils';
-
-import { SocketService } from 'src/app/service/socket.service';
+import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
+import { ChatSocketService } from 'src/app/service/socket/chatSocket.service';
 
 @Component({
 	selector: 'app-dating',
@@ -20,7 +20,8 @@ export class DatingComponent implements OnInit {
 
 	constructor(
 		private profileService: ProfileService,
-		private socketService: SocketService,
+		private activitySocket: ActivitySocketService,
+		private chatSocket: ChatSocketService
 	) {
 		this.isLoading = true;
 		this.picturesUrl = [];
@@ -45,7 +46,6 @@ export class DatingComponent implements OnInit {
 		this.isLoading = true;
 		this.profileService.getMatchingProfiles(this.filters).subscribe({
 			next: (userList: UserList) => {
-				console.log(userList.totalUserCount);
 				this.filters.offset += userList.totalUserCount;
 				this.matchingProfiles = userList.userList;
 				this.isLoading = false;

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '@environment/environment';
 import { NavbarProfile } from '@shared-models/profile.model';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/service/auth.service';
 import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/user.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
@@ -19,12 +19,12 @@ export class UserInformationsComponent implements OnInit {
 	environment = environment;
 
 	constructor(
-		private authService: AuthService,
+		private userService: UserService,
 		private profileService: ProfileService
 	) {}
 
 	ngOnInit(): void {
-		this.mySubscriptions.push(this.authService.getCurrentUserObs().subscribe({
+		this.mySubscriptions.push(this.userService.getCurrentUserObs().subscribe({
 			next: (currentUser) => {
 				if (!currentUser) return;
 				this.profile.firstName = currentUser.firstName;

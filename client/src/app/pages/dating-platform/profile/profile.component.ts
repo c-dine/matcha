@@ -8,6 +8,7 @@ import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { Profile, UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
 import { BlacklistService } from 'src/app/service/blacklist.service';
+import { FakeReportService } from 'src/app/service/fake-report.service';
 import { PictureService } from 'src/app/service/picture.service';
 import { ProfileService } from 'src/app/service/profile.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
@@ -40,7 +41,8 @@ export class ProfileComponent {
 		private location: Location,
 		private snackBar: MatSnackBar,
 		private pictureService: PictureService,
-		private blacklistService: BlacklistService
+		private blacklistService: BlacklistService,
+		private fakeReportService: FakeReportService
 	) { }
 
 	async ngOnInit() {
@@ -161,7 +163,23 @@ export class ProfileComponent {
 			await firstValueFrom(this.blacklistService.deleteBlacklisted(this.profile?.id));
 	}
 
+	async onReportUserClick() {
+		if (this.profile?.id) {
+			await firstValueFrom(this.fakeReportService.addFakeReported(this.profile?.id));
+			this.onBlacklistUserClick();
+		};
+	}
+
+	async onDeleteUserReportClick() {
+		if (this.profile?.id)
+			await firstValueFrom(this.fakeReportService.deleteFakeReported(this.profile?.id));
+	}
+
 	isProfileBlacklisted() {
 		return this.blacklistService.isProfileBlocked(this.profile?.id || "");
+	}
+
+	isProfileReported() {
+		return this.fakeReportService.isProfileReported(this.profile?.id || "");
 	}
 }

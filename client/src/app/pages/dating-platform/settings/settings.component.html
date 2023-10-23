@@ -113,11 +113,15 @@
 		<div>No blacklisted users.</div>
 	</div>
 	<div class="blacklist-container" *ngIf="blacklist.length">
-		<app-users-with-action-table [users]="blacklist" actionLabel="Unblock" (action)="unblacklist($event)"></app-users-with-action-table>
+		<app-users-with-action-table [users]="blacklist" actionLabel="Unblock" (action)="deleteBlacklist($event)"></app-users-with-action-table>
 	</div>
 	
 	<h1 class="reportlist-label">Reported users</h1>
-	<div class="reportlist-container rounded-box">
+	<div class="reportlist-container rounded-box" *ngIf="!fakeReportList.length">
+		<div>No user reported.</div>
+	</div>
+	<div class="reportlist-container" *ngIf="fakeReportList.length">
+		<app-users-with-action-table [users]="fakeReportList" actionLabel="Delete fake report" (action)="deleteFakeReport($event)"></app-users-with-action-table>
 	</div>
 
 </div>

@@ -5,6 +5,7 @@ import { profileController } from './modules/profile/profile.controller.js';
 import { tagController } from './modules/tag/tag.controller.js';
 import { pictureController } from './modules/picture/picture.controller.js';
 import { blacklistController } from './modules/interactions/blacklist/blacklist.controller.js';
+import { fakeReportController } from './modules/interactions/fake-report/fake-report.controller.js';
 
 export const routes: { [route: string]: Router } = {
     "/auth": authController,
@@ -12,5 +13,6 @@ export const routes: { [route: string]: Router } = {
 	"/mail": mailController,
 	"/picture": pictureController,
 	"/tag": tagController,
-	"/blacklist": blacklistController
+	"/blacklist": blacklistController,
+	"/fakeReport": fakeReportController
 }

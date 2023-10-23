@@ -100,7 +100,6 @@ export class ProfileModel extends ModelBase {
 		query += this.getOrderByQuery(filters);
 		query += ` LIMIT $${i++} OFFSET $${i++}`;
 
-		console.log(query)
 		return query;
 	}
 

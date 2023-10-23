@@ -4,8 +4,9 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { Interaction } from "@shared-models/interactions.model";
 import { User } from "@shared-models/user.model";
 import { Subscription, firstValueFrom } from "rxjs";
-import { AuthService } from "src/app/service/auth.service";
 import { BlacklistService } from "src/app/service/blacklist.service";
+import { FakeReportService } from "src/app/service/fake-report.service";
+import { UserService } from "src/app/service/user.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
 
 @Component({
@@ -22,24 +23,31 @@ export class SettingsComponent {
 	isPasswordEditMode = false;
 
 	blacklist!: Interaction[];
+	fakeReportList!: Interaction[];
 
 	mySubscriptions: Subscription[] = [];
 
 	constructor(
-		private authService: AuthService,
 		private blacklistService: BlacklistService,
-		private snackBar: MatSnackBar
+		private fakeReportService: FakeReportService,
+		private snackBar: MatSnackBar,
+		private userService: UserService
 	) { }
 
 	ngOnInit() {
 		this.mySubscriptions.push(
-			this.authService.getCurrentUserObs().subscribe({
+			this.userService.getCurrentUserObs().subscribe({
 				next: (user) => this.currentUser = user
 			})
 		);
 		this.mySubscriptions.push(
 			this.blacklistService.getBlacklistObs().subscribe({
 				next: (blacklist) => this.blacklist = blacklist
+			})
+		);
+		this.mySubscriptions.push(
+			this.fakeReportService.getFakeReportListObs().subscribe({
+				next: (fakeReportList) => this.fakeReportList = fakeReportList
 			})
 		);
 		this.initPasswordForm();
@@ -79,7 +87,7 @@ export class SettingsComponent {
 			});
 			return;
 		}
-		this.authService.updateUser(this.userForm.getRawValue()).subscribe({
+		this.userService.updateUser(this.userForm.getRawValue()).subscribe({
 			next: (user) => { this.currentUser = user; this.isUserDetailsEditMode = false; }
 		});
 	}
@@ -121,7 +129,7 @@ export class SettingsComponent {
 			});
 			return;
 		}
-		this.authService.updatePassword(
+		this.userService.updatePassword(
 			this.passwordForm.get('lastPassword')?.value,
 			this.passwordForm.get('newPassword')?.value
 			)
@@ -136,7 +144,14 @@ export class SettingsComponent {
 	}
 
 	// BLACKLIST
-	async unblacklist(profileId: string) {
+	
+	async deleteBlacklist(profileId: string) {
 		await firstValueFrom(this.blacklistService.deleteBlacklisted(profileId));
+	}
+
+	// FAKE REPORT
+	
+	async deleteFakeReport(profileId: string) {
+		await firstValueFrom(this.fakeReportService.deleteFakeReported(profileId));
 	}
 }

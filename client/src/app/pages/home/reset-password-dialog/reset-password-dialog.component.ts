@@ -2,8 +2,8 @@ import { Component, Inject } from "@angular/core";
 import { LoginDialogComponent } from "../login-dialog/login-dialog.component";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "src/app/service/auth.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { UserService } from "src/app/service/user.service";
 
 @Component({
     selector: 'app-reset-password',
@@ -25,7 +25,7 @@ export class ResetPasswordDialogComponent {
 		private dialog: MatDialog,
 		private snackBar: MatSnackBar,
 		private dialogRef: MatDialogRef<ResetPasswordDialogComponent>,
-		private authService: AuthService
+		private userService: UserService,
 	) {}
 
 	onSubmit() {
@@ -38,7 +38,7 @@ export class ResetPasswordDialogComponent {
 			return;
 		}
 		this.passwordReset = true;
-		this.authService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue());
+		this.userService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue());
 	}
 
 	goBackToLoginDialog() {
