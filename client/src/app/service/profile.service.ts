@@ -23,8 +23,8 @@ export class ProfileService {
 			);
 	}
 	
-	getUserProfile(userProfileId: string): Observable<UserProfile | null> {
-		const params = buildHttpParams({ id: userProfileId});
+	getUserProfile(userProfileId?: string): Observable<UserProfile | null> {
+		const params = userProfileId ? buildHttpParams({ id: userProfileId}) : undefined;
 		return this.http.get<UserProfile | null>(`${environment.apiUrl}/profile/userProfile`, { params });
 	}
 

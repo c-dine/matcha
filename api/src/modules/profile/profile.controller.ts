@@ -27,9 +27,10 @@ profileController.get("/userProfile", async (req: Request<any, any, any, { id: s
 	try {
 		const profileService = new ProfileService(req.dbClient);
 		const viewService = new ViewService(req.dbClient);
-		const profile = await profileService.getUserProfile(req.userId, req.query.id);
+		const profile = await profileService.getUserProfile(req.userId, req.query?.id);
 
-		await viewService.addElement(req.userId, req.query.id);
+		if (req.query?.id)
+			await viewService.addElement(req.userId, req.query.id);
 		res.status(200).json({ data: profile as UserProfile || null });
 		next();
 	} catch (error: any) {

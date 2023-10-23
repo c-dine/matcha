@@ -61,7 +61,7 @@ export class ProfileComponent {
 	}
 
 	async getCurrentUserProfile() {
-		this.profileService.getUserProfile(this.currentUserProfile?.id as string).subscribe({
+		this.profileService.getUserProfile().subscribe({
 			next: (profile) => {
 				this.profile = profile;
 				this.initForm();
