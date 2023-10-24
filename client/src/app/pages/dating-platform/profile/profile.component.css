@@ -69,6 +69,16 @@ mat-icon {
 	width:auto;
 }
 
+.active-liked-button {
+	border: solid thin var(--success-color) !important;
+	color: var(--success-color);
+}
+
+.active-disliked-button {
+	border: solid thin var(--error-color) !important;
+	color: var(--error-color);
+}
+
 .user-card-detail {
 	display: flex;
 	gap: 20px;

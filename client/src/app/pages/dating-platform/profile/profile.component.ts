@@ -9,6 +9,7 @@ import { Profile, UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
 import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
+import { LikeService } from 'src/app/service/like.service';
 import { PictureService } from 'src/app/service/picture.service';
 import { ProfileService } from 'src/app/service/profile.service';
 import { ViewService } from 'src/app/service/view.service';
@@ -44,7 +45,8 @@ export class ProfileComponent {
 		private pictureService: PictureService,
 		private blacklistService: BlacklistService,
 		private fakeReportService: FakeReportService,
-		private viewService: ViewService
+		private viewService: ViewService,
+		private likeService: LikeService
 	) { }
 
 	async ngOnInit() {
@@ -189,11 +191,41 @@ export class ProfileComponent {
 			await firstValueFrom(this.fakeReportService.deleteFakeReported(this.profile?.id));
 	}
 
+	async onLikeProfileClick() {
+		if (!this.profile?.id) return;
+		if (this.profile.isLiked !== undefined && this.profile.isLiked)
+			return this.unlikeProfile();
+		await firstValueFrom(this.likeService.likeProfile(this.profile.id));
+		this.profile.isLiked = true;
+	}
+
+	async onDislikeProfileClick() {
+		if (!this.profile?.id) return;
+		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
+			return this.unlikeProfile();
+		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
+		this.profile.isLiked = false;
+	}
+
+	async unlikeProfile() {
+		if (!this.profile?.id) return;
+		await firstValueFrom(this.likeService.unlikeProfile(this.profile.id));
+		this.profile.isLiked = undefined;
+	}
+
 	isProfileBlacklisted() {
 		return this.blacklistService.isProfileBlocked(this.profile?.id || "");
 	}
 
 	isProfileReported() {
 		return this.fakeReportService.isProfileReported(this.profile?.id || "");
+	}
+
+	isProfileLiked() {
+		return this.profile?.isLiked !== undefined && this.profile?.isLiked;
+	}
+
+	isProfileDisliked() {
+		return this.profile?.isLiked !== undefined && !this.profile?.isLiked;
 	}
 }

@@ -14,7 +14,8 @@
 		
 	<div class="user-card-container rounded-box">
 		<div class="action-buttons" *ngIf="profile.id !== currentUserProfile?.id">
-			<mat-icon matTooltip='Like'>favorite</mat-icon>
+			<mat-icon matTooltip='Like' (click)="onLikeProfileClick()" [ngClass]="{ 'active-liked-button': isProfileLiked() }">thumb_up</mat-icon>
+			<mat-icon matTooltip='Dislike' (click)="onDislikeProfileClick()" [ngClass]="{ 'active-disliked-button': isProfileDisliked() }">thumb_down</mat-icon>
 			<mat-icon matTooltip='Message'>message</mat-icon>
 			<mat-icon matTooltip='Block' (click)="onBlacklistUserClick()" *ngIf="!isProfileBlacklisted()">block</mat-icon>
 			<mat-icon matTooltip='Unblock' (click)="onUnblacklistUserClick()" *ngIf="isProfileBlacklisted()">lock_open</mat-icon>

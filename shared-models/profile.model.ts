@@ -17,6 +17,7 @@ export interface UserProfile extends Profile {
 	username: string;
 	lastName: string;
 	firstName: string;
+	isLiked?: boolean;
 }
 
 export interface UserList {

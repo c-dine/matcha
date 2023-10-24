@@ -25,7 +25,8 @@ export class ProfileModel extends ModelBase {
 				profile.id,
 				"user".username,
 				"user".last_name,
-				"user".first_name
+				"user".first_name,
+				"like".is_liked
 			`;
 		return query;
 	}
@@ -41,6 +42,7 @@ export class ProfileModel extends ModelBase {
 					profile.sexual_preferences,
 					profile.biography,
 					profile.fame_rate,
+					"like".is_liked,
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 					STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
@@ -50,7 +52,8 @@ export class ProfileModel extends ModelBase {
 				LEFT JOIN tag ON tag.id IN (
 					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
 				)
-				LEFT JOIN picture ON picture.profile_id = profile.id`
+				LEFT JOIN picture ON picture.profile_id = profile.id
+				LEFT JOIN "like" on "like".target_profile_id = profile.id`;
 	}
 
 	async getUserList(filters: ProfileFilters, userProfile: profile) {
@@ -94,7 +97,8 @@ export class ProfileModel extends ModelBase {
 				profile.id,
 				"user".username,
 				"user".last_name,
-				"user".first_name
+				"user".first_name,
+				"like".is_liked
 		)
 		SELECT *, COUNT(*) OVER () AS total_user_count
 		FROM profile_with_distance`

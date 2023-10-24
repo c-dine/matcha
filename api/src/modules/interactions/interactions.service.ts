@@ -34,13 +34,18 @@ export class InteractionsService {
 		});
 	}
 
-	async addElement(userId: string, targetProfileId: string): Promise<Interaction> {
+	async addElement(
+		userId: string,
+		targetProfileId: string,
+		additionnalData?: { [column: string]: any }
+	): Promise<Interaction> {
 		const authService = new AuthService(this.dbClient);
 		const pictureService = new PictureService(this.dbClient);
 		const associatedUser = (await authService.getUsersFromProfileIds([targetProfileId]))[0];
 		await this.interactionsModel.create({
 			target_profile_id: targetProfileId,
-			user_id: userId
+			user_id: userId,
+			...additionnalData
 		});
 		return {
 			profilePicId: (await pictureService.getProfilePictures(targetProfileId)).profilePicture || undefined,

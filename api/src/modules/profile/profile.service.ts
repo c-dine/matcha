@@ -58,7 +58,8 @@ export class ProfileService {
 				profilePicture: requestedProfile.profile_picture_id,
 				additionnalPicture: requestedProfile.additionnal_pictures_ids?.split(',') || []
 			},
-			ditanceKm: requestedProfile.distance_km
+			ditanceKm: requestedProfile.distance_km,
+			isLiked: requestedProfile.is_liked === null ? undefined : requestedProfile.is_liked
 		}
 	}
 
