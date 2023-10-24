@@ -19,19 +19,19 @@ export class ProfileModel extends ModelBase {
 			${this.getUserProfileSelectQuery({
 			latitude: currentUserProfile.location_latitude,
 			longitude: currentUserProfile.location_longitude
-		})}
+		}, currentUserProfile.user_id)}
 			WHERE profile.id = '${requestedUserId}'
 			GROUP BY
 				profile.id,
 				"user".username,
 				"user".last_name,
 				"user".first_name,
-				"like".is_liked
+				currentUserLike.is_liked
 			`;
 		return query;
 	}
 
-	private getUserProfileSelectQuery(userLocation: GeoCoordinate) {
+	private getUserProfileSelectQuery(userLocation: GeoCoordinate, currentUserId: string) {
 		return `SELECT 
 					"user".username,
 					"user".last_name,
@@ -42,7 +42,11 @@ export class ProfileModel extends ModelBase {
 					profile.sexual_preferences,
 					profile.biography,
 					profile.fame_rate,
-					"like".is_liked,
+					currentUserLike.is_liked,
+					(SELECT COUNT(*) FROM "like" AS likeCount WHERE likeCount.target_profile_id = profile.id AND likeCount.is_liked = true) AS like_count,
+					(SELECT COUNT(*) FROM "like" AS dislikeCount WHERE dislikeCount.target_profile_id = profile.id AND dislikeCount.is_liked = false) AS dislike_count,
+					(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_profile_id = profile.id) AS view_count,
+					COUNT(matchCount) AS match_count,
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 					STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
@@ -53,7 +57,15 @@ export class ProfileModel extends ModelBase {
 					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
 				)
 				LEFT JOIN picture ON picture.profile_id = profile.id
-				LEFT JOIN "like" on "like".target_profile_id = profile.id`;
+				LEFT JOIN "like" AS currentUserLike ON currentUserLike.target_profile_id = profile.id AND currentUserLike.user_id = '${currentUserId}'
+				LEFT JOIN "like" AS matchCount ON matchCount.target_profile_id = profile.id AND matchCount.user_id IN (
+					SELECT matchedUser.id 
+					FROM "like" AS currentUserMatches
+					LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = matchedProfile.id
+					LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
+					WHERE currentUserMatches.user_id = "user".id
+				)
+			`;
 	}
 
 	async getUserList(filters: ProfileFilters, userProfile: profile) {
@@ -67,7 +79,9 @@ export class ProfileModel extends ModelBase {
 		let i = 1;
 		let query = `
 			WITH profile_with_distance AS (
-				${this.getUserProfileSelectQuery({ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude })}
+				${this.getUserProfileSelectQuery(
+					{ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude },
+					userProfile.user_id)}
 				WHERE profile.id != '${userProfile.id}'`;
 
 		if (filters.ageMin)
@@ -98,7 +112,7 @@ export class ProfileModel extends ModelBase {
 				"user".username,
 				"user".last_name,
 				"user".first_name,
-				"like".is_liked
+				currentUserLike.is_liked
 		)
 		SELECT *, COUNT(*) OVER () AS total_user_count
 		FROM profile_with_distance`

@@ -36,7 +36,7 @@ export class UserInformationsComponent implements OnInit {
 			next: (profile) => {
 				if (!profile) return;
 				this.profile.profilePictureUrl = getFirebasePictureUrl(profile.picturesIds?.profilePicture as string);
-				this.profile.fameRate = profile.fameRate;
+				this.profile.fameRate = profile.stats?.fameRate;
 			}
 		}))
 		this.profile.matchesNb = 250;

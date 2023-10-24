@@ -22,7 +22,6 @@ export class ProfileService {
 			birthDate: profile.birth_date,
 			sexualPreferences: profile.sexual_preferences,
 			biography: profile.biography,
-			fameRate: profile.fame_rate,
 			location: profile.location_latitude ? {
 				latitude: profile.location_latitude,
 				longitude: profile.location_longitude,
@@ -59,7 +58,14 @@ export class ProfileService {
 				additionnalPicture: requestedProfile.additionnal_pictures_ids?.split(',') || []
 			},
 			ditanceKm: requestedProfile.distance_km,
-			isLiked: requestedProfile.is_liked === null ? undefined : requestedProfile.is_liked
+			isLiked: requestedProfile.is_liked === null ? undefined : requestedProfile.is_liked,
+			stats: {
+				fameRate: Number(requestedProfile.fame_rate),
+				matchCount: Number(requestedProfile.match_count),
+				likeCount: Number(requestedProfile.like_count),
+				dislikeCount: Number(requestedProfile.dislike_count),
+				viewCount: Number(requestedProfile.view_count)
+			},
 		}
 	}
 
