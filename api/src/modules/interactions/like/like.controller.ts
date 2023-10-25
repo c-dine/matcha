@@ -1,6 +1,8 @@
 import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import { LikeService } from './like.service.js';
+import { PictureService } from '../../picture/picture.service.js';
+import { CustomError } from '../../../utils/error.util.js';
 
 export const likeController = express();
 
@@ -8,6 +10,9 @@ likeController.post("/", async (req: Request, res: Response, next: NextFunction)
 	const targetProfileId = req.body.targetProfileId;
 	const isLiked = !!req.body.isLiked;
 	try {
+		const pictureService = new PictureService(req.dbClient);
+		if (!(await pictureService.userHasProfilePic(req.userId)))
+			throw new CustomError(`You need to have a profile picture to ${isLiked ? "like" : "dislike"} a profile.`, 403);
 		const likeService = new LikeService(req.dbClient);
 		await likeService.deleteElement(req.userId, targetProfileId);
 		const addedLike = await likeService.addElement(
@@ -23,7 +28,7 @@ likeController.post("/", async (req: Request, res: Response, next: NextFunction)
 		next();
 	} catch (error: any) {
 		console.error(`Error while ${isLiked ? "liking" : "disliking"} profile: ${error}.`);
-		error.message = `Error while ${isLiked ? "liking" : "disliking"} profile.`;
+		error.message = error.message || `Error while ${isLiked ? "liking" : "disliking"} profile.`;
 		next(error);
 	}
 });
