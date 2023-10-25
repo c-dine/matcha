@@ -36,10 +36,8 @@ export class ProfileService {
 	}
 
 	updateProfile(updatedProfile: Profile): Observable<Profile> {
-		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile)
-			.pipe(
-				tap(profile => this.profileSubject.next(profile))
-			);
+		this.profileSubject.next(updatedProfile)
+		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile);
 	}
 
 	setLocation(location: GeoCoordinate) {

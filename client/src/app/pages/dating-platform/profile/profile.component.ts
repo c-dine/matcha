@@ -145,6 +145,7 @@ export class ProfileComponent {
 
 		this.isEditMode = false;
 		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
+				...this.profile,
 				...this.profileForm?.getRawValue(),
 				picturesIds: this.profile.picturesIds
 			} as Profile));
@@ -196,6 +197,7 @@ export class ProfileComponent {
 		if (this.profile.isLiked !== undefined && this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.likeProfile(this.profile.id));
+		this.updateProfileStats("like");
 		this.profile.isLiked = true;
 	}
 
@@ -204,13 +206,38 @@ export class ProfileComponent {
 		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
+		this.updateProfileStats("dislike");
 		this.profile.isLiked = false;
 	}
 
 	async unlikeProfile() {
 		if (!this.profile?.id) return;
 		await firstValueFrom(this.likeService.unlikeProfile(this.profile.id));
+		this.updateProfileStats("unlike");
 		this.profile.isLiked = undefined;
+	}
+
+	updateProfileStats(updateType: "like" | "unlike" | "dislike") {
+		if ((!this.profile?.stats?.likeCount && this.profile?.stats?.likeCount !== 0)
+			|| (!this.profile?.stats?.dislikeCount && this.profile?.stats?.dislikeCount !== 0))
+			return;
+		switch (updateType) {
+			case "like":
+				this.profile.stats.likeCount += 1;
+				if (this.isProfileDisliked())
+					this.profile.stats.dislikeCount -= 1;
+				break;
+			case "dislike":
+				this.profile.stats.dislikeCount += 1;
+				if (this.isProfileLiked())
+					this.profile.stats.likeCount -= 1;
+				break;
+			case "unlike":
+				if (this.isProfileLiked())
+					this.profile.stats.likeCount -= 1;
+				else
+					this.profile.stats.dislikeCount -= 1;
+			}
 	}
 
 	isProfileBlacklisted() {

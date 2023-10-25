@@ -83,7 +83,10 @@ export class ProfileService {
 						profilePicture: user.profile_picture_id,
 						additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
 					},
-					ditanceKm: user.distance_km
+					ditanceKm: user.distance_km,
+					stats: {
+						fameRate: user.fame_rate
+					}
 				}))
 		};
 	}

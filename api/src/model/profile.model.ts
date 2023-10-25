@@ -26,6 +26,7 @@ export class ProfileModel extends ModelBase {
 				"user".username,
 				"user".last_name,
 				"user".first_name,
+				"user".id,
 				currentUserLike.is_liked
 			`;
 		return query;
@@ -46,7 +47,13 @@ export class ProfileModel extends ModelBase {
 					(SELECT COUNT(*) FROM "like" AS likeCount WHERE likeCount.target_profile_id = profile.id AND likeCount.is_liked = true) AS like_count,
 					(SELECT COUNT(*) FROM "like" AS dislikeCount WHERE dislikeCount.target_profile_id = profile.id AND dislikeCount.is_liked = false) AS dislike_count,
 					(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_profile_id = profile.id) AS view_count,
-					COUNT(matchCount) AS match_count,
+					(SELECT COUNT(*) FROM "like" AS matchCount WHERE matchCount.target_profile_id = profile.id AND matchCount.is_liked = true AND matchCount.user_id IN (
+						SELECT matchedUser.id 
+						FROM "like" AS currentUserMatches
+						LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = matchedProfile.id
+						LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
+						WHERE currentUserMatches.user_id = "user".id AND currentUserMatches.is_liked = true
+					)) AS match_count,
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 					STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
@@ -58,13 +65,6 @@ export class ProfileModel extends ModelBase {
 				)
 				LEFT JOIN picture ON picture.profile_id = profile.id
 				LEFT JOIN "like" AS currentUserLike ON currentUserLike.target_profile_id = profile.id AND currentUserLike.user_id = '${currentUserId}'
-				LEFT JOIN "like" AS matchCount ON matchCount.target_profile_id = profile.id AND matchCount.user_id IN (
-					SELECT matchedUser.id 
-					FROM "like" AS currentUserMatches
-					LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = matchedProfile.id
-					LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
-					WHERE currentUserMatches.user_id = "user".id
-				)
 			`;
 	}
 
@@ -109,6 +109,7 @@ export class ProfileModel extends ModelBase {
 		query += `
 			GROUP BY
 				profile.id,
+				"user".id,
 				"user".username,
 				"user".last_name,
 				"user".first_name,
