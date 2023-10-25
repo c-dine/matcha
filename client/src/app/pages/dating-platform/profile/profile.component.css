@@ -27,6 +27,28 @@
 	padding: 0;
 }
 
+.picture-vignette {
+	position: absolute;
+	border-radius: 5px;
+	border: thin solid white;
+	background-color: var(--primary-medium-color);
+	padding: 5px 10px;
+	z-index: 2;
+	margin-top: 10px;
+	margin-left: 20px;
+	font-size: 12px;
+	display: flex;
+	align-items: center;
+}
+
+.picture-vignette-icon {
+	font-size: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+}
+
 .profile-picture {
 	border-radius: 20px;
 	max-width: 100%;
@@ -43,7 +65,7 @@
 
 .user-card-container .user-subtitle {
 	font-size: 14px;
-    color: #8F90AD;
+    color: var(--primary-medium-color);
     font-weight: 500;
 }
 

@@ -7,6 +7,9 @@
 	</div>
 
 	<div class="pictures-container rounded-box">
+		<div *ngIf="profileLikedCurrentUser() && !isEditMode" class="picture-vignette">
+			<mat-icon class="picture-vignette-icon">favorite</mat-icon> {{profile.username}} liked you!
+		</div>
 		<app-image-slider [picturesUrl]="getPicturesUrl()" *ngIf="!isEditMode"></app-image-slider>
 		<app-profile-pictures [pictures]="pictures" (updatedPictures)="updatePictures($event)" *ngIf="isEditMode"></app-profile-pictures>
 	</div>

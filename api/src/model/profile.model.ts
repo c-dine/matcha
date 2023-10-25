@@ -19,7 +19,7 @@ export class ProfileModel extends ModelBase {
 			${this.getUserProfileSelectQuery({
 			latitude: currentUserProfile.location_latitude,
 			longitude: currentUserProfile.location_longitude
-		}, currentUserProfile.user_id)}
+		}, currentUserProfile)}
 			WHERE profile.id = '${requestedUserId}'
 			GROUP BY
 				profile.id,
@@ -27,12 +27,16 @@ export class ProfileModel extends ModelBase {
 				"user".last_name,
 				"user".first_name,
 				"user".id,
-				currentUserLike.is_liked
+				currentUserLike.is_liked,
+				likedCurrentUser.is_liked 
 			`;
 		return query;
 	}
 
-	private getUserProfileSelectQuery(userLocation: GeoCoordinate, currentUserId: string) {
+	private getUserProfileSelectQuery(
+		userLocation: GeoCoordinate,
+		currentUserProfile: profile
+	): string {
 		return `SELECT 
 					"user".username,
 					"user".last_name,
@@ -44,6 +48,7 @@ export class ProfileModel extends ModelBase {
 					profile.biography,
 					profile.fame_rate,
 					currentUserLike.is_liked,
+					likedCurrentUser.is_liked as liked_current_user,
 					(SELECT COUNT(*) FROM "like" AS likeCount WHERE likeCount.target_profile_id = profile.id AND likeCount.is_liked = true) AS like_count,
 					(SELECT COUNT(*) FROM "like" AS dislikeCount WHERE dislikeCount.target_profile_id = profile.id AND dislikeCount.is_liked = false) AS dislike_count,
 					(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_profile_id = profile.id) AS view_count,
@@ -64,7 +69,8 @@ export class ProfileModel extends ModelBase {
 					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
 				)
 				LEFT JOIN picture ON picture.profile_id = profile.id
-				LEFT JOIN "like" AS currentUserLike ON currentUserLike.target_profile_id = profile.id AND currentUserLike.user_id = '${currentUserId}'
+				LEFT JOIN "like" AS currentUserLike ON currentUserLike.target_profile_id = profile.id AND currentUserLike.user_id = '${currentUserProfile.user_id}'
+				LEFT JOIN "like" AS likedCurrentUser ON likedCurrentUser.target_profile_id = '${currentUserProfile.id}' AND likedCurrentUser.user_id = "user".id
 			`;
 	}
 
@@ -81,7 +87,7 @@ export class ProfileModel extends ModelBase {
 			WITH profile_with_distance AS (
 				${this.getUserProfileSelectQuery(
 					{ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude },
-					userProfile.user_id)}
+					userProfile)}
 				WHERE profile.id != '${userProfile.id}'`;
 
 		if (filters.ageMin)
@@ -113,7 +119,8 @@ export class ProfileModel extends ModelBase {
 				"user".username,
 				"user".last_name,
 				"user".first_name,
-				currentUserLike.is_liked
+				currentUserLike.is_liked,
+				likedCurrentUser.is_liked
 		)
 		SELECT *, COUNT(*) OVER () AS total_user_count
 		FROM profile_with_distance`

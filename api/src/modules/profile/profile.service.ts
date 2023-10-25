@@ -59,6 +59,7 @@ export class ProfileService {
 			},
 			ditanceKm: requestedProfile.distance_km,
 			isLiked: requestedProfile.is_liked === null ? undefined : requestedProfile.is_liked,
+			likedCurrentUser: requestedProfile.liked_current_user === null ? undefined : requestedProfile.liked_current_user,
 			stats: {
 				fameRate: Number(requestedProfile.fame_rate),
 				matchCount: Number(requestedProfile.match_count),

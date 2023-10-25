@@ -255,4 +255,8 @@ export class ProfileComponent {
 	isProfileDisliked() {
 		return this.profile?.isLiked !== undefined && !this.profile?.isLiked;
 	}
+
+	profileLikedCurrentUser() {
+		return this.profile?.likedCurrentUser !== undefined && this.profile?.likedCurrentUser;
+	}
 }
