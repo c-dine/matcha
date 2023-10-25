@@ -33,6 +33,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { SettingsComponent } from './settings/settings.component';
 import {MatTableModule} from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -50,9 +51,9 @@ import {MatTableModule} from '@angular/material/table';
     ChatSearchBarComponent,
     ChatMessageComponent,
     ProfileComponent,
-	UserListComponent,
-	UserListFiltersComponent,
-	SettingsComponent
+    UserListComponent,
+    UserListFiltersComponent,
+    SettingsComponent
   ],
   imports: [
     CommonModule,
@@ -66,15 +67,16 @@ import {MatTableModule} from '@angular/material/table';
     ReactiveFormsModule,
     FormsModule,
     DatingPlatformRoutingModule,
-	MatInputModule,
-	MatRadioModule,
-	MatTooltipModule,
-	SharedModule,
-	MatSelectModule,
-	NgxPaginationModule,
-	MatDatepickerModule,
-	MatNativeDateModule,
-	MatTableModule
+    MatInputModule,
+    MatRadioModule,
+    MatTooltipModule,
+    SharedModule,
+    MatSelectModule,
+    NgxPaginationModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTableModule,
+    MatProgressSpinnerModule
   ]
 })
 export class DatingPlatformModule { }
