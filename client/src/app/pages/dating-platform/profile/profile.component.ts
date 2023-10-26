@@ -52,7 +52,7 @@ export class ProfileComponent {
 	async ngOnInit() {
 		this.currentUserProfile = await firstValueFrom(this.profileService.getCurrentUserProfileObs());
 		this.route.queryParamMap.subscribe(async params => {
-			if (params.has("id"))
+			if (params.has("id") && params.get("id") !== this.currentUserProfile?.id)
 				this.profileService.getUserProfile(params.get("id") as string).subscribe({
 					next: (profile) => {
 						this.profile = profile;
