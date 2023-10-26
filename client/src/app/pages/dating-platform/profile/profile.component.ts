@@ -183,7 +183,6 @@ export class ProfileComponent {
 	async onReportUserClick() {
 		if (this.profile?.id) {
 			await firstValueFrom(this.fakeReportService.addFakeReported(this.profile?.id));
-			this.onBlacklistUserClick();
 		};
 	}
 

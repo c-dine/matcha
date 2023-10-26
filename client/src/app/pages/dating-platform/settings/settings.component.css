@@ -93,20 +93,20 @@ mat-icon {
 	padding-left: 50px;
 }
 
-.reportlist-label {
+.blacklists-label {
 	grid-row: 15 / 16;
 	grid-column: 6 / 11;
 }
-.reportlist-container {
+.blacklists-container {
 	grid-row: 16 / 21;
 	grid-column: 6 / 11;
 }
 
-.blacklist-label {
+.likes-history-label {
 	grid-row: 7 / 8;
 	grid-column: 6 / 11;
 }
-.blacklist-container {
+.likes-history-container {
 	grid-row: 8 / 15;
 	grid-column: 6 / 11;
 }
