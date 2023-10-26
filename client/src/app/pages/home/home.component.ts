@@ -7,6 +7,10 @@ import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { ResetPasswordDialogComponent } from './reset-password-dialog/reset-password-dialog.component';
 import { VerifyEmailDialogComponent } from './verify-email-dialog/verify-email-dialog.component';
 import { environment } from '@environment/environment';
+import { User } from '@shared-models/user.model';
+import { Subscription } from 'rxjs';
+import { Profile } from '@shared-models/profile.model';
+import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
   selector: 'app-home',
@@ -17,20 +21,44 @@ export class HomeComponent {
 
 	environment = environment;
 
+	user: User | undefined;
+	userProfile: Profile | null = null;
+
+	mySubscription: Subscription[] = [];
+
 	constructor(
 		private dialog: MatDialog,
 		private authService: AuthService,
+		private profileService: ProfileService,
 		private router: Router,
 		private route: ActivatedRoute
 	) {}
 
-	ngOnInit() {
+	async ngOnInit() {
 		this.route.queryParamMap.subscribe(params => {
 			if (params.has("resetToken"))
 				this.openResetPasswordDialog(String(params.get("resetToken")));
 			if (params.has("verificationToken"))
 				this.openVerifyEmailDialog(String(params.get("verificationToken")));
 		})
+		if (!(await this.authService.isLoggedIn()))
+			return;
+		this.mySubscription.push(
+			this.authService.getCurrentUserObs().subscribe({
+				next: (user) => {
+					console.log(user)
+					this.user = user
+				}
+			})
+		);
+		this.mySubscription.push(
+			this.profileService.getProfileObs().subscribe({
+				next: (profile) => {
+					console.log(profile)
+					this.userProfile = profile
+				}
+			})
+		);
 	}
 
 	openResetPasswordDialog(resetToken: string) {

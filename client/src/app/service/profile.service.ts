@@ -14,7 +14,7 @@ export class ProfileService {
 
     constructor(
         private http: HttpClient
-    ) {}
+    ) {	}
 
 	private getProfile(): Observable<Profile | null> {
 		return this.http.get<Profile | null>(`${environment.apiUrl}/profile/`)
