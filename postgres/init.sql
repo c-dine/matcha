@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS "profile" (
     "biography" VARCHAR(510),
     "location_latitude" FLOAT NULL,
 	"location_longitude" FLOAT NULL,
+    "user_given_location_latitude" FLOAT NULL,
+	"user_given_location_longitude" FLOAT NULL,
     "fame_rate" INTEGER DEFAULT 100,
     "user_id" UUID NOT NULL UNIQUE,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE

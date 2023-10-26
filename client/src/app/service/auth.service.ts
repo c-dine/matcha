@@ -10,6 +10,7 @@ import { map, tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
+import { ProfileService } from './profile.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -18,6 +19,7 @@ export class AuthService {
 	constructor(
 		private http: HttpClient,
 		private userService: UserService,
+		private profileService: ProfileService,
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
 	) { }
@@ -27,7 +29,6 @@ export class AuthService {
 			.pipe(
 				map(user => {
 					this.setSession(user);
-					this.userService.trackUserLocation();
 					return user;
 				})
 			);
@@ -38,20 +39,20 @@ export class AuthService {
 			.pipe(
 				map(user => {
 					this.setSession(user as AuthenticatedUser);
-					this.userService.trackUserLocation();
 					return user;
 				})
 			);
 	}
 
 	setSession(user: AuthenticatedUser) {
+		this.profileService.trackUserLocation();
 		this.setRefreshToken(user.token.refresh || "");
 		this.userService.setAccessTokenObs(user.token.access);
 		this.userService.setCurrentUserObs(user as User);
 	}
 
 	logout(): void {
-		this.userService.stopTrackingLocationChanges();
+		this.profileService.stopTrackingLocationChanges();
 		this.userService.setAccessTokenObs(undefined);
 		this.removeRefreshToken();
 		this.chatSocket.disconnect();
@@ -60,10 +61,14 @@ export class AuthService {
 	}
 
 	async isLoggedIn(): Promise<boolean> {
-		if (this.isTokenValid(this.userService.getAccessTokenValue()))
+		if (this.isTokenValid(this.userService.getAccessTokenValue())) {
+			this.profileService.trackUserLocation();
 			return true;
-		if (this.getRefreshToken() && await firstValueFrom(this.refreshAccessToken()))
+		}
+		if (this.getRefreshToken() && await firstValueFrom(this.refreshAccessToken())) {
+			this.profileService.trackUserLocation();
 			return true;
+		}
 		this.userService.setAccessTokenObs(undefined);
 		this.removeRefreshToken();
 		return false;
