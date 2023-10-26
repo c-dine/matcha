@@ -1,20 +1,31 @@
-<div class="matcha-conversation-container matcha-flex-column-reverse">
-	<div class="matcha-flex-row matcha-conversation-input-container">
-		<input placeholder="send message" class="matcha-conversation-input"/>
-		<div class="matcha-conversation-input-button matcha-flex-row matcha-flex-align-center matcha-flex-justiy-center">
-			<mat-icon class="matcha-conversation-input-icon">send</mat-icon>
+<div *ngIf="hasConversationSelected(); then conversationSelected else noConversationSelected"></div>
+
+<ng-template #conversationSelected>
+	<div class="matcha-conversation-container matcha-flex-column-reverse">
+		<div class="matcha-flex-row matcha-conversation-input-container">
+			<form #sendMessageForm="ngForm" (ngOnSubmit)="sendMessage()">
+				<input placeholder="send message" class="matcha-conversation-input" [(ngModel)]="messageToSend" name="send message"/>
+				<div
+					class="matcha-conversation-input-button matcha-flex-row matcha-flex-align-center matcha-flex-justiy-center"
+					type="submit"
+					(click)="sendMessage()">
+					<mat-icon class="matcha-conversation-input-icon">send</mat-icon>
+				</div>
+			</form>
+		</div>
+		<div class="matcha-conversation-messages-container matcha-flex-column-reverse">
+		<app-chat-message 
+			*ngFor="let message of messages"
+			[message]="message.message"
+			[currentUser]="conversation?.user_id !== message.from_user_id"
+			[userProfilePictureSrc]="profilePictureUrl"
+		/>
 		</div>
 	</div>
-	<div class="matcha-conversation-messages-container matcha-flex-column-reverse">
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
+</ng-template>
+
+<ng-template #noConversationSelected>
+	<div class="matcha-conversation-container matcha-flex-column-reverse">
+		<p> No conversation conversationSelected </p>
 	</div>
-</div>
+</ng-template>

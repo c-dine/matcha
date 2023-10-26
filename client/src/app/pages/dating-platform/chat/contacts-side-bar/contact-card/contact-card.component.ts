@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { NavbarProfile } from '@shared-models/profile.model';
+import { Conversation } from '@shared-models/chat.models';
+import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
   selector: 'app-contact-card',
@@ -8,8 +9,12 @@ import { NavbarProfile } from '@shared-models/profile.model';
 })
 export class ContactCardComponent {
   @Input()
-  user!: NavbarProfile;
+  conversation!: Conversation;
 
   @Input()
   activated!: boolean;
+
+  pictureIdToUrl(id: string) {
+	return getFirebasePictureUrl(id);
+  }
 }

@@ -71,11 +71,11 @@ mat-icon {
 	padding-left: 50px;
 }
 
-.visit-history-label {
+.views-history-label {
 	grid-row: 10 / 11;
 	grid-column: 1 / 6;
 }
-.visit-history-container {
+.views-history-container {
 	grid-row: 11 / 21;
 	grid-column: 1 / 6;
 }
@@ -93,20 +93,50 @@ mat-icon {
 	padding-left: 50px;
 }
 
-.reportlist-label {
+.blacklists-label {
 	grid-row: 15 / 16;
 	grid-column: 6 / 11;
 }
-.reportlist-container {
+.blacklists-container {
 	grid-row: 16 / 21;
 	grid-column: 6 / 11;
 }
 
-.blacklist-label {
+.likes-history-label {
 	grid-row: 7 / 8;
 	grid-column: 6 / 11;
 }
-.blacklist-container {
+.likes-history-container {
 	grid-row: 8 / 15;
 	grid-column: 6 / 11;
+}
+
+.empty-table-message {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 5%;
+	font-style: italic;
+	color: gray;
+	font-weight: 700;
+}
+
+.setting-table-container {
+	padding: 0;
+}
+
+:host::ng-deep .mat-mdc-tab-body-wrapper {
+	height: inherit;
+}
+
+:host::ng-deep .mat-mdc-tab-group {
+	height: 100%;
+}
+
+:host::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+	color: var(--primary-color);
+}
+
+:host::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline {
+	border-color: var(--primary-color);
 }

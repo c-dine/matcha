@@ -65,7 +65,7 @@ export class ModelBase {
 		const result = await this.dbClient.query(query, values);
 		return result.rows;
 	}
-	
+
 	private getSelectQuery(select?: string[]) {
 		return select?.length ?
 			select.reduce((query, arg) => query += query.length ? `, ${arg}` : arg, "")
@@ -120,7 +120,7 @@ export class ModelBase {
 	private getWhereQuery(data: { [key: string]: any }[], startIndex = 0) {
 		let whereQuery = "";
 		let index = 1;
-	
+
 		for (const orObject of data) {
 			const keyArray = Object.keys(orObject);
 			if (!keyArray.length) continue;

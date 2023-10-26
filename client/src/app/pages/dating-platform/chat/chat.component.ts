@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
-import { ChatSocketService } from 'src/app/service/socket/chatSocket.service';
+import { ChatService } from 'src/app/service/chat.service';
+import { Conversation } from '@shared-models/chat.models';
+import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
   selector: 'app-chat',
@@ -8,17 +9,24 @@ import { ChatSocketService } from 'src/app/service/socket/chatSocket.service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent {
+	selectedConversation: Conversation | undefined;
 
 	constructor(
-		private chatSocket: ChatSocketService,
-		private activitySocket: ActivitySocketService,
-	) {}
+		private chatService: ChatService,
+		private profileService: ProfileService
+	) {
+		this.selectedConversation = undefined;
+	}
 
 	ngOnInit() {
 	}
 
-	// sendMessage() {
-	// 	this.chatSocket.sendMessage('test');
-	// 	this.activitySocket.sendMessage('test');
-	// }
+	async sendMessage() {
+		let matchs = await this.profileService.getMatchs().subscribe();
+		console.log(matchs);
+	}
+
+	setSelectedConversation(userId: Conversation) {
+		this.selectedConversation = userId;
+	}
 }

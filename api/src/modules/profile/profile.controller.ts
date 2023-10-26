@@ -5,6 +5,7 @@ import { TagService } from '../tag/tag.service.js';
 import { PictureService } from '../picture/picture.service.js';
 import { env } from '../../config/config.js';
 import { GeoCoordinate, Profile, ProfileFilters, ProfileFiltersRequest, UserProfile } from '@shared-models/profile.model.js';
+import { ViewService } from '../interactions/view/view.service.js';
 
 export const profileController = express();
 
@@ -25,8 +26,11 @@ profileController.get("/", async (req: Request, res: Response, next: NextFunctio
 profileController.get("/userProfile", async (req: Request<any, any, any, { id: string }>, res: Response, next: NextFunction) => {
 	try {
 		const profileService = new ProfileService(req.dbClient);
-		const profile = await profileService.getUserProfile(req.userId, req.query.id);
+		const viewService = new ViewService(req.dbClient);
+		const profile = await profileService.getUserProfile(req.userId, req.query?.id);
 
+		if (req.query?.id)
+			await viewService.addElement(req.userId, req.query.id);
 		res.status(200).json({ data: profile as UserProfile || null });
 		next();
 	} catch (error: any) {
@@ -66,6 +70,21 @@ profileController.get("/matchingProfiles", async (req: Request<any, any, any, Pr
 		next(error);
 	}
 });
+
+profileController.get("/matchs", async (req: Request<any, any, any, ProfileFiltersRequest>, res: Response, next: NextFunction) => {
+	try {
+		const profileService = new ProfileService(req.dbClient);
+		const matchingProfiles = await profileService.getMatchs(req.userId);
+
+		res.status(200).json({ data: matchingProfiles });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching matched profiles: ${error}.`);
+		error.message = `Error while fetching matched profiles.`;
+		next(error);
+	}
+});
+
 
 profileController.put("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
