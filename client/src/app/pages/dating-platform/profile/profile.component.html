@@ -7,6 +7,9 @@
 	</div>
 
 	<div class="pictures-container rounded-box">
+		<div *ngIf="profileLikedCurrentUser() && !isEditMode" class="picture-vignette">
+			<mat-icon class="picture-vignette-icon">favorite</mat-icon> {{profile.username}} liked you!
+		</div>
 		<app-image-slider [picturesUrl]="getPicturesUrl()" *ngIf="!isEditMode"></app-image-slider>
 		<app-profile-pictures [pictures]="pictures" (updatedPictures)="updatePictures($event)" *ngIf="isEditMode"></app-profile-pictures>
 	</div>
@@ -14,7 +17,8 @@
 		
 	<div class="user-card-container rounded-box">
 		<div class="action-buttons" *ngIf="profile.id !== currentUserProfile?.id">
-			<mat-icon matTooltip='Like'>favorite</mat-icon>
+			<mat-icon matTooltip='Like' (click)="onLikeProfileClick()" [ngClass]="{ 'active-liked-button': isProfileLiked() }">thumb_up</mat-icon>
+			<mat-icon matTooltip='Dislike' (click)="onDislikeProfileClick()" [ngClass]="{ 'active-disliked-button': isProfileDisliked() }">thumb_down</mat-icon>
 			<mat-icon matTooltip='Message'>message</mat-icon>
 			<mat-icon matTooltip='Block' (click)="onBlacklistUserClick()" *ngIf="!isProfileBlacklisted()">block</mat-icon>
 			<mat-icon matTooltip='Unblock' (click)="onUnblacklistUserClick()" *ngIf="isProfileBlacklisted()">lock_open</mat-icon>
@@ -62,19 +66,40 @@
 	</div>
 
 
-	<div class="stats-container rounded-box fame-rate-container">
-		{{profile.fameRate}}%
-		<span class="stats-label">fame rate</span>
+	<div class="stats-container fame-rate-container">
+		<mat-progress-spinner
+			[value]="profile.stats?.fameRate"
+			></mat-progress-spinner>
+		<span class="progress-spinner-text">
+			<span class="progress-spinner-percentage">{{profile.stats?.fameRate}}%</span>
+			<span class="stat-label-police">fame rate</span>
+		</span>
 	</div>
 	
 	<div class="stats-container rounded-box likes-container">
-		{{profile.fameRate}}
-		<span class="stats-label">likes</span>
+			<mat-icon class="rounded-shadowed-icon">thumb_up</mat-icon>
+			{{profile.stats?.likeCount}}
+	</div>
+	
+	<div class="stats-container rounded-box dislikes-container">
+		<mat-icon class="rounded-shadowed-icon">thumb_down</mat-icon>
+		{{profile.stats?.dislikeCount}}
 	</div>
 	
 	<div class="stats-container rounded-box matches-container">
-		{{profile.fameRate}}
-		<span class="stats-label">matches</span>
+		<span class="stats-label">
+			<mat-icon class="rounded-shadowed-icon">favorite</mat-icon>
+			<span class="stat-label-police">Matches</span>
+		</span>
+		{{profile.stats?.matchCount}}
+	</div>
+	
+	<div class="stats-container rounded-box views-container">
+		<span class="stats-label">
+			<mat-icon class="rounded-shadowed-icon">visibility</mat-icon>
+			<span class="stat-label-police">Views</span>
+		</span>
+		{{profile.stats?.viewCount}}
 	</div>
 
 	<h1 class="details-label label">Details</h1>

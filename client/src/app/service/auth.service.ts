@@ -55,9 +55,9 @@ export class AuthService {
 		this.userService.stopTrackingLocationChanges();
 		this.userService.setAccessTokenObs(undefined);
 		this.removeRefreshToken();
-		this.router.navigate(['/']);
 		this.chatSocket.disconnect();
 		this.activitySocket.disconnect();
+		window.location.reload();
 	}
 
 	async isLoggedIn(): Promise<boolean> {

@@ -23,8 +23,8 @@ export class ProfileService {
 			);
 	}
 	
-	getUserProfile(userProfileId: string): Observable<UserProfile | null> {
-		const params = buildHttpParams({ id: userProfileId});
+	getUserProfile(userProfileId?: string): Observable<UserProfile | null> {
+		const params = userProfileId ? buildHttpParams({ id: userProfileId}) : undefined;
 		return this.http.get<UserProfile | null>(`${environment.apiUrl}/profile/userProfile`, { params });
 	}
 
@@ -36,10 +36,8 @@ export class ProfileService {
 	}
 
 	updateProfile(updatedProfile: Profile): Observable<Profile> {
-		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile)
-			.pipe(
-				tap(profile => this.profileSubject.next(profile))
-			);
+		this.profileSubject.next(updatedProfile)
+		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile);
 	}
 
 	setLocation(location: GeoCoordinate) {

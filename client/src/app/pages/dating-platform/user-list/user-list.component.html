@@ -17,7 +17,7 @@
 			</div>
 			<div class="user-item-fame">
 				<mat-icon class="heart-icon">favorite_border</mat-icon>
-				{{user.fameRate}}%
+				{{user.stats?.fameRate}}%
 			</div>
 			<div class="tags-container">
 				<div class="tag-item" *ngFor="let tag of user.tags" matTooltip="Filter with this tag" (click)="setTagFilter(tag)">

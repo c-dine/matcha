@@ -22,7 +22,6 @@ export class ProfileService {
 			birthDate: profile.birth_date,
 			sexualPreferences: profile.sexual_preferences,
 			biography: profile.biography,
-			fameRate: profile.fame_rate,
 			location: profile.location_latitude ? {
 				latitude: profile.location_latitude,
 				longitude: profile.location_longitude,
@@ -58,7 +57,16 @@ export class ProfileService {
 				profilePicture: requestedProfile.profile_picture_id,
 				additionnalPicture: requestedProfile.additionnal_pictures_ids?.split(',') || []
 			},
-			ditanceKm: requestedProfile.distance_km
+			ditanceKm: requestedProfile.distance_km,
+			isLiked: requestedProfile.is_liked === null ? undefined : requestedProfile.is_liked,
+			likedCurrentUser: requestedProfile.liked_current_user === null ? undefined : requestedProfile.liked_current_user,
+			stats: {
+				fameRate: Number(requestedProfile.fame_rate),
+				matchCount: Number(requestedProfile.match_count),
+				likeCount: Number(requestedProfile.like_count),
+				dislikeCount: Number(requestedProfile.dislike_count),
+				viewCount: Number(requestedProfile.view_count)
+			},
 		}
 	}
 
@@ -76,7 +84,10 @@ export class ProfileService {
 						profilePicture: user.profile_picture_id,
 						additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
 					},
-					ditanceKm: user.distance_km
+					ditanceKm: user.distance_km,
+					stats: {
+						fameRate: user.fame_rate
+					}
 				}))
 		};
 	}
@@ -157,9 +168,15 @@ export class ProfileService {
 		} 
 	}
 
-	private async getCurrentUserProfile(userId: string): Promise<profile | undefined>  {
+	async getCurrentUserProfile(userId: string): Promise<profile | undefined>  {
 		return (await this.profileModel.findMany([{
 			user_id: userId
 		}]))[0];
+	}
+
+	async getProfileIdsFromUserIds(userIds: string[]): Promise<profile[] | undefined>  {
+		return await this.profileModel.findMany(userIds.map(id => ({
+			user_id: id
+		})), ["id", "user_id"]);
 	}
 }

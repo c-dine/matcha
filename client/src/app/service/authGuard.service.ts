@@ -6,7 +6,7 @@ import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class AuthGuard {
     constructor(
@@ -17,17 +17,17 @@ export class AuthGuard {
 		private activitySocket: ActivitySocketService,
     ) {}
 
-    async canActivate(): Promise<boolean> {
-        if (!(await this.authService.isLoggedIn())) {
+	async canActivate(): Promise<boolean> {
+		if (!(await this.authService.isLoggedIn())) {
 			this.router.navigate(['']);
 			return false;
 		}
-		if (!(await this.profileService.userHasProfile())){
+		if (!(await this.profileService.userHasProfile())) {
 			this.router.navigate(['/fillProfile']);
 			return true;
 		}
 		this.chatSocket.connect();
 		this.activitySocket.connect();
 		return true;
-    }
+	}
 }

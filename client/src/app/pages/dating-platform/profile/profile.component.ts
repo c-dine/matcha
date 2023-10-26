@@ -9,8 +9,10 @@ import { Profile, UserProfile } from '@shared-models/profile.model';
 import { firstValueFrom } from 'rxjs';
 import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
+import { LikeService } from 'src/app/service/like.service';
 import { PictureService } from 'src/app/service/picture.service';
 import { ProfileService } from 'src/app/service/profile.service';
+import { ViewService } from 'src/app/service/view.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
 import { ageValidator, dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
@@ -42,7 +44,9 @@ export class ProfileComponent {
 		private snackBar: MatSnackBar,
 		private pictureService: PictureService,
 		private blacklistService: BlacklistService,
-		private fakeReportService: FakeReportService
+		private fakeReportService: FakeReportService,
+		private viewService: ViewService,
+		private likeService: LikeService
 	) { }
 
 	async ngOnInit() {
@@ -50,7 +54,12 @@ export class ProfileComponent {
 		this.route.queryParamMap.subscribe(async params => {
 			if (params.has("id"))
 				this.profileService.getUserProfile(params.get("id") as string).subscribe({
-					next: (profile) => { this.profile = profile; this.isLoading = false; },
+					next: (profile) => {
+						this.profile = profile;
+						if (profile?.id)
+							this.viewService.addView(profile);
+						this.isLoading = false;
+					},
 					error: async () => { await this.getCurrentUserProfile(); this.isLoading = false; },
 				});
 			else {
@@ -61,7 +70,7 @@ export class ProfileComponent {
 	}
 
 	async getCurrentUserProfile() {
-		this.profileService.getUserProfile(this.currentUserProfile?.id as string).subscribe({
+		this.profileService.getUserProfile().subscribe({
 			next: (profile) => {
 				this.profile = profile;
 				this.initForm();
@@ -129,6 +138,7 @@ export class ProfileComponent {
 
 		this.isEditMode = false;
 		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
+				...this.profile,
 				...this.profileForm?.getRawValue(),
 				picturesIds: this.profile.picturesIds
 			} as Profile));
@@ -166,7 +176,6 @@ export class ProfileComponent {
 	async onReportUserClick() {
 		if (this.profile?.id) {
 			await firstValueFrom(this.fakeReportService.addFakeReported(this.profile?.id));
-			this.onBlacklistUserClick();
 		};
 	}
 
@@ -175,11 +184,71 @@ export class ProfileComponent {
 			await firstValueFrom(this.fakeReportService.deleteFakeReported(this.profile?.id));
 	}
 
+	async onLikeProfileClick() {
+		if (!this.profile?.id) return;
+		if (this.profile.isLiked !== undefined && this.profile.isLiked)
+			return this.unlikeProfile();
+		await firstValueFrom(this.likeService.likeProfile(this.profile));
+		this.updateProfileStats("like");
+		this.profile.isLiked = true;
+	}
+
+	async onDislikeProfileClick() {
+		if (!this.profile?.id) return;
+		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
+			return this.unlikeProfile();
+		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
+		this.updateProfileStats("dislike");
+		this.profile.isLiked = false;
+	}
+
+	async unlikeProfile() {
+		if (!this.profile?.id) return;
+		await firstValueFrom(this.likeService.unlikeProfile(this.profile.id));
+		this.updateProfileStats("unlike");
+		this.profile.isLiked = undefined;
+	}
+
+	updateProfileStats(updateType: "like" | "unlike" | "dislike") {
+		if ((!this.profile?.stats?.likeCount && this.profile?.stats?.likeCount !== 0)
+			|| (!this.profile?.stats?.dislikeCount && this.profile?.stats?.dislikeCount !== 0))
+			return;
+		switch (updateType) {
+			case "like":
+				this.profile.stats.likeCount += 1;
+				if (this.isProfileDisliked())
+					this.profile.stats.dislikeCount -= 1;
+				break;
+			case "dislike":
+				this.profile.stats.dislikeCount += 1;
+				if (this.isProfileLiked())
+					this.profile.stats.likeCount -= 1;
+				break;
+			case "unlike":
+				if (this.isProfileLiked())
+					this.profile.stats.likeCount -= 1;
+				else
+					this.profile.stats.dislikeCount -= 1;
+			}
+	}
+
 	isProfileBlacklisted() {
 		return this.blacklistService.isProfileBlocked(this.profile?.id || "");
 	}
 
 	isProfileReported() {
 		return this.fakeReportService.isProfileReported(this.profile?.id || "");
+	}
+
+	isProfileLiked() {
+		return this.profile?.isLiked !== undefined && this.profile?.isLiked;
+	}
+
+	isProfileDisliked() {
+		return this.profile?.isLiked !== undefined && !this.profile?.isLiked;
+	}
+
+	profileLikedCurrentUser() {
+		return this.profile?.likedCurrentUser !== undefined && this.profile?.likedCurrentUser;
 	}
 }

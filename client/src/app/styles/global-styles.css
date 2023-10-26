@@ -12,6 +12,9 @@
     --secondary-text-color: #8f90ad;
 
     --background-color: #f7f7ff;
+
+	--error-color: rgb(182, 75, 75);
+	--success-color: rgb(79, 150, 79);
   }
 
 body {

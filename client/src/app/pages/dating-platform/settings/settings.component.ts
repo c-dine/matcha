@@ -7,6 +7,8 @@ import { Subscription, firstValueFrom } from "rxjs";
 import { BlacklistService } from "src/app/service/blacklist.service";
 import { FakeReportService } from "src/app/service/fake-report.service";
 import { UserService } from "src/app/service/user.service";
+import { LikeService } from "src/app/service/like.service";
+import { ViewService } from "src/app/service/view.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
 
 @Component({
@@ -24,14 +26,22 @@ export class SettingsComponent {
 
 	blacklist!: Interaction[];
 	fakeReportList!: Interaction[];
+	
+	selfViewsList!: Interaction[];
+	othersViewsList!: Interaction[];
+
+	selfLikesList!: Interaction[];
+	othersLikesList!: Interaction[];
 
 	mySubscriptions: Subscription[] = [];
 
 	constructor(
 		private blacklistService: BlacklistService,
 		private fakeReportService: FakeReportService,
-		private snackBar: MatSnackBar,
-		private userService: UserService
+		private userService: UserService,
+		private viewService: ViewService,
+		private likeService: LikeService,
+		private snackBar: MatSnackBar
 	) { }
 
 	ngOnInit() {
@@ -48,6 +58,26 @@ export class SettingsComponent {
 		this.mySubscriptions.push(
 			this.fakeReportService.getFakeReportListObs().subscribe({
 				next: (fakeReportList) => this.fakeReportList = fakeReportList
+			})
+		);
+		this.mySubscriptions.push(
+			this.viewService.getSelfViewsListObs().subscribe({
+				next: (selfViewsList) => this.selfViewsList = selfViewsList
+			})
+		);
+		this.mySubscriptions.push(
+			this.viewService.getOthersViewsListObs().subscribe({
+				next: (othersViewsList) => this.othersViewsList = othersViewsList
+			})
+		);
+		this.mySubscriptions.push(
+			this.likeService.getSelfLikesListObs().subscribe({
+				next: (selfLikesList) => this.selfLikesList = selfLikesList
+			})
+		);
+		this.mySubscriptions.push(
+			this.likeService.getOthersLikesListObs().subscribe({
+				next: (othersLikesList) => this.othersLikesList = othersLikesList
 			})
 		);
 		this.initPasswordForm();

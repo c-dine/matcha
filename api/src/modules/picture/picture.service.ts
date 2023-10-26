@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import { bucket } from "../../app.js";
 import { PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model.js';
 import { PictureModel } from "../../model/picture.model.js";
+import { ProfileModel } from "../../model/profile.model.js";
 
 export class PictureService {
 
@@ -93,5 +94,15 @@ export class PictureService {
 			id: picture.id,
 			profileId: picture.profile_id
 		}));
+	}
+
+	async userHasProfilePic(userId: string): Promise<boolean> {
+		const profileModel = new ProfileModel(this.dbClient);
+		const userProfileId = (await profileModel.findMany([{ user_id: userId }], ["id"]))[0].id;
+		const profilePic = (await this.pictureModel.findMany([{
+			profile_id: userProfileId,
+			is_profile_picture: true
+		}]))[0];
+		return !!profilePic;
 	}
 }
