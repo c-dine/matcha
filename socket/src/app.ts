@@ -1,8 +1,8 @@
-import { socketRC } from "./modules/socketBase.controller.js";
-import { controllers } from "./modules/controller.module.js";
+import { socketRC } from "./socket-rc/socketNamespace.js";
+import { routes } from "./routes/routes.js";
 
 const socket = socketRC();
 
-for (const controller of controllers) socket.use(controller);
+socket.useRoutes(routes);
 
 socket.listen(3002);

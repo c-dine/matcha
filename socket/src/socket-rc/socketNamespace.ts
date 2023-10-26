@@ -1,23 +1,27 @@
-import appController from './app.controller.js';
+import { SocketServer } from './socketServer.js';
+import { SocketRoutes } from './sockerRouter.js';
 
-class SocketBaseController {
-	static appController = appController;
+export class SocketNamespace {
+	private static server = new SocketServer();
 	private connectedUsers: Map<string, any>;
 	private events: Map<string, (...args: any[]) => void>;
 
 	constructor(
-		private route?: string,
+		public namespace?: string,
 	) {
-		if (route !== undefined) {
+			this.namespace = namespace || '/';
 			this.connectedUsers = new Map<string, any>();
 			this.events = new Map<string, (...args: any[]) => void>();
-		}
 	}
 
-	connection() {
-		console.log(`opebn route on ${this.route}`)
-		appController.io.of(this.route).on('connection', (socket) => {
-			console.log(`user connected to ${this.route}`)
+	setNamespace(namespace: string) {
+		this.namespace = namespace;
+	}
+
+	connect() {
+		console.log(`open namespace on ${this.namespace}`)
+		SocketNamespace.server.io.of(this.namespace).on('connection', (socket) => {
+			console.log(`user connected to ${this.namespace}`)
 			this.connectedUsers.set(socket.id, socket.handshake.query.userId);
 			console.log(this.connectedUsers)
 		
@@ -26,7 +30,7 @@ class SocketBaseController {
 			})
 
 			socket.on('disconnect', () => {
-				console.log(`user disconnected of ${this.route}`)
+				console.log(`user disconnected of ${this.namespace}`)
 				this.connectedUsers.delete(socket.id);
 			});
 		});
@@ -37,14 +41,14 @@ class SocketBaseController {
 	}
 
 	listen(port: number) {
-		appController.listen(port);
+		SocketNamespace.server.listen(port);
 	}
 
-	use(controller: SocketBaseController): void {
-		appController.addController(controller);
+	useRoutes(routes?: SocketRoutes[]): void {
+		SocketNamespace.server.useRoutes(routes);
 	}
 };
 
 export const socketRC = (route?: string) => {
-	return new SocketBaseController(route);
+	return new SocketNamespace(route);
 };

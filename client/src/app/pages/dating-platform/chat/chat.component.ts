@@ -17,8 +17,8 @@ export class ChatComponent {
 	ngOnInit() {
 	}
 
-	sendMessage() {
-		this.chatSocket.sendMessage('test');
-		this.activitySocket.sendMessage('test');
-	}
+	// sendMessage() {
+	// 	this.chatSocket.sendMessage('test');
+	// 	this.activitySocket.sendMessage('test');
+	// }
 }

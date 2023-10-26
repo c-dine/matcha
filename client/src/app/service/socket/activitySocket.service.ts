@@ -10,6 +10,6 @@ export class ActivitySocketService extends SocketService {
 	}
 
 	sendMessage(message: string) {
-		this.emit('activity', message);
+		this.emit('sendMessage', message);
 	}
 }

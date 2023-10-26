@@ -1,7 +1,7 @@
-import {socketRC} from '../socketBase.controller.js';
+import {socketRC} from '../../socket-rc/socketNamespace.js';
 
-const chatController = socketRC('/chat');
+const chatController = socketRC();
 
-chatController.event('sendMessage', (message) => console.log(message));
+chatController.event('sendMessage', (message) => console.log(message, chatController.namespace));
 
 export default chatController;
