@@ -1,5 +1,9 @@
 <div class="matcha-contacts-side-bar-container">
-	<app-chat-search-bar/>
-	<app-contact-card *ngFor="let user of users" [user]="user" [activated]="false" />
-	<app-contact-card [user]="users[0]" [activated]="true" />
+	<app-chat-search-bar (onMatchClick)="setConversationUserID($event)"/>
+	<app-contact-card
+		*ngFor="let conversation of conversations"
+		[conversation]="conversation"
+		[activated]="conversation.user_id === selectedConversation?.user_id"
+		(click)="setConversationUserID(conversation)"
+	/>
 </div>

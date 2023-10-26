@@ -19,18 +19,24 @@ export class ProfileModel extends ModelBase {
 			${this.getUserProfileSelectQuery({
 			latitude: currentUserProfile.location_latitude,
 			longitude: currentUserProfile.location_longitude
-		})}
+		}, currentUserProfile)}
 			WHERE profile.id = '${requestedUserId}'
 			GROUP BY
 				profile.id,
 				"user".username,
 				"user".last_name,
-				"user".first_name
+				"user".first_name,
+				"user".id,
+				currentUserLike.is_liked,
+				likedCurrentUser.is_liked 
 			`;
 		return query;
 	}
 
-	private getUserProfileSelectQuery(userLocation: GeoCoordinate) {
+	private getUserProfileSelectQuery(
+		userLocation: GeoCoordinate,
+		currentUserProfile: profile
+	): string {
 		return `SELECT 
 					"user".username,
 					"user".last_name,
@@ -41,6 +47,18 @@ export class ProfileModel extends ModelBase {
 					profile.sexual_preferences,
 					profile.biography,
 					profile.fame_rate,
+					currentUserLike.is_liked,
+					likedCurrentUser.is_liked as liked_current_user,
+					(SELECT COUNT(*) FROM "like" AS likeCount WHERE likeCount.target_profile_id = profile.id AND likeCount.is_liked = true) AS like_count,
+					(SELECT COUNT(*) FROM "like" AS dislikeCount WHERE dislikeCount.target_profile_id = profile.id AND dislikeCount.is_liked = false) AS dislike_count,
+					(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_profile_id = profile.id) AS view_count,
+					(SELECT COUNT(*) FROM "like" AS matchCount WHERE matchCount.target_profile_id = profile.id AND matchCount.is_liked = true AND matchCount.user_id IN (
+						SELECT matchedUser.id 
+						FROM "like" AS currentUserMatches
+						LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = matchedProfile.id
+						LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
+						WHERE currentUserMatches.user_id = "user".id AND currentUserMatches.is_liked = true
+					)) AS match_count,
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 					STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
 					STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
@@ -50,7 +68,10 @@ export class ProfileModel extends ModelBase {
 				LEFT JOIN tag ON tag.id IN (
 					SELECT tag_id FROM profile_tag_asso WHERE profile_id = profile.id
 				)
-				LEFT JOIN picture ON picture.profile_id = profile.id`
+				LEFT JOIN picture ON picture.profile_id = profile.id
+				LEFT JOIN "like" AS currentUserLike ON currentUserLike.target_profile_id = profile.id AND currentUserLike.user_id = '${currentUserProfile.user_id}'
+				LEFT JOIN "like" AS likedCurrentUser ON likedCurrentUser.target_profile_id = '${currentUserProfile.id}' AND likedCurrentUser.user_id = "user".id
+			`;
 	}
 
 	async getUserList(filters: ProfileFilters, userProfile: profile) {
@@ -64,7 +85,9 @@ export class ProfileModel extends ModelBase {
 		let i = 1;
 		let query = `
 			WITH profile_with_distance AS (
-				${this.getUserProfileSelectQuery({ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude })}
+				${this.getUserProfileSelectQuery(
+			{ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude },
+			userProfile)}
 				WHERE profile.id != '${userProfile.id}'`;
 
 		if (filters.ageMin)
@@ -84,14 +107,20 @@ export class ProfileModel extends ModelBase {
 		}
 		query += ` AND profile.id NOT IN (
 			SELECT target_profile_id FROM blacklist WHERE blacklist.user_id = '${userProfile.user_id}'
-		)`;
+			)`;
+		query += ` AND "user".id NOT IN (
+			SELECT user_id FROM blacklist WHERE blacklist.target_profile_id = '${userProfile.id}'
+			)`;
 		query += this.getSexualProfileFiltersQuery(userProfile);
 		query += `
 			GROUP BY
 				profile.id,
+				"user".id,
 				"user".username,
 				"user".last_name,
-				"user".first_name
+				"user".first_name,
+				currentUserLike.is_liked,
+				likedCurrentUser.is_liked
 		)
 		SELECT *, COUNT(*) OVER () AS total_user_count
 		FROM profile_with_distance`
@@ -234,4 +263,54 @@ export class ProfileModel extends ModelBase {
 		)
 		LEFT JOIN picture ON picture.profile_id = profile.id`
 	}
+
+	async getMatchs(currentUserProfile: profile, userId: string) {
+		const query = this.getMatchsQuery();
+		const result = await this.dbClient.query(query, [currentUserProfile.id, userId]);
+		return result.rows;
+	}
+
+	private getMatchsQuery(): string {
+		let query = `
+			${this.getMatchsSelectQuery()}
+			WHERE 
+				"like".target_profile_id = $1
+			AND "like".is_liked = true 
+			AND "like".user_id 
+			IN (
+				SELECT matchedUser.id 
+				FROM "like" AS currentUserMatches
+				LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = matchedProfile.id
+				LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
+				WHERE currentUserMatches.user_id = $2 AND currentUserMatches.is_liked = true
+			);
+		`
+		return query;
+	}
+
+	private getMatchsSelectQuery(): string {
+		return `
+			SELECT 
+				matchedUser.id as user_id,
+				matchedProfile.id,
+				matchedProfile.gender,
+				matchedProfile.birth_date,
+				matchedProfile.sexual_preferences,
+				matchedProfile.biography,
+				matchedProfile.fame_rate,
+				matchedUser.first_name,
+				matchedUser.last_name,
+				matchedUser.username,
+				"like".is_liked,
+				profilePicture.id AS profile_picture_id
+			FROM "like"
+			LEFT JOIN "user" as matchedUser
+				ON "like".user_id = matchedUser.id
+			LEFT JOIN "profile" as matchedProfile
+				ON matchedProfile.user_id = matchedUser.id
+			LEFT JOIN picture As profilePicture ON matchedProfile.id = profilePicture.profile_id
+		`
+	}
 }
+
+

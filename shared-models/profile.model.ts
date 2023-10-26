@@ -6,17 +6,20 @@ export interface Profile {
     sexualPreferences: string;
     birthDate: Date;
     biography: string;
-	fameRate?: number;
 	location?: GeoCoordinate;
 	ditanceKm?: number;
 	tags?: string[];
 	picturesIds?: ProfilePicturesIds;
+	stats?: ProfileStats;
+	userId?: string;
 }
 
 export interface UserProfile extends Profile {
 	username: string;
 	lastName: string;
 	firstName: string;
+	isLiked?: boolean;
+	likedCurrentUser?: boolean;
 }
 
 export interface UserList {
@@ -69,4 +72,12 @@ export interface ProfileFiltersRequest {
 	order?: 'asc' | 'desc';
 	batchSize: string | undefined;
 	offset: string | undefined;
+}
+
+export interface ProfileStats {
+	likeCount?: number;
+	dislikeCount?: number;
+	fameRate?: number;
+	viewCount?: number;
+	matchCount?: number;
 }

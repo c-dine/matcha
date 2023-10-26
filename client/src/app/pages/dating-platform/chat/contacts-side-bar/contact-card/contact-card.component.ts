@@ -1,15 +1,20 @@
 import { Component, Input } from '@angular/core';
-import { NavbarProfile } from '@shared-models/profile.model';
+import { Conversation } from '@shared-models/chat.models';
+import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
-  selector: 'app-contact-card',
-  templateUrl: './contact-card.component.html',
-  styleUrls: ['./contact-card.component.css']
+	selector: 'app-contact-card',
+	templateUrl: './contact-card.component.html',
+	styleUrls: ['./contact-card.component.css']
 })
 export class ContactCardComponent {
-  @Input()
-  user!: NavbarProfile;
+	@Input()
+	conversation!: Conversation;
 
-  @Input()
-  activated!: boolean;
+	@Input()
+	activated!: boolean;
+
+	pictureIdToUrl(id: string | undefined) {
+		return getFirebasePictureUrl(id);
+	}
 }

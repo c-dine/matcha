@@ -1,14 +1,16 @@
 import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import { ChatService } from './chat.service.js';
-import { Message } from '@shared-models/chat.models.js';
+import { Conversation, Message } from '@shared-models/chat.models.js';
 
 export const chatController = express();
 
-chatController.get("/messages", async (req: Request<any, any, any, { id: string }>, res: Response, next: NextFunction) => {
+chatController.get("/messages/:id", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const chatService = new ChatService(req.dbClient);
-		const messages = await chatService.getMessages(req.userId, req.query.id);
+		const messages =
+			(await chatService.getMessages(req.userId, req.params.id))
+			.sort((a, b) => b.date.getTime() - a.date.getTime());
 
 		res.status(200).json({ data: messages as Message[] || null });
 		next();
@@ -22,9 +24,9 @@ chatController.get("/messages", async (req: Request<any, any, any, { id: string 
 chatController.get("/conversations", async (req: Request<any, any, any, { id: string }>, res: Response, next: NextFunction) => {
 	try {
 		const chatService = new ChatService(req.dbClient);
-		const messages = await chatService.getMessages(req.userId, req.query.id);
+		const messages = await chatService.getConversations(req.userId);
 
-		res.status(200).json({ data: messages as Message[] || null });
+		res.status(200).json({ data: messages as Conversation[] || null });
 		next();
 	} catch (error: any) {
 		console.error(`Error while fetching conversations: ${error}.`);
@@ -33,10 +35,12 @@ chatController.get("/conversations", async (req: Request<any, any, any, { id: st
 	}
 });
 
-chatController.post("/message", async (req: Request<any, any, any, { id: string }>, res: Response, next: NextFunction) => {
+chatController.post("/message/:id", async (req: Request, res: Response, next: NextFunction) => {
 	try {
+		// verifier que les utilisateurs ont bien matche pour qu'ils puissent s'envoyer des messages
 		const chatService = new ChatService(req.dbClient);
-		const message = await chatService.postMessage(req.userId, req.query.id, "message");
+		const body = req.body;
+		const message = await chatService.postMessage(req.userId, req.params.id, body.message);
 
 		res.status(200).json({ data: message as Message || null });
 		next();

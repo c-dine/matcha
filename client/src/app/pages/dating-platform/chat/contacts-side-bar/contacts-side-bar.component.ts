@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavbarProfile } from '@shared-models/profile.model';
+import { Conversation } from '@shared-models/chat.models';
+import { ChatService } from 'src/app/service/chat.service';
+import { Output, Input, EventEmitter } from '@angular/core';
 
 @Component({
 	selector: 'app-contacts-side-bar',
@@ -7,38 +9,29 @@ import { NavbarProfile } from '@shared-models/profile.model';
 	styleUrls: ['./contacts-side-bar.component.css']
 })
 export class ContactsSideBarComponent {
-	users: NavbarProfile[] = [
-		{
-			'profilePictureUrl': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'username': "Jondo"
-		},
-		{
-			'profilePictureUrl': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'username': "Jondo"
-		}, {
-			'profilePictureUrl': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'username': "Jondo"
-		}, {
-			'profilePictureUrl': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'username': "Jondo"
-		}, {
-			'profilePictureUrl': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'username': "Jondo"
-		}, {
-			'profilePictureUrl': "https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-			'firstName': "John",
-			'lastName': "Doe",
-			'username': "Jondo"
-		},
-	]
+	conversations!: Conversation[];
+
+	@Input()
+	selectedConversation!: Conversation | undefined;
+
+	@Output()
+	onConversationClick!: EventEmitter<any>;
+
+	constructor(
+		private chatService: ChatService
+	) {
+		this.conversations = [];
+		this.selectedConversation = undefined;
+		this.onConversationClick = new EventEmitter();
+	}
+
+	ngOnInit() {
+		this.chatService.getConversations().subscribe({
+			next: (conversations) => this.conversations = conversations
+		});
+	}
+
+	setConversationUserID(userId: Conversation) {
+		this.onConversationClick.emit(userId);
+	}
 }

@@ -1,3 +1,11 @@
 <div class="matcha-chat-search-container matcha-flex-row matcha-flex-align-center matcha-flex-justify-center">
-	<input class="matcha-chat-search" placeholder="Search 🔍">
+	<div class="matcha-avatar-container" *ngFor="let match of matchs">
+		<app-avatar-picture
+			[src]="pictureIdToPictureUrl(match.picturesIds?.profilePicture)"
+			(click)="setConversation(match)"
+		/>
+	</div>
+	<p>
+		{{matchCount}} matchs
+	</p>
 </div>

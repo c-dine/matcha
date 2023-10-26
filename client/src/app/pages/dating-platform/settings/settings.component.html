@@ -62,9 +62,26 @@
 		</div>
 	</div>
 
-	<h1 class="visit-history-label">Visit history</h1>
-	<div class="visit-history-container rounded-box">
+	<h1 class="views-history-label">Views history</h1>
+	
+	<div class="views-history-container rounded-box setting-table-container">
+
+		<mat-tab-group>
+			<mat-tab label="Who viewed you">
+				<div *ngIf="!othersViewsList.length" class="empty-table-message">Nobody viewed you (yet!).</div>
+				<app-users-with-action-table [users]="othersViewsList" *ngIf="othersViewsList.length"></app-users-with-action-table>
+				<app-spinner *ngIf="!othersViewsList"></app-spinner>
+			</mat-tab>
+			
+			<mat-tab label="Who you viewed">
+				<div *ngIf="!selfViewsList.length" class="empty-table-message">You viewed no one.</div>
+				<app-users-with-action-table [users]="selfViewsList" *ngIf="selfViewsList.length"></app-users-with-action-table>
+				<app-spinner *ngIf="!selfViewsList"></app-spinner>
+			</mat-tab>
+		</mat-tab-group>
+		  
 	</div>
+
 
 	<h1 class="password-label">Password</h1>
 	<div class="password-container rounded-box">
@@ -108,20 +125,60 @@
 		</div>
 	</div>
 
-	<h1 class="blacklist-label">Blacklist</h1>
-	<div class="blacklist-container rounded-box" *ngIf="!blacklist.length">
-		<div>No blacklisted users.</div>
-	</div>
-	<div class="blacklist-container" *ngIf="blacklist.length">
-		<app-users-with-action-table [users]="blacklist" actionLabel="Unblock" (action)="deleteBlacklist($event)"></app-users-with-action-table>
+	<h1 class="likes-history-label">Likes history</h1>
+	<div class="likes-history-container rounded-box setting-table-container">
+
+		<mat-tab-group>
+			
+			<mat-tab label="Who liked you">
+				<div *ngIf="!othersLikesList.length" class="empty-table-message">You liked no one (yet!).</div>
+				<app-users-with-action-table
+					*ngIf="othersLikesList.length"
+					[users]="othersLikesList"
+					></app-users-with-action-table>
+				<app-spinner *ngIf="!othersLikesList"></app-spinner>
+			</mat-tab>
+
+			<mat-tab label="Who you liked">
+				<div *ngIf="!selfLikesList.length" class="empty-table-message">No one liked you (yet!).</div>
+				<app-users-with-action-table
+					*ngIf="selfLikesList.length"
+					[users]="selfLikesList"
+					></app-users-with-action-table>
+				<app-spinner *ngIf="!selfLikesList"></app-spinner>
+			</mat-tab>
+
+		</mat-tab-group>
+
 	</div>
 	
-	<h1 class="reportlist-label">Reported users</h1>
-	<div class="reportlist-container rounded-box" *ngIf="!fakeReportList.length">
-		<div>No user reported.</div>
-	</div>
-	<div class="reportlist-container" *ngIf="fakeReportList.length">
-		<app-users-with-action-table [users]="fakeReportList" actionLabel="Delete fake report" (action)="deleteFakeReport($event)"></app-users-with-action-table>
+	<h1 class="blacklists-label">Blacklists</h1>
+	<div class="blacklists-container rounded-box setting-table-container">
+
+		<mat-tab-group>
+			<mat-tab label="Blacklist">
+				<div *ngIf="!blacklist.length" class="empty-table-message">You blacklisted no one.</div>
+				<app-users-with-action-table
+					*ngIf="blacklist.length"
+					[users]="blacklist"
+					actionLabel="Unblock"
+					(action)="deleteBlacklist($event)"
+					></app-users-with-action-table>
+				<app-spinner *ngIf="!blacklist"></app-spinner>
+			</mat-tab>
+			
+			<mat-tab label="Fake report list">
+				<div *ngIf="!fakeReportList.length" class="empty-table-message">You reported no one.</div>
+				<app-users-with-action-table
+					*ngIf="fakeReportList.length"
+					[users]="fakeReportList"
+					actionLabel="Delete fake report"
+					(action)="deleteFakeReport($event)"
+					></app-users-with-action-table>
+				<app-spinner *ngIf="!fakeReportList"></app-spinner>
+			</mat-tab>
+		</mat-tab-group>
+
 	</div>
 
 </div>

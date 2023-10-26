@@ -10,3 +10,8 @@
 	padding-right: 1vw;
 	max-width: 12vw;
 }
+
+.matcha-avatar-container {
+	padding-left: 10px;
+	overflow: hidden;
+}

@@ -27,6 +27,7 @@ import { SliderPopupComponent } from './filters/slider-popup/slider-popup.compon
 import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
 import { ImageSliderComponent } from './image-slider/image-slider.component';
 import { UsersWithActionTableComponent } from './users-with-action-table/users-with-action-table.component';
+import { AvatarPictureComponent } from './avatar-picture/avatar-picture.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { UsersWithActionTableComponent } from './users-with-action-table/users-w
 	SliderPopupComponent,
 	TagsPopupComponent,
 	ImageSliderComponent,
-	UsersWithActionTableComponent
+	UsersWithActionTableComponent,
+	AvatarPictureComponent
   ],
   imports: [
     CommonModule,
@@ -73,7 +75,8 @@ import { UsersWithActionTableComponent } from './users-with-action-table/users-w
 	DoubleSliderPopupComponent,
 	TagsPopupComponent,
 	ImageSliderComponent,
-	UsersWithActionTableComponent
+	UsersWithActionTableComponent,
+	AvatarPictureComponent
   ]
 })
 export class SharedModule { }
