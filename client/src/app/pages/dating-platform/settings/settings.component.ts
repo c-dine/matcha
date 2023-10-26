@@ -25,7 +25,9 @@ export class SettingsComponent {
 
 	blacklist!: Interaction[];
 	fakeReportList!: Interaction[];
-	viewsList!: Interaction[];
+	
+	selfViewsList!: Interaction[];
+	othersViewsList!: Interaction[];
 
 	mySubscriptions: Subscription[] = [];
 
@@ -54,8 +56,13 @@ export class SettingsComponent {
 			})
 		);
 		this.mySubscriptions.push(
-			this.viewService.getViewsListObs().subscribe({
-				next: (viewsList) => this.viewsList = viewsList
+			this.viewService.getSelfViewsListObs().subscribe({
+				next: (selfViewsList) => this.selfViewsList = selfViewsList
+			})
+		);
+		this.mySubscriptions.push(
+			this.viewService.getOthersViewsListObs().subscribe({
+				next: (othersViewsList) => this.othersViewsList = othersViewsList
 			})
 		);
 		this.initPasswordForm();

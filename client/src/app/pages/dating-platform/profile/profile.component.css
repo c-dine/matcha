@@ -123,8 +123,7 @@ mat-icon {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	gap: 18px;
-	height: 60%;
+	height: 45%;
 	justify-content: space-between;
 	align-items: center;
 }

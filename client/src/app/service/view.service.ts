@@ -9,28 +9,41 @@ import { BehaviorSubject, Observable, firstValueFrom, tap } from 'rxjs';
 })
 export class ViewService {
 
-	private viewsList: BehaviorSubject<Interaction[]> = new BehaviorSubject<Interaction[]>([]);
+	private selfViewsList: BehaviorSubject<Interaction[]> = new BehaviorSubject<Interaction[]>([]);
+	private othersViewsList: BehaviorSubject<Interaction[]> = new BehaviorSubject<Interaction[]>([]);
 
 	constructor(
 		private http: HttpClient
 	) { 
-		firstValueFrom(this.getViewsList());
+		firstValueFrom(this.getSelfViewsList());
+		firstValueFrom(this.getOthersViewsList());
 	}
 
-	getViewsListObs(): Observable<Interaction[]> {
-		return this.viewsList.asObservable();
+	getSelfViewsListObs(): Observable<Interaction[]> {
+		return this.selfViewsList.asObservable();
 	}
 
-	getViewsList() {
-		return this.http.get<Interaction[]>(`${environment.apiUrl}/view/`)
+	getSelfViewsList() {
+		return this.http.get<Interaction[]>(`${environment.apiUrl}/view/self`)
 			.pipe(
-				tap((viewsList: Interaction[]) => this.viewsList.next(viewsList))
+				tap((selfViewsList: Interaction[]) => this.selfViewsList.next(selfViewsList))
+			);
+	}
+
+	getOthersViewsListObs(): Observable<Interaction[]> {
+		return this.othersViewsList.asObservable();
+	}
+
+	getOthersViewsList() {
+		return this.http.get<Interaction[]>(`${environment.apiUrl}/view/others`)
+			.pipe(
+				tap((othersViewsList: Interaction[]) => this.othersViewsList.next(othersViewsList))
 			);
 	}
 
 	async addView(view: Interaction) {
-		const viewsListCopy = this.viewsList.value || [];
-		viewsListCopy.push(view);
-		this.viewsList.next(viewsListCopy);
+		const selfViewsListCopy = this.selfViewsList.value || [];
+		selfViewsListCopy.push(view);
+		this.selfViewsList.next(selfViewsListCopy);
 	}
 }

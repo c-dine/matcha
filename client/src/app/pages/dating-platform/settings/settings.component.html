@@ -62,13 +62,24 @@
 		</div>
 	</div>
 
-	<h1 class="visit-history-label">Visit history</h1>
-	<div class="visit-history-container rounded-box" *ngIf="!viewsList.length">
-		<div>No visit history.</div>
+	<h1 class="views-history-label">Views history</h1>
+	
+	<div class="views-history-container rounded-box setting-table-container">
+
+		<mat-tab-group>
+			<mat-tab label="Who viewed you">
+				<div *ngIf="!othersViewsList.length" class="empty-table-message">Nobody viewed you (yet!).</div>
+				<app-users-with-action-table [users]="othersViewsList" *ngIf="othersViewsList.length"></app-users-with-action-table>
+			</mat-tab>
+			
+			<mat-tab label="Who you viewed">
+				<div *ngIf="!selfViewsList.length" class="empty-table-message">You viewed no one.</div>
+				<app-users-with-action-table [users]="selfViewsList" *ngIf="selfViewsList.length"></app-users-with-action-table>
+			</mat-tab>
+		</mat-tab-group>
+		  
 	</div>
-	<div class="visit-history-container" *ngIf="viewsList.length">
-		<app-users-with-action-table [users]="viewsList"></app-users-with-action-table>
-	</div>
+
 
 	<h1 class="password-label">Password</h1>
 	<div class="password-container rounded-box">

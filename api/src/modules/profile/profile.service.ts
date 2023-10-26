@@ -168,9 +168,15 @@ export class ProfileService {
 		} 
 	}
 
-	private async getCurrentUserProfile(userId: string): Promise<profile | undefined>  {
+	async getCurrentUserProfile(userId: string): Promise<profile | undefined>  {
 		return (await this.profileModel.findMany([{
 			user_id: userId
 		}]))[0];
+	}
+
+	async getProfileIdsFromUserIds(userIds: string[]): Promise<profile[] | undefined>  {
+		return await this.profileModel.findMany(userIds.map(id => ({
+			user_id: id
+		})), ["id", "user_id"]);
 	}
 }
