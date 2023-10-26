@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"target": "es2022",
+		"module": "ES2022",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"outDir": "./dist",
+		"typeRoots": [
+			"./node_modules/@types",
+			"./@types"
+		],
+		"paths": {
+			"@shared-models/*": [
+				"../shared-models/*"
+			]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"./@types/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}

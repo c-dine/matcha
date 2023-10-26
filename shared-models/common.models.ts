@@ -56,14 +56,6 @@ export interface User {
 	profileId?: string;
 }
 
-export interface Message {
-	id?: string;
-	from: number;
-	to: number;
-	message: string;
-	date: Date;
-}
-
 export interface Notification {
 	id?: string;
 	isViewed?: boolean;
