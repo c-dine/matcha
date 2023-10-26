@@ -92,6 +92,8 @@ export class ProfileComponent {
 			birthDate: new FormControl<Date | undefined>(this.currentUserProfile?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
 			biography: new FormControl<string>(this.currentUserProfile?.biography || "", [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
 			tags: new FormControl<string[]>(this.currentUserProfile?.tags || [], [Validators.required, minArrayLengthValidator(3)]),
+			userGivenLongitude: new FormControl<number>(this.currentUserProfile?.userGivenLocation?.longitude || 0),
+			userGivenLatitude: new FormControl<number>(this.currentUserProfile?.userGivenLocation?.latitude || 0)
 		});
 	}
 
@@ -137,10 +139,15 @@ export class ProfileComponent {
 		}
 
 		this.isEditMode = false;
+		const formValue = this.profileForm?.getRawValue();
 		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
 				...this.profile,
-				...this.profileForm?.getRawValue(),
-				picturesIds: this.profile.picturesIds
+				...formValue,
+				picturesIds: this.profile.picturesIds,
+				userGivenLocation: {
+					longitude: formValue.userGivenLongitude,
+					latitude: formValue.userGivenLatitude
+				}
 			} as Profile));
 		this.profile = {
 			...this.profile,

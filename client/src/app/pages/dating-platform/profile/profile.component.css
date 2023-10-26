@@ -69,6 +69,17 @@
     font-weight: 500;
 }
 
+.location-input-container {
+	display: inline-flex;
+	gap: 10px;
+	width: 100%;
+	justify-content: space-between;
+}
+
+.location-input {
+	padding-bottom: 0 !important;
+}
+
 .action-buttons {
 	display: flex;
 	justify-content: space-evenly;

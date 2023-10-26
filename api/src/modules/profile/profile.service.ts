@@ -114,6 +114,8 @@ export class ProfileService {
 			birth_date: updatedProfileData.birthDate,
 			sexual_preferences: updatedProfileData.sexualPreferences,
 			biography: updatedProfileData.biography,
+			user_given_location_latitude: updatedProfileData.userGivenLocation?.latitude,
+			user_given_location_longitude: updatedProfileData.userGivenLocation?.longitude
 		});
 
 		return this.formatProfile(updatedProfile[0]);

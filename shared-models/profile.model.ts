@@ -7,6 +7,7 @@ export interface Profile {
     birthDate: Date;
     biography: string;
 	location?: GeoCoordinate;
+	userGivenLocation?: GeoCoordinate;
 	ditanceKm?: number;
 	tags?: string[];
 	picturesIds?: ProfilePicturesIds;

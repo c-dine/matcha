@@ -30,9 +30,19 @@
 			{{profile.username}}
 			<span class="user-subtitle">({{profile.firstName}} {{profile.lastName}})</span>
 		</h1>
-		<div class="user-card-detail">
+		<div class="user-card-detail" [formGroup]="profileForm">
 			<mat-icon> place</mat-icon>
-			<span>{{profile.ditanceKm?.toFixed(1)}}km away</span>
+			<span *ngIf="!isEditMode">{{profile.ditanceKm?.toFixed(1)}}km away</span>
+			<div *ngIf="isEditMode" class="location-input-container">
+				<mat-form-field appearance="outline" class="location-input">
+					<mat-label>Longitude</mat-label>
+					<input matInput name="longitude" type="number" formControlName="userGivenLongitude" min="-180" max="180" required>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="location-input">
+					<mat-label>Latitude</mat-label>
+					<input matInput name="latitude" type="number" formControlName="userGivenLatitude" min="-90" max="90" required>
+				</mat-form-field>
+			</div>
 		</div>
 		<div class="user-card-detail">
 			<mat-icon>{{profile.gender === 'undefined' ? 'transgender' : profile.gender}}</mat-icon>
@@ -129,7 +139,7 @@
 		<ng-container *ngIf="isEditMode" [formGroup]="profileForm">
 			<mat-form-field appearance="outline" *ngIf="isEditMode">
 				<mat-label>Tell the world a bit more about you (50-500 characters)</mat-label>
-				<textarea matInput formControlName="biography" maxlength="500" name="biography"></textarea>
+				<textarea matInput formControlName="biography" minlength="50" maxlength="500" name="biography"></textarea>
 			</mat-form-field>
 		</ng-container>
 	</div>
