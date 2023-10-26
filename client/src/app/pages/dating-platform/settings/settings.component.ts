@@ -7,6 +7,7 @@ import { Subscription, firstValueFrom } from "rxjs";
 import { AuthService } from "src/app/service/auth.service";
 import { BlacklistService } from "src/app/service/blacklist.service";
 import { FakeReportService } from "src/app/service/fake-report.service";
+import { LikeService } from "src/app/service/like.service";
 import { ViewService } from "src/app/service/view.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
 
@@ -29,6 +30,9 @@ export class SettingsComponent {
 	selfViewsList!: Interaction[];
 	othersViewsList!: Interaction[];
 
+	selfLikesList!: Interaction[];
+	othersLikesList!: Interaction[];
+
 	mySubscriptions: Subscription[] = [];
 
 	constructor(
@@ -36,6 +40,7 @@ export class SettingsComponent {
 		private blacklistService: BlacklistService,
 		private fakeReportService: FakeReportService,
 		private viewService: ViewService,
+		private likeService: LikeService,
 		private snackBar: MatSnackBar
 	) { }
 
@@ -63,6 +68,16 @@ export class SettingsComponent {
 		this.mySubscriptions.push(
 			this.viewService.getOthersViewsListObs().subscribe({
 				next: (othersViewsList) => this.othersViewsList = othersViewsList
+			})
+		);
+		this.mySubscriptions.push(
+			this.likeService.getSelfLikesListObs().subscribe({
+				next: (selfLikesList) => this.selfLikesList = selfLikesList
+			})
+		);
+		this.mySubscriptions.push(
+			this.likeService.getOthersLikesListObs().subscribe({
+				next: (othersLikesList) => this.othersLikesList = othersLikesList
 			})
 		);
 		this.initPasswordForm();

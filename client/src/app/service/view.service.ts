@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { Interaction } from '@shared-models/interactions.model';
 import { BehaviorSubject, Observable, firstValueFrom, tap } from 'rxjs';
+import { UserProfile } from '@shared-models/profile.model';
+import { formatUserProfileToInteraction } from '../utils/profil.utils';
 
 @Injectable({
 	providedIn: 'root'
@@ -14,7 +16,7 @@ export class ViewService {
 
 	constructor(
 		private http: HttpClient
-	) { 
+	) {
 		firstValueFrom(this.getSelfViewsList());
 		firstValueFrom(this.getOthersViewsList());
 	}
@@ -41,9 +43,9 @@ export class ViewService {
 			);
 	}
 
-	async addView(view: Interaction) {
+	async addView(profile: UserProfile) {
 		const selfViewsListCopy = this.selfViewsList.value || [];
-		selfViewsListCopy.push(view);
+		selfViewsListCopy.push(formatUserProfileToInteraction(profile));
 		this.selfViewsList.next(selfViewsListCopy);
 	}
 }

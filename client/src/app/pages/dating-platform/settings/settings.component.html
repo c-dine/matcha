@@ -129,27 +129,25 @@
 	<div class="likes-history-container rounded-box setting-table-container">
 
 		<mat-tab-group>
-			<mat-tab label="Who liked you">
-				<div *ngIf="!blacklist.length" class="empty-table-message">You liked no one (yet!).</div>
-				<app-users-with-action-table
-					*ngIf="blacklist.length"
-					[users]="blacklist"
-					actionLabel="Unblock"
-					(action)="deleteBlacklist($event)"
-					></app-users-with-action-table>
-				<app-spinner *ngIf="!blacklist"></app-spinner>
-			</mat-tab>
 			
-			<mat-tab label="Who you liked">
-				<div *ngIf="!fakeReportList.length" class="empty-table-message">No one liked you (yet!).</div>
+			<mat-tab label="Who liked you">
+				<div *ngIf="!othersLikesList.length" class="empty-table-message">You liked no one (yet!).</div>
 				<app-users-with-action-table
-					*ngIf="fakeReportList.length"
-					[users]="fakeReportList"
-					actionLabel="Delete fake report"
-					(action)="deleteFakeReport($event)"
+					*ngIf="othersLikesList.length"
+					[users]="othersLikesList"
 					></app-users-with-action-table>
-				<app-spinner *ngIf="!fakeReportList"></app-spinner>
+				<app-spinner *ngIf="!othersLikesList"></app-spinner>
 			</mat-tab>
+
+			<mat-tab label="Who you liked">
+				<div *ngIf="!selfLikesList.length" class="empty-table-message">No one liked you (yet!).</div>
+				<app-users-with-action-table
+					*ngIf="selfLikesList.length"
+					[users]="selfLikesList"
+					></app-users-with-action-table>
+				<app-spinner *ngIf="!selfLikesList"></app-spinner>
+			</mat-tab>
+
 		</mat-tab-group>
 
 	</div>

@@ -57,14 +57,7 @@ export class ProfileComponent {
 					next: (profile) => {
 						this.profile = profile;
 						if (profile?.id)
-							this.viewService.addView({
-								profilePicId: profile.picturesIds?.profilePicture,
-								targetProfileId: profile.id,
-								date: new Date(),
-								lastName: profile.lastName,
-								firstName: profile.firstName,
-								username: profile.username
-							});
+							this.viewService.addView(profile);
 						this.isLoading = false;
 					},
 					error: async () => { await this.getCurrentUserProfile(); this.isLoading = false; },
@@ -195,7 +188,7 @@ export class ProfileComponent {
 		if (!this.profile?.id) return;
 		if (this.profile.isLiked !== undefined && this.profile.isLiked)
 			return this.unlikeProfile();
-		await firstValueFrom(this.likeService.likeProfile(this.profile.id));
+		await firstValueFrom(this.likeService.likeProfile(this.profile));
 		this.updateProfileStats("like");
 		this.profile.isLiked = true;
 	}

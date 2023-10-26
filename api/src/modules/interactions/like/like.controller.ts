@@ -6,6 +6,34 @@ import { CustomError } from '../../../utils/error.util.js';
 
 export const likeController = express();
 
+likeController.get("/self", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const likeService = new LikeService(req.dbClient);
+		const likesList = await likeService.getList(req.userId, { is_liked: true});
+
+		res.status(200).json({ data: likesList });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching likes list: ${error}.`);
+		error.message = `Error while fetching likes list.`;
+		next(error);
+	}
+});
+
+likeController.get("/others", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const likeService = new LikeService(req.dbClient);
+		const likesList = await likeService.getListWhereCurrentUserIsTarget(req.userId, { is_liked: true});
+
+		res.status(200).json({ data: likesList });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching likes list: ${error}.`);
+		error.message = `Error while fetching likes list.`;
+		next(error);
+	}
+});
+
 likeController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	const targetProfileId = req.body.targetProfileId;
 	const isLiked = !!req.body.isLiked;

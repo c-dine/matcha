@@ -15,11 +15,17 @@ export class InteractionsService {
 		this.interactionsModel = new ModelBase(table, this.dbClient);
 	}
 
-	async getList(userId: string): Promise<Interaction[]> {
+	async getList(
+		userId: string,
+		additionnalInteractionData?: { [column: string]: any }
+	): Promise<Interaction[]> {
 		const authService = new AuthService(this.dbClient);
 		const pictureService = new PictureService(this.dbClient);
 
-		const interactionList = await this.interactionsModel.findMany([{ user_id: userId }], ["target_profile_id", "date"]);
+		const interactionList = await this.interactionsModel.findMany([{
+			user_id: userId,
+			...additionnalInteractionData
+		}], ["target_profile_id", "date"]);
 		const targetedProfileIds = interactionList.map(element => element.target_profile_id);
 		const targetedUsers = await authService.getUsersFromProfileIds(targetedProfileIds);
 		const targetProfilePictures = await pictureService.getProfilePicIdsOfProfileIds(targetedProfileIds);
@@ -36,13 +42,19 @@ export class InteractionsService {
 		});
 	}
 
-	async getListWhereCurrentUserIsTarget(userId: string): Promise<Interaction[]> {
+	async getListWhereCurrentUserIsTarget(
+		userId: string,
+		additionnalInteractionData?: { [column: string]: any }
+	): Promise<Interaction[]> {
 		const profileService = new ProfileService(this.dbClient);
 		const pictureService = new PictureService(this.dbClient);
 		const authService = new AuthService(this.dbClient);
 
 		const currentUserProfileId = (await profileService.getCurrentUserProfile(userId)).id;
-		const interactionList = await this.interactionsModel.findMany([{ target_profile_id: currentUserProfileId }], [ "user_id", "date" ]);
+		const interactionList = await this.interactionsModel.findMany([{
+			target_profile_id: currentUserProfileId,
+			...additionnalInteractionData
+		}], [ "user_id", "date" ]);
 		const interactionListUserIds = interactionList.map(interaction => interaction.user_id);
 		const interactionListProfileAndUserIds = await profileService.getProfileIdsFromUserIds(interactionListUserIds);
 		const interactionListProfileIds = interactionListProfileAndUserIds.map(ids => ids.id);
