@@ -1,13 +1,21 @@
 <div class="home-page">
     <div class="home-navbar">
         <div class="company-name">MATCHA</div>
-        <div class="button login-button" (click)="onLogInClick()">Log in</div>
+        <div *ngIf="user" class="home-top-right-container">
+            <div class="rounded-circle-container home-avatar-container" *ngIf="userProfile" (click)="navigateToProfile()">
+                <img [src]="getFirebasePictureUrl(userProfile.picturesIds?.profilePicture)" class="rounded-circle-image">
+            </div>
+            <div class="button login-button" (click)="onLogOutClick()">Log out</div>
+        </div>
+        <div class="button login-button" (click)="onLogInClick()" *ngIf="!user">Log in</div>
     </div>
 
     <div class="catch-phrase-container">
-        <div class="catch-phrase">Find your matcha today</div>
+        <div class="catch-phrase" *ngIf="user">Hi {{user.firstName}}, ready to match ?</div>
+        <div class="catch-phrase" *ngIf="!user">Find your matcha today</div>
         <div class="signin-button-container">
-            <div class="button signin-button" (click)="onSignInClick()">Create account</div>
+            <div class="button signin-button" (click)="onSignInClick()" *ngIf="user">Let's go!</div>
+            <div class="button signin-button" (click)="onSignInClick()" *ngIf="!user">Create account</div>
         </div>
     </div>
 </div>

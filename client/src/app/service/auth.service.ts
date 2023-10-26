@@ -17,7 +17,6 @@ import { ActivitySocketService } from './socket/activitySocket.service';
 export class AuthService {
 	constructor(
 		private http: HttpClient,
-		private router: Router,
 		private userService: UserService,
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
