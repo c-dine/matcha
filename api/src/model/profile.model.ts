@@ -14,13 +14,13 @@ export class ProfileModel extends ModelBase {
 		return result.rows[0];
 	}
 
-	private getUserProfileQuery(requestedUserId: string, currentUserProfile: profile): string {
+	private getUserProfileQuery(requestedUserProfileId: string, currentUserProfile: profile): string {
 		let query = `
 			${this.getUserProfileSelectQuery({
 			latitude: currentUserProfile.location_latitude,
 			longitude: currentUserProfile.location_longitude
-		}, currentUserProfile)}
-			WHERE profile.id = '${requestedUserId}'
+		}, currentUserProfile, requestedUserProfileId === currentUserProfile.id)}
+			WHERE profile.id = '${requestedUserProfileId}'
 			GROUP BY
 				profile.id,
 				"user".username,
@@ -35,7 +35,8 @@ export class ProfileModel extends ModelBase {
 
 	private getUserProfileSelectQuery(
 		userLocation: GeoCoordinate,
-		currentUserProfile: profile
+		currentUserProfile: profile,
+		isCurrentUser: boolean
 	): string {
 		return `SELECT 
 					"user".username,
@@ -47,6 +48,8 @@ export class ProfileModel extends ModelBase {
 					profile.sexual_preferences,
 					profile.biography,
 					profile.fame_rate,
+					${isCurrentUser ? `profile.user_given_location_latitude,
+					profile.user_given_location_longitude,` : ""}
 					currentUserLike.is_liked,
 					likedCurrentUser.is_liked as liked_current_user,
 					(SELECT COUNT(*) FROM "like" AS likeCount WHERE likeCount.target_profile_id = profile.id AND likeCount.is_liked = true) AS like_count,
@@ -87,7 +90,7 @@ export class ProfileModel extends ModelBase {
 			WITH profile_with_distance AS (
 				${this.getUserProfileSelectQuery(
 					{ latitude: userProfile.location_latitude, longitude: userProfile.location_longitude },
-					userProfile)}
+					userProfile, false)}
 				WHERE profile.id != '${userProfile.id}'`;
 
 		if (filters.ageMin)

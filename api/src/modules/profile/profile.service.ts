@@ -25,6 +25,10 @@ export class ProfileService {
 			location: profile.location_latitude ? {
 				latitude: profile.location_latitude,
 				longitude: profile.location_longitude,
+			} : undefined,
+			userGivenLocation: profile.user_given_location_latitude ? {
+				latitude: profile.user_given_location_latitude,
+				longitude: profile.user_given_location_longitude
 			} : undefined
 		}
 	}
@@ -44,8 +48,8 @@ export class ProfileService {
 		}
 	}
 
-	async getUserProfile(userId: string, requestedUserProfileId?: string): Promise<UserProfile | undefined> {
-		const currentUserProfile = await this.getCurrentUserProfile(userId);
+	async getUserProfile(currentUserId: string, requestedUserProfileId?: string): Promise<UserProfile | undefined> {
+		const currentUserProfile = await this.getCurrentUserProfile(currentUserId);
 		if (!requestedUserProfileId && !currentUserProfile?.id) return undefined;
 		const requestedProfile = 
 			await this.profileModel.getUserProfile(requestedUserProfileId || currentUserProfile.id, currentUserProfile);
