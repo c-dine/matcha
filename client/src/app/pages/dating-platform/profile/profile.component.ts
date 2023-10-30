@@ -227,7 +227,7 @@ export class ProfileComponent {
 	}
 
 	checkIfUserCanLikeProfileAndAlert() : boolean {
-		const canLikeProfile = !!this.profile?.picturesIds?.profilePicture;
+		const canLikeProfile = !!this.currentUserProfile?.picturesIds?.profilePicture;
 
 		if (!canLikeProfile)
 			this.snackBar.open("You need to have a profile picture to interract with a profile.", "Close", {
