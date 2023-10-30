@@ -140,3 +140,89 @@ mat-icon {
 :host::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled) .mdc-tab-indicator__content--underline {
 	border-color: var(--primary-color);
 }
+
+@media screen and (max-width: 1000px) {
+	.settings-container {
+		margin-top: 5px;
+	}
+
+	.form-field-labels {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-evenly;
+		gap: 5px;
+		grid-column: 1 / 2;
+	}
+	.form-field-values {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-evenly;
+		gap: 5px;
+		grid-column: 2 / 3;
+	}
+	.form-actions {
+		grid-column: 3 / 4;
+		display: flex;
+		flex-direction: column;
+		align-items:end;
+		gap: 10px;
+	}
+
+	.container-label {
+		display: flex;
+		align-items: center;
+	}
+	
+	.user-details-label {
+		grid-row: 1 / 2;
+		grid-column: 1 / 11;
+	}
+	.user-details-container {
+		grid-row: 2 / 5;
+		grid-column: 1 / 11;
+		display: grid;
+		grid-template-columns: 4fr 4fr 1fr;
+		grid-template-rows: repeat(autofill, 40px);
+		padding-left: 50px;
+	}
+	
+	.password-label {
+		grid-row: 5 / 6;
+		grid-column: 1 / 11;
+	}
+	.password-container {
+		grid-row: 6 / 9;
+		grid-column: 1 / 11;
+		display: grid;
+		grid-template-columns: 3fr 3fr 1fr;
+		grid-template-rows: repeat(autofill, 40px);
+		padding-left: 50px;
+	}
+
+	.views-history-label {
+		grid-row: 9 / 10;
+		grid-column: 1 / 11;
+	}
+	.views-history-container {
+		grid-row: 10 / 13;
+		grid-column: 1 / 11;
+	}
+	
+	.blacklists-label {
+		grid-row: 13 / 14;
+		grid-column: 1 / 11;
+	}
+	.blacklists-container {
+		grid-row: 14 / 17;
+		grid-column: 1 / 11;
+	}
+	
+	.likes-history-label {
+		grid-row: 17 / 18;
+		grid-column: 1 / 11;
+	}
+	.likes-history-container {
+		grid-row: 18 / 21;
+		grid-column: 1 / 11;
+	}
+}
