@@ -80,6 +80,10 @@
 	padding-bottom: 0 !important;
 }
 
+.use-user-given-location-checkbox {
+	padding-left: 35px;
+}
+
 .action-buttons {
 	display: flex;
 	justify-content: space-evenly;
@@ -311,4 +315,13 @@ textarea {
 :host::ng-deep .image4 {
 	grid-row: 2 / 3;
 	grid-column: 2 / 3;
+}
+
+::ng-deep .mat-mdc-checkbox.mat-accent .mdc-checkbox--selected ~ .mdc-checkbox__ripple {
+	background: var(--primary-color);
+}
+
+::ng-deep .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background, .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background, .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate="true"]:enabled ~ .mdc-checkbox__background {
+	border-color: var(--primary-color) !important;
+	background-color: var(--primary-color) !important;
 }

@@ -36,14 +36,15 @@
 			<div *ngIf="isEditMode" class="location-input-container">
 				<mat-form-field appearance="outline" class="location-input">
 					<mat-label>Longitude</mat-label>
-					<input matInput name="longitude" type="number" formControlName="userGivenLongitude" min="-180" max="180" required>
+					<input matInput name="longitude" type="number" formControlName="userGivenLongitude" min="-180" max="180">
 				</mat-form-field>
 				<mat-form-field appearance="outline" class="location-input">
 					<mat-label>Latitude</mat-label>
-					<input matInput name="latitude" type="number" formControlName="userGivenLatitude" min="-90" max="90" required>
+					<input matInput name="latitude" type="number" formControlName="userGivenLatitude" min="-90" max="90">
 				</mat-form-field>
 			</div>
 		</div>
+		<mat-checkbox class="use-user-given-location-checkbox" *ngIf="isEditMode" [checked]="!useUserGivenLocation" (change)="changedUseUserGivenLocation()">Use GPS location</mat-checkbox>
 		<div class="user-card-detail">
 			<mat-icon>{{profile.gender === 'undefined' ? 'transgender' : profile.gender}}</mat-icon>
 			<span *ngIf="!isEditMode">{{profile.gender === 'undefined' ? 'Non-binary' : profile.gender}}</span>
