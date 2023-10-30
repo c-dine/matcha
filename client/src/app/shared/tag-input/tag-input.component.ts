@@ -18,7 +18,6 @@ export class TagInputComponent {
 	@Input() tagsSubject!: BehaviorSubject<string[] | undefined>;
 	@Input() parentTagsInput!: string[] | undefined;
 	@Input() label!: string;
-	@Input() minArrayLength!: number;
 	@Output() addedTag = new EventEmitter<string[]>();
 
 	mySubscriptions: Subscription[] = [];
@@ -28,8 +27,8 @@ export class TagInputComponent {
 	filteredTags: Observable<string[]> | undefined;
 
 	tagFormField = new FormGroup({
-		tagInput: new FormControl<string | null>('', []),
-		tags: new FormControl<string[] | undefined>([], [minArrayLengthValidator(this.minArrayLength)]),
+		tagInput: new FormControl<string | null>(''),
+		tags: new FormControl<string[] | undefined>([]),
 	});
 
 	constructor(

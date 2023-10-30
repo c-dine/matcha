@@ -40,7 +40,7 @@ export class FirstProfileFillingComponent {
 		}),
 		personnalProfile: new FormGroup({
 			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
-			tags: new FormControl<string[]>([], [Validators.required, minArrayLengthValidator(3)]),
+			tags: new FormControl<string[]>([]),
 		}),
 	});
 

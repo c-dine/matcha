@@ -93,7 +93,7 @@ export class ProfileComponent {
 			sexualPreferences: new FormControl<string>(this.currentUserProfile?.sexualPreferences || "", [Validators.required]),
 			birthDate: new FormControl<Date | undefined>(this.currentUserProfile?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
 			biography: new FormControl<string>(this.currentUserProfile?.biography || "", [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
-			tags: new FormControl<string[]>(this.currentUserProfile?.tags || [], [Validators.required, minArrayLengthValidator(3)]),
+			tags: new FormControl<string[]>(this.currentUserProfile?.tags || []),
 			userGivenLongitude: new FormControl<number>({ value: this.currentUserProfile?.userGivenLocation?.longitude || 0, disabled: !this.currentUserProfile?.userGivenLocation }),
 			userGivenLatitude: new FormControl<number>({ value: this.currentUserProfile?.userGivenLocation?.latitude || 0, disabled: !this.currentUserProfile?.userGivenLocation }),
 		});
