@@ -6,7 +6,7 @@
 		z-index: 3;
 	}
 	.pages-container {
-		height: 100%;
+		height: calc(100vh - 45px);
 		display: block;
 		margin-top: 45px;
 	}
@@ -25,10 +25,9 @@
 @media screen and (min-width: 1200px) {
 	.pages-container {
 		display: flex;
-		flex: 2 4 2;
 		row-gap: 10px;
 		width: 100%;
-		height: 93vh;
+		height: calc(100vh - 45px);
 	}
     app-nav-side-bar {
         display: block !important;
