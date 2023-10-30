@@ -12,9 +12,13 @@
 	}
     app-nav-side-bar {
         display: none;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
     }
     app-notifications-side-bar {
         display: none;
+		background-color: var(--primary-light-text-color);
+		padding-left: 5px;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
     }
 	.page-content-container {
 		width: 100% !important;
@@ -32,6 +36,11 @@
     app-nav-side-bar {
         display: block !important;
 		position: relative !important;
+    }
+    app-notifications-side-bar {
+        display: block !important;
+		position: relative !important;
+		top: unset !important;
     }
 	.page-content-container {
 		width: 70vw;

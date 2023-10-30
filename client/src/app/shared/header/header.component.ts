@@ -24,7 +24,7 @@ export class HeaderComponent {
 		this.router.navigateByUrl("/");
 	}
 
-	toggleMenu() {
+	toggleMainMenu() {
 		const menu = document.querySelector('app-nav-side-bar');
 
 		if ((menu as any).style.display === 'block')
@@ -34,6 +34,21 @@ export class HeaderComponent {
 			(menu as HTMLElement).style.zIndex = '2';
 			(menu as HTMLElement).style.height = '100%';
 			(menu as HTMLElement).style.position = 'fixed';
+		}
+	}
+
+	toggleNotificationsMenu() {
+		const menu = document.querySelector('app-notifications-side-bar');
+
+		if ((menu as any).style.display === 'block')
+			(menu as any).style.display = 'none';
+		else {
+			(menu as HTMLElement).style.display = 'block';
+			(menu as HTMLElement).style.zIndex = '2';
+			(menu as HTMLElement).style.position = 'fixed';
+			(menu as HTMLElement).style.right = '0';
+			(menu as HTMLElement).style.top = '45px';
+			(menu as HTMLElement).style.overflow = 'auto';
 		}
 	}
 }

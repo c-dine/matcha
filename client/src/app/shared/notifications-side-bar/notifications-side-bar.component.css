@@ -1,6 +1,7 @@
 .notifications-side-bar-container {
+	min-width: 200px;
 	width: 15vw;
-	height: 100%;
+	height: calc(100vh - 45px);
 }
 
 .notifications-side-bar-container-padding {
