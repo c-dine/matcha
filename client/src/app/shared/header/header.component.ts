@@ -23,4 +23,17 @@ export class HeaderComponent {
 	goToHomePage() {
 		this.router.navigateByUrl("/");
 	}
+
+	toggleMenu() {
+		const menu = document.querySelector('app-nav-side-bar');
+
+		if ((menu as any).style.display === 'block')
+			(menu as any).style.display = 'none';
+		else {
+			(menu as HTMLElement).style.display = 'block';
+			(menu as HTMLElement).style.zIndex = '2';
+			(menu as HTMLElement).style.height = '100%';
+			(menu as HTMLElement).style.position = 'fixed';
+		}
+	}
 }

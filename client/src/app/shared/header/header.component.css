@@ -1,6 +1,6 @@
 .header-container {
 	width: 100%;
-	height: 6vh;
+	height: 45px;
 	background-color: white;
 	border-bottom: 0.5px solid #F7F7FF;
 	display: flex;
@@ -14,10 +14,24 @@
 	height: 100%;
 	margin-left: 20px;
 	margin-right: 20px;
-	cursor: pointer;
 }
 
 .logo {
 	height: 30px;
 	width: 100%;
+	cursor: pointer;
+}
+
+.menu-button-container {
+	display: none;
+	cursor: pointer;
+	color: var(--primary-color);
+}
+
+@media screen and (max-width: 1200px) {
+	.menu-button-container {
+		display: flex;
+		align-items: center;
+		margin-right: 20px;
+	}
 }

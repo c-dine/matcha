@@ -24,11 +24,6 @@ export class NavigationListComponent {
       iconName: "chat"
     },
     {
-      title: 'Activity',
-      path: '/app/activity',
-      iconName: "diversity_1"
-    },
-    {
       title: 'Profile',
       path: '/app/profile',
       iconName: "person"

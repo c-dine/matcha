@@ -78,7 +78,7 @@
 
 .signin-button {
     width: 10vw;
-    font-size: 0.8vw;
+    font-size: 2vw;
     background-color: var(--primary-color);
     border-color:var(--primary-color);
     color: white;

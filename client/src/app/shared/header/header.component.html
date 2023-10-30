@@ -1,5 +1,8 @@
 <div class="header-container">
 	<div class="header-flex-container">
+		<div class="menu-button-container" (click)="toggleMenu()">
+			<mat-icon>reorder</mat-icon>
+		</div>
 		<img (click)="goToHomePage()" [src]="environment.logoUrl" alt="logo matcha" class="logo">
 	</div>
 	<div class="header-flex-container" (click)="logOut()">
