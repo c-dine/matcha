@@ -30,10 +30,10 @@
 			{{profile.username}}
 			<span class="user-subtitle">({{profile.firstName}} {{profile.lastName}})</span>
 		</h1>
-		<div class="user-card-detail" [formGroup]="profileForm">
+		<div class="user-card-detail">
 			<mat-icon> place</mat-icon>
 			<span *ngIf="!isEditMode">{{profile.ditanceKm?.toFixed(1)}}km away</span>
-			<div *ngIf="isEditMode" class="location-input-container">
+			<div *ngIf="isEditMode" class="location-input-container" [formGroup]="profileForm">
 				<mat-form-field appearance="outline" class="location-input">
 					<mat-label>Longitude</mat-label>
 					<input matInput name="longitude" type="number" formControlName="userGivenLongitude" min="-180" max="180">

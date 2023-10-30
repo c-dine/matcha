@@ -208,6 +208,7 @@ export class ProfileComponent {
 
 	async onLikeProfileClick() {
 		if (!this.profile?.id) return;
+		if (!this.checkIfUserCanLikeProfileAndAlert()) return;
 		if (this.profile.isLiked !== undefined && this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.likeProfile(this.profile));
@@ -217,11 +218,23 @@ export class ProfileComponent {
 
 	async onDislikeProfileClick() {
 		if (!this.profile?.id) return;
+		if (!this.checkIfUserCanLikeProfileAndAlert()) return;
 		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
 		this.updateProfileStats("dislike");
 		this.profile.isLiked = false;
+	}
+
+	checkIfUserCanLikeProfileAndAlert() : boolean {
+		const canLikeProfile = !!this.profile?.picturesIds?.profilePicture;
+
+		if (!canLikeProfile)
+			this.snackBar.open("You need to have a profile picture to interract with a profile.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+		return canLikeProfile;
 	}
 
 	async unlikeProfile() {
