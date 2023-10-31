@@ -8,16 +8,16 @@ export class UserModel extends ModelBase {
 		super("user", dbClient);
 	}
 
-	async getUserProfile(requestedUserId: string, currentUser: user) {
-		const query = this.getUserProfileQuery(requestedUserId, currentUser);
+	async getFullProfile(requestedUserId: string, currentUser: user) {
+		const query = this.getFullProfileQuery(requestedUserId, currentUser);
 		const result = await this.dbClient.query(query);
 		return result.rows[0];
 	}
 
-	private getUserProfileQuery(requestedUserId: string, currentUser: user): string {
+	private getFullProfileQuery(requestedUserId: string, currentUser: user): string {
 		let query = `
 			${this.getUserSelectQuery(currentUser, requestedUserId === currentUser.id)}
-			WHERE user.id = '${requestedUserId}'
+			WHERE "user".id = '${requestedUserId}'
 			GROUP BY
 				"user".username,
 				"user".last_name,
@@ -43,8 +43,11 @@ export class UserModel extends ModelBase {
 					"user".sexual_preferences,
 					"user".biography,
 					"user".fame_rate,
-					${isCurrentUser ? `"user".user_given_location_latitude,
-					"user".user_given_location_longitude,` : ""}
+					"user".is_profile_filled,
+					${isCurrentUser ? `
+					"user".user_given_location_latitude,
+					"user".user_given_location_longitude,
+					"user".email,` : ""}
 					currentUserLike.is_liked,
 					likedCurrentUser.is_liked as liked_current_user,
 					(SELECT COUNT(*) FROM "like" AS likeCount WHERE likeCount.target_user_id = "user".id AND likeCount.is_liked = true) AS like_count,
@@ -67,7 +70,7 @@ export class UserModel extends ModelBase {
 						'K') as distance_km
 				FROM "user"
 				LEFT JOIN tag ON tag.id IN (
-					SELECT tag_id FROM profile_tag_asso WHERE user_id = "user".id
+					SELECT tag_id FROM user_tag_asso WHERE user_id = "user".id
 				)
 				LEFT JOIN picture ON picture.user_id = "user".id
 				LEFT JOIN "like" AS currentUserLike ON currentUserLike.target_user_id = "user".id AND currentUserLike.user_id = '${currentUser.id}'
@@ -99,12 +102,12 @@ export class UserModel extends ModelBase {
 			query += ` AND "user".fame_rate <= $${i++}`;
 		if (filters.tags) {
 			query += ` AND "user".id IN (
-						SELECT user_id FROM profile_tag_asso WHERE tag_id IN (
+						SELECT user_id FROM user_tag_asso WHERE tag_id IN (
 							SELECT id FROM tag WHERE LOWER(label) = ANY($${i++})
 						) GROUP BY user_id HAVING COUNT(DISTINCT tag_id) = ${filters.tags.length}
 					)`
 		}
-		query += ` AND user.id NOT IN (
+		query += ` AND "user".id NOT IN (
 			SELECT target_user_id FROM blacklist WHERE blacklist.user_id = '${currentUser.id}'
 			)`;
 		query += ` AND "user".id NOT IN (
@@ -133,7 +136,7 @@ export class UserModel extends ModelBase {
 	private getSexualProfileFiltersQuery(currentUser: user): string {
 		let query = " AND ";
 		const userSexualPreference = currentUser.gender === 'undefined' ? ''
-			: `("user".sexual_preferences = '${currentUser.gender}' OR user.sexual_preferences='undefined')`;
+			: `("user".sexual_preferences = '${currentUser.gender}' OR "user".sexual_preferences='undefined')`;
 
 		switch (currentUser.sexual_preferences) {
 			case 'female':
@@ -207,10 +210,11 @@ export class UserModel extends ModelBase {
 				},
 				currentUser
 		)}
-			WHERE user.id != '${currentUser.id}'
-			AND user.gender = '${currentUser.sexual_preferences}'
-			AND user.sexual_preferences = '${currentUser.gender}'
+			WHERE "user".id != '${currentUser.id}'
+			AND "user".gender = '${currentUser.sexual_preferences}'
+			AND "user".sexual_preferences = '${currentUser.gender}'
 			GROUP BY
+				"user".id,
 				"user".username,
 				"user".last_name,
 				"user".first_name
@@ -224,19 +228,19 @@ export class UserModel extends ModelBase {
 		let commonTagscount = `(
 			SELECT COUNT(*) FROM (
 				SELECT matching_user_tag.label
-				FROM profile_tag_asso
+				FROM user_tag_asso
 				JOIN tag AS matching_user_tag ON matching_user_tag.id = tag_id
-				WHERE user_id = user.id
+				WHERE user_id = "user".id
 				INTERSECT
 				SELECT current_user_tag.label
-				FROM profile_tag_asso
+				FROM user_tag_asso
 				JOIN tag AS current_user_tag ON current_user_tag.id = tag_id
 				WHERE user_id = '${currentUser.id}'
 			) AS common_tags
 		)`;
 		let distance = `calculate_distance(
-			COALESCE("user".user_given_location_latitude, user.location_latitude),
-			COALESCE("user".user_given_location_longitude, user.location_longitude),
+			COALESCE("user".user_given_location_latitude, "user".location_latitude),
+			COALESCE("user".user_given_location_longitude, "user".location_longitude),
 			${userLocation.latitude},
 			${userLocation.longitude},
 			'K')`
@@ -260,8 +264,8 @@ export class UserModel extends ModelBase {
 			${matchingFormula} AS matching_rate
 		FROM "user"
 		LEFT JOIN tag ON tag.id IN (
-			SELECT tag_id FROM profile_tag_asso WHERE user_id = user.id
+			SELECT tag_id FROM user_tag_asso WHERE user_id = "user".id
 		)
-		LEFT JOIN picture ON picture.user_id = user.id`
+		LEFT JOIN picture ON picture.user_id = "user".id`
 	}
 }

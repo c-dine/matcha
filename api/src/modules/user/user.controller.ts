@@ -13,7 +13,7 @@ userController.get("/userProfile", async (req: Request<any, any, any, { id: stri
 	try {
 		const userService = new UserService(req.dbClient);
 		const viewService = new ViewService(req.dbClient);
-		const profile = await userService.getUserProfile(req.userId, req.query?.id);
+		const profile = await userService.getFullProfile(req.userId, req.query?.id);
 
 		if (req.query?.id)
 			await viewService.addElement(req.userId, req.query.id);
@@ -64,9 +64,11 @@ userController.put("/", async (req: Request, res: Response, next: NextFunction) 
 		const userService = new UserService(req.dbClient);
 		const pictureService = new PictureService(req.dbClient);
 		
-		const updatedProfile: User = await userService.updateProfile(updatedProfileData, req.userId);
-		await tagService.updateUserTags(updatedProfile.id, updatedProfileData.tags);
-		await pictureService.updateProfilePictures(updatedProfileData.picturesIds, updatedProfile.id);
+		const updatedProfile: User = await userService.updateUser(updatedProfileData, req.userId);
+		if (updatedProfileData.tags)
+			await tagService.updateUserTags(updatedProfile.id, updatedProfileData.tags);
+		if (updatedProfileData.picturesIds)
+			await pictureService.updateProfilePictures(updatedProfileData.picturesIds, updatedProfile.id);
 		res.status(200).json({ data: { ...updatedProfileData, id: updatedProfile.id }, message: "Profile successfully updated." });
 		next();
 	} catch (error: any) {

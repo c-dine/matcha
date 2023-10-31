@@ -1,4 +1,4 @@
-import { NewUser, User, UserWithProfileId } from "@shared-models/user.model.js";
+import { NewUser, User } from "@shared-models/user.model.js";
 import { PoolClient } from "pg";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -51,15 +51,6 @@ export class AuthService {
 		}, ["id", "last_name", "first_name", "email", "username"]);
 		return newUser ? this.userService.formatUser(newUser) : undefined;
 	}
-	
-	async updateUser(updatedUser: User, userId: string) {
-		await this.userModel.updateById(userId, {
-			first_name: updatedUser.firstName,
-			last_name: updatedUser.lastName,
-			email: updatedUser.email,
-			username: updatedUser.username
-		});
-	}
 
 	async getLoggedUser(
 		userAuthData: {
@@ -73,11 +64,11 @@ export class AuthService {
 				{ username: userAuthData.username, },
 				{ id: userAuthData.id, }
 			],
-			["id", "last_name", "first_name", "email", "username", "password"]
+			["id", "password"]
 		))[0];
 		if (!loggedUser || !(await this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password)))
 			throw new CustomError("Invalid username or password.", 401);
-		return loggedUser ? this.userService.formatUser(loggedUser) : undefined;
+		return loggedUser ? await this.userService.getFullProfile(loggedUser.id) : undefined;
 	}
 	
 	getNewToken(userId: string, secret: string, expireLimitMinutes: number): string {

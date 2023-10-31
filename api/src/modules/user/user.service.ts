@@ -52,22 +52,28 @@ export class UserService {
 		}
 	}
 
+	async getUserById(userId: string): Promise<user | undefined>  {
+		return (await this.userModel.findMany([{
+			id: userId
+		}]))[0];
+	}
+
 	async getUsers(
-		whereQuery: { [ key: string ]: any },
+		whereQuery: { [ key: string ]: any }[],
 		select?: string[]
 	) {
 		const users = (
-			await this.userModel.findMany([whereQuery],
+			await this.userModel.findMany(whereQuery,
 			select
 		));
 		return users.map(this.formatUser);
 	}
 
-	async getUserProfile(currentUserId: string, requestedUserProfileId?: string): Promise<User | undefined> {
-		const currentUser = await this.getCurrentUser(currentUserId);
-		if (!requestedUserProfileId && !currentUser?.id) return undefined;
+	async  getFullProfile(currentUserId: string, requestedUserId?: string): Promise<User | undefined> {
+		const currentUser = await this.getUserById(currentUserId);
+		if (!requestedUserId && !currentUser?.id) return undefined;
 		const requestedProfile = 
-			await this.userModel.getUserProfile(requestedUserProfileId || currentUser.id, currentUser);
+			await this.userModel.getFullProfile(requestedUserId || currentUser.id, currentUser);
 		return {
 			...this.formatUser(requestedProfile as user),
 			tags: requestedProfile.tags?.split(',') || [],
@@ -89,7 +95,7 @@ export class UserService {
 	}
 
 	async getUserList(filters: ProfileFilters, userId: string): Promise<UserList> {
-		const currentUserProfile = await this.getCurrentUser(userId);
+		const currentUserProfile = await this.getUserById(userId);
 		const userlist = await this.userModel.getUserList(filters, currentUserProfile);
 
 		return {
@@ -109,30 +115,41 @@ export class UserService {
 		};
 	}
 
-	async createProfile(newProfile: User, userId: string): Promise<User> {
-		const createdProfile = await this.userModel.create({
-			gender: newProfile.gender,
-			birth_date: newProfile.birthDate,
-			sexual_preferences: newProfile.sexualPreferences,
-			biography: newProfile.biography,
-			user_id: userId,
-			location_latitude: newProfile.location.latitude,
-			location_longitude: newProfile.location.longitude,
-		});
-
-		return this.formatUser(createdProfile);
+	async getMatchingProfiles(userId: string, filters: ProfileFilters): Promise<UserList> {
+		const currentUserProfile = await this.getUserById(userId);
+		if (!currentUserProfile?.id)
+			return undefined;
+		const matchingProfiles = 
+			await this.userModel.getMatchingProfiles(currentUserProfile, filters);
+		return {
+			totalUserCount: matchingProfiles.length,
+			userList: matchingProfiles.map(user => ({
+				...this.formatUser(user as user),
+				tags: user.tags?.split(',') || [],
+				picturesIds: {
+					profilePicture: user.profile_picture_id,
+					additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
+				},
+				ditanceKm: user.distance_km
+			}))
+		} 
 	}
 
-	async updateProfile(updatedProfileData: User, userId: string): Promise<User> {
+	async updateUser(updatedData: User, userId: string): Promise<User> {
 		const updatedProfile = await this.userModel.update([{
-			user_id: userId
+			id: userId
 		}], {
-			gender: updatedProfileData.gender,
-			birth_date: updatedProfileData.birthDate,
-			sexual_preferences: updatedProfileData.sexualPreferences,
-			biography: updatedProfileData.biography,
-			user_given_location_latitude: updatedProfileData.userGivenLocation?.latitude,
-			user_given_location_longitude: updatedProfileData.userGivenLocation?.longitude
+				first_name: updatedData.firstName || undefined,
+				last_name: updatedData.lastName || undefined,
+				email: updatedData.email || undefined,
+				username: updatedData.username || undefined,
+				gender: updatedData.gender || undefined,
+				birth_date: updatedData.birthDate || undefined,
+				sexual_preferences: updatedData.sexualPreferences || undefined,
+				biography: updatedData.biography || undefined,
+				user_given_location_latitude: updatedData.userGivenLocation?.latitude || undefined,
+				user_given_location_longitude: updatedData.userGivenLocation?.longitude || undefined,
+				is_profile_filled: true
 		});
 
 		return this.formatUser(updatedProfile[0]);
@@ -140,7 +157,7 @@ export class UserService {
 
 	async setProfileLocation(location: GeoCoordinate, userId: string) {
 		return await this.userModel.update([{
-			user_id: userId
+			id: userId
 		}], {
 			location_latitude: location.latitude,
 			location_longitude: location.longitude
@@ -164,31 +181,5 @@ export class UserService {
 		} catch (error: any) {
 			console.error("Can't locate user.")
 		}
-	}
-
-	async getMatchingProfiles(userId: string, filters: ProfileFilters): Promise<UserList> {
-		const currentUserProfile = await this.getCurrentUser(userId);
-		if (!currentUserProfile?.id)
-			return undefined;
-		const matchingProfiles = 
-			await this.userModel.getMatchingProfiles(currentUserProfile, filters);
-		return {
-			totalUserCount: matchingProfiles.length,
-			userList: matchingProfiles.map(user => ({
-				...this.formatUser(user as user),
-				tags: user.tags?.split(',') || [],
-				picturesIds: {
-					profilePicture: user.profile_picture_id,
-					additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
-				},
-				ditanceKm: user.distance_km
-			}))
-		} 
-	}
-
-	async getCurrentUser(userId: string): Promise<user | undefined>  {
-		return (await this.userModel.findMany([{
-			user_id: userId
-		}]))[0];
 	}
 }

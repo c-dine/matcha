@@ -73,7 +73,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 		if (!refreshToken)
 			throw new CustomError("Authentication error.", 400);
 		await jwt.verify(refreshToken, encryptionConfig.refreshSecret, async (err, decoded) => {
-			const user = (await userService.getUsers({ id: (decoded as any)?.userId }))[0];
+			const user = await userService.getUserById((decoded as any)?.userId);
 			if (err || !user)
 				throw new CustomError("Authentication error.", 401);
 
@@ -82,7 +82,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 					token: {
 						access: authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, 15)
 					},
-					... user
+					... await userService.getFullProfile(user.id)
 				}
 			});
 		});
@@ -124,21 +124,6 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 	} catch (error: any) {
 		console.error(`Error while verifying email: ${error}`);
 		error.message = "Error while verifying email."; 
-		next(error);
-	}
-});
-
-authController.put("/", async (req: Request, res: Response, next: NextFunction) => {
-	try {
-		const updatedUser = req.body as User;
-		const authService = new AuthService(req.dbClient);
-
-		await authService.updateUser(updatedUser, req.userId);
-		res.status(200).json({ message: "User details successfully updated.", data: updatedUser });
-		next();
-	} catch (error: any) {
-		console.error(`Error while creating user: ${error}`);
-		error.message = "Username or email already taken."; 
 		next(error);
 	}
 });

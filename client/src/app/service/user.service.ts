@@ -29,40 +29,38 @@ export class UserService {
 		return this.currentUserSubject.asObservable();
 	}
 
-	getUserProfile(userProfileId?: string): Observable<User | null> {
-		const params = userProfileId ? buildHttpParams({ id: userProfileId}) : undefined;
-		return this.http.get<User | null>(`${environment.apiUrl}/profile/userProfile`, { params });
+	getUserProfile(userId?: string): Observable<User | null> {
+		const params = userId ? buildHttpParams({ id: userId}) : undefined;
+		return this.http.get<User | null>(`${environment.apiUrl}/user/userProfile`, { params })
+		.pipe(
+			tap(user => {
+				if (!userId)
+					this.currentUserSubject.next(user);
+			})
+		);
 	}
 
 	getUserList(filters: ProfileFilters): Observable<UserList> {
 		const params = buildHttpParams(filters);
-		return this.http.get<UserList>(`${environment.apiUrl}/profile/userList`, {
+		return this.http.get<UserList>(`${environment.apiUrl}/user/userList`, {
 			params
 		});
 	}
 
 	getMatchingProfiles(filters: ProfileFilters): Observable<UserList> {
 		const params = buildHttpParams(filters);
-		return this.http.get<UserList>(`${environment.apiUrl}/profile/matchingProfiles`, {
+		return this.http.get<UserList>(`${environment.apiUrl}/user/matchingProfiles`, {
 			params
 		});
 	}
 
-	createProfile(newProfile: User): Observable<User | null> {
-		return this.http.post<User | null>(`${environment.apiUrl}/profile/`, newProfile)
-			.pipe(
-				tap(profile => this.currentUserSubject.next(profile))
-			);
-	}
-
 	updateUser(updatedUser: User): Observable<User> {
-		return this.http.put<User>(environment.apiUrl + '/user/', updatedUser)
-			.pipe(
-				map(user => {
-					this.currentUserSubject.next(user);
-					return user;
-				})
-			);
+		const currentUser = this.currentUserSubject.value;
+		this.currentUserSubject.next({
+			...currentUser,
+			...updatedUser
+		});
+		return this.http.put<User>(environment.apiUrl + '/user/', updatedUser);
 	}
 
 	async userHasProfile(): Promise<boolean> {
@@ -91,7 +89,7 @@ export class UserService {
 	}
 
 	setTrackingLocation(location?: GeoCoordinate) {
-		return this.http.post<any>(`${environment.apiUrl}/profile/setTrackingLocation`, location);
+		return this.http.post<any>(`${environment.apiUrl}/user/setTrackingLocation`, location);
 	}
 
 	stopTrackingLocationChanges() {

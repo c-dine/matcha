@@ -23,10 +23,6 @@ export interface User {
 	likedCurrentUser?: boolean;
 }
 
-export interface UserWithProfileId extends User {
-	userId: string;
-}
-
 export interface AuthenticatedUser extends User {
 	token: {
 		refresh?: string,

@@ -94,14 +94,14 @@ export class FirstProfileFillingComponent {
 			picturesIds,
 			location: this.location
 		} as User;
-
-		this.userService.createProfile(newProfile)
+		
+		this.userService.updateUser(newProfile)
 			.subscribe({
 				next: () => {
 					this.router.navigate(["/app"]);
 					this.isLoading = false;
 				},
-				error: () => this.isLoading = false
+				error: () => { this.isLoading = false;}
 			})
 	}
 
