@@ -28,8 +28,8 @@ export class BlacklistService {
 			);
 	}
 
-	addBlacklisted(targetProfileId: string) {
-		return this.http.post<Interaction>(`${environment.apiUrl}/blacklist/`, { targetProfileId })
+	addBlacklisted(targetUserId: string) {
+		return this.http.post<Interaction>(`${environment.apiUrl}/blacklist/`, { targetUserId })
 			.pipe(
 				tap(blacklisted => {
 					const blacklist = this.blacklist.value;
@@ -39,14 +39,14 @@ export class BlacklistService {
 			);
 	}
 
-	deleteBlacklisted(targetProfileId: string) {
+	deleteBlacklisted(targetUserId: string) {
 		let blacklist = this.blacklist.value;
-		blacklist = blacklist?.filter((blacklisted) => blacklisted.targetProfileId !== targetProfileId);
+		blacklist = blacklist?.filter((blacklisted) => blacklisted.targetUserId !== targetUserId);
 		this.blacklist.next(blacklist);
-		return this.http.delete<void>(`${environment.apiUrl}/blacklist/${targetProfileId}`);
+		return this.http.delete<void>(`${environment.apiUrl}/blacklist/${targetUserId}`);
 	}
 
 	isProfileBlocked(userId: string): boolean {
-		return !!this.blacklist.value.find((blacklisted) => blacklisted.targetProfileId === userId);
+		return !!this.blacklist.value.find((blacklisted) => blacklisted.targetUserId === userId);
 	}
 }

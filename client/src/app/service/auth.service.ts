@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AuthenticatedUser, User, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
 import Cookies from 'js-cookie';
 import { map, tap } from 'rxjs/operators';
-import { UserService } from './user.service';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
+import { UserService } from './user.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthService {
+
+	private accessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
+
 	constructor(
 		private http: HttpClient,
 		private userService: UserService,
@@ -45,13 +47,13 @@ export class AuthService {
 	setSession(user: AuthenticatedUser) {
 		this.userService.trackUserLocation();
 		this.setRefreshToken(user.token.refresh || "");
-		this.userService.setAccessTokenObs(user.token.access);
-		this.userService.setCurrentUserObs(user as User);
+		this.userService.setCurrentUserSubject(user as User);
+		this.accessTokenSubject.next(user.token.access);
 	}
 
 	logout(): void {
 		this.userService.stopTrackingLocationChanges();
-		this.userService.setAccessTokenObs(undefined);
+		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
 		this.chatSocket.disconnect();
 		this.activitySocket.disconnect();
@@ -59,7 +61,7 @@ export class AuthService {
 	}
 
 	async isLoggedIn(): Promise<boolean> {
-		if (this.isTokenValid(this.userService.getAccessTokenValue())) {
+		if (this.isTokenValid(this.accessTokenSubject.value)) {
 			this.userService.trackUserLocation();
 			return true;
 		}
@@ -67,7 +69,7 @@ export class AuthService {
 			this.userService.trackUserLocation();
 			return true;
 		}
-		this.userService.setAccessTokenObs(undefined);
+		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
 		return false;
 	}
@@ -94,16 +96,36 @@ export class AuthService {
 	}
 
 	getAccessToken(): string | undefined {
-		return this.userService.getAccessTokenValue();
+		return this.accessTokenSubject.value;
 	}
 
 	refreshAccessToken() {
 		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
 			.pipe(
 				tap((authenticatedUser: AuthenticatedUser) => {
-					this.userService.setAccessTokenObs(authenticatedUser.token.access);
-					this.userService.setCurrentUserObs(authenticatedUser as User);
+					this.accessTokenSubject.next(authenticatedUser.token.access);
+					this.userService.setCurrentUserSubject(authenticatedUser as User);
 				})
 			);
+	}
+
+	updatePassword(lastPassword: string, newPassword: string): Observable<void> {
+		return this.http.put<void>(environment.apiUrl + '/auth/updatePassword', {
+			lastPassword,
+			newPassword
+		});
+	}
+
+	resetPassword(resetToken: string, password: string) {
+		return this.http.post<string>(environment.apiUrl + '/auth/resetPassword', {
+			resetToken,
+			password
+		});
+	}
+
+	verifyEmail(verificationToken: string) {
+		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
+			verificationToken
+		});
 	}
 }

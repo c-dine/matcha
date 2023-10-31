@@ -1,10 +1,10 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
-import { UserService } from 'src/app/service/profile.service';
-import { Profile, ProfileFilters, UserList, UserProfile } from '@shared-models/profile.model';
 import { picturesIdsToPicturesUrls } from 'src/app/utils/picture.utils';
 import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
 import { ChatSocketService } from 'src/app/service/socket/chatSocket.service';
+import { ProfileFilters, User, UserList } from '@shared-models/user.model';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
 	selector: 'app-dating',
@@ -13,7 +13,7 @@ import { ChatSocketService } from 'src/app/service/socket/chatSocket.service';
 })
 export class DatingComponent implements OnInit {
 	isLoading: boolean;
-	matchingProfiles!: UserProfile[];
+	matchingProfiles!: User[];
 	filters: ProfileFilters;
 	picturesUrl!: string[];
 	picturesIdsToPicturesUrls = picturesIdsToPicturesUrls;

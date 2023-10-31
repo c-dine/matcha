@@ -22,8 +22,8 @@ export class SocketService {
 		this.subscriptions = [];
 		this.subscriptions.push(
 			this.userService.getCurrentUserObs().subscribe({
-				next: (user: User | undefined) =>
-					this.currentUser = user
+				next: (user) =>
+					this.currentUser = user as User | undefined
 			})
 		);
 	}

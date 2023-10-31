@@ -4,10 +4,11 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { Interaction } from "@shared-models/interactions.model";
 import { User } from "@shared-models/user.model";
 import { Subscription, firstValueFrom } from "rxjs";
+import { AuthService } from "src/app/service/auth.service";
 import { BlacklistService } from "src/app/service/blacklist.service";
 import { FakeReportService } from "src/app/service/fake-report.service";
-import { UserService } from "src/app/service/user.service";
 import { LikeService } from "src/app/service/like.service";
+import { UserService } from "src/app/service/user.service";
 import { ViewService } from "src/app/service/view.service";
 import { passwordValidator } from "src/app/validators/custom-validators";
 
@@ -18,7 +19,7 @@ import { passwordValidator } from "src/app/validators/custom-validators";
 })
 export class SettingsComponent {
 
-	currentUser: User | undefined;
+	currentUser!: User | null;
 	userForm!: FormGroup;
 	passwordForm!: FormGroup;
 	isUserDetailsEditMode = false;
@@ -39,6 +40,7 @@ export class SettingsComponent {
 		private blacklistService: BlacklistService,
 		private fakeReportService: FakeReportService,
 		private userService: UserService,
+		private authService: AuthService,
 		private viewService: ViewService,
 		private likeService: LikeService,
 		private snackBar: MatSnackBar
@@ -159,7 +161,7 @@ export class SettingsComponent {
 			});
 			return;
 		}
-		this.userService.updatePassword(
+		this.authService.updatePassword(
 			this.passwordForm.get('lastPassword')?.value,
 			this.passwordForm.get('newPassword')?.value
 			)

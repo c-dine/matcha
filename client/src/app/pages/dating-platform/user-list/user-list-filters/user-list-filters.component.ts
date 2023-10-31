@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { ProfileFilters, UserListFilters } from "@shared-models/profile.model";
+import { ProfileFilters, UserListFilters } from "@shared-models/user.model";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 
 @Component({

@@ -1,5 +1,5 @@
-<div class="nav-user-information-container" *ngIf="profile">
-	<img class="nav-user-information-image nav-user-information-width" [src]="getFirebasePictureUrl(profile.picturesIds?.profilePicture)"/>
+<div class="nav-user-information-container" *ngIf="user">
+	<img class="nav-user-information-image nav-user-information-width" [src]="getFirebasePictureUrl(user.picturesIds?.profilePicture)"/>
 	<h3 class="nav-user-information-name-text nav-user-information-width">{{ user.firstName }} {{ user.lastName }}</h3>
 	<h4 class="nav-user-information-subtitle nav-user-information-width">{{ user.username }}</h4>
 	<div class="
@@ -8,15 +8,15 @@
 		nav-user-information-15gap
 		">
 		<div class="nav-user-information-stats">
-			<p class="nav-user-information-stats-text">{{ profile.stats?.likeCount }}</p>
+			<p class="nav-user-information-stats-text">{{ user.stats?.likeCount }}</p>
 			<p class="nav-user-information-subtitle">Likes</p>
 		</div>
 		<div class="nav-user-information-stats">
-			<p class="nav-user-information-stats-text">{{ profile.stats?.matchCount }}</p>
+			<p class="nav-user-information-stats-text">{{ user.stats?.matchCount }}</p>
 			<p class="nav-user-information-subtitle">Matches</p>
 		</div>
 		<div class="nav-user-information-stats">
-			<p class="nav-user-information-stats-text">{{ profile.stats?.fameRate }}</p>
+			<p class="nav-user-information-stats-text">{{ user.stats?.fameRate }}</p>
 			<p class="nav-user-information-subtitle">Fame</p>
 		</div>
 

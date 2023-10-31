@@ -1,47 +1,62 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from '@environment/environment';
-import { map } from 'rxjs/operators';
-import { User } from '@shared-models/user.model';
+import { BehaviorSubject, Observable, firstValueFrom, map, tap } from 'rxjs';
+import { GeoCoordinate, ProfileFilters, UserList, User } from "@shared-models/user.model.js"
+import { buildHttpParams } from '../utils/http.utils';
 
 @Injectable({
-	providedIn: 'root'
+  providedIn: 'root'
 })
 export class UserService {
-	private currentUserSubject: BehaviorSubject<User | undefined> = new BehaviorSubject<User | undefined>(undefined);
-	private accessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
-	constructor(
-		private http: HttpClient
-	) { }
+	private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+	private geolocationWatchId = -1;
 
-	getAccessTokenObs() {
-		return this.accessTokenSubject.asObservable();
+	private approximateUserLocationHasBeenSent = false;
+
+    constructor(
+        private http: HttpClient
+    ) {	}
+
+	setCurrentUserSubject(currentUser: User) {
+		this.currentUserSubject.next(currentUser);
 	}
-
-	getCurrentUserObs() {
+	
+	getCurrentUserObs(): Observable<User | null> {
+		if (!this.currentUserSubject.value)
+			firstValueFrom(this.getUserProfile());
 		return this.currentUserSubject.asObservable();
 	}
 
-	getAccessTokenValue() {
-		return this.accessTokenSubject.getValue();
+	getUserProfile(userProfileId?: string): Observable<User | null> {
+		const params = userProfileId ? buildHttpParams({ id: userProfileId}) : undefined;
+		return this.http.get<User | null>(`${environment.apiUrl}/profile/userProfile`, { params });
 	}
 
-	getCurrentUserValue() {
-		return this.currentUserSubject.getValue();
+	getUserList(filters: ProfileFilters): Observable<UserList> {
+		const params = buildHttpParams(filters);
+		return this.http.get<UserList>(`${environment.apiUrl}/profile/userList`, {
+			params
+		});
 	}
 
-	setAccessTokenObs(token: string | undefined) {
-		return this.accessTokenSubject.next(token);
+	getMatchingProfiles(filters: ProfileFilters): Observable<UserList> {
+		const params = buildHttpParams(filters);
+		return this.http.get<UserList>(`${environment.apiUrl}/profile/matchingProfiles`, {
+			params
+		});
 	}
 
-	setCurrentUserObs(user: User) {
-		return this.currentUserSubject.next(user);
+	createProfile(newProfile: User): Observable<User | null> {
+		return this.http.post<User | null>(`${environment.apiUrl}/profile/`, newProfile)
+			.pipe(
+				tap(profile => this.currentUserSubject.next(profile))
+			);
 	}
 
 	updateUser(updatedUser: User): Observable<User> {
-		return this.http.put<User>(environment.apiUrl + '/auth/', updatedUser)
+		return this.http.put<User>(environment.apiUrl + '/user/', updatedUser)
 			.pipe(
 				map(user => {
 					this.currentUserSubject.next(user);
@@ -50,23 +65,37 @@ export class UserService {
 			);
 	}
 
-	updatePassword(lastPassword: string, newPassword: string): Observable<void> {
-		return this.http.put<void>(environment.apiUrl + '/auth/updatePassword', {
-			lastPassword,
-			newPassword
-		});
+	async userHasProfile(): Promise<boolean> {
+		if (this.currentUserSubject.value === null)
+			await firstValueFrom(this.getUserProfile());
+		return !!this.currentUserSubject.value?.isProfileFilled;
 	}
 
-	resetPassword(resetToken: string, password: string) {
-		return this.http.post<string>(environment.apiUrl + '/auth/resetPassword', {
-			resetToken,
-			password
-		});
+	// GPS Tracking
+
+	trackUserLocation() {
+		if (!this.approximateUserLocationHasBeenSent) {
+			this.approximateUserLocationHasBeenSent = true;
+			firstValueFrom(this.setTrackingLocation());
+		}
+		if ("geolocation" in navigator && this.geolocationWatchId === -1) {
+			this.geolocationWatchId = navigator.geolocation.watchPosition(
+				async (position) => {
+					await firstValueFrom(this.setTrackingLocation({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude
+					}));
+				}
+			);
+		}
 	}
 
-	verifyEmail(verificationToken: string) {
-		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
-			verificationToken
-		});
+	setTrackingLocation(location?: GeoCoordinate) {
+		return this.http.post<any>(`${environment.apiUrl}/profile/setTrackingLocation`, location);
 	}
+
+	stopTrackingLocationChanges() {
+		navigator.geolocation.clearWatch(this.geolocationWatchId);
+	}
+
 }

@@ -28,8 +28,8 @@ export class FakeReportService {
 			);
 	}
 
-	addFakeReported(targetProfileId: string) {
-		return this.http.post<Interaction>(`${environment.apiUrl}/fakeReport/`, { targetProfileId })
+	addFakeReported(targetUserId: string) {
+		return this.http.post<Interaction>(`${environment.apiUrl}/fakeReport/`, { targetUserId })
 			.pipe(
 				tap(fakeReportListed => {
 					const fakeReportList = this.fakeReportList.value;
@@ -39,14 +39,14 @@ export class FakeReportService {
 			);
 	}
 
-	deleteFakeReported(targetProfileId: string) {
+	deleteFakeReported(targetUserId: string) {
 		let fakeReportList = this.fakeReportList.value;
-		fakeReportList = fakeReportList?.filter((fakeReportListed) => fakeReportListed.targetProfileId !== targetProfileId);
+		fakeReportList = fakeReportList?.filter((fakeReportListed) => fakeReportListed.targetUserId !== targetUserId);
 		this.fakeReportList.next(fakeReportList);
-		return this.http.delete<void>(`${environment.apiUrl}/fakeReport/${targetProfileId}`);
+		return this.http.delete<void>(`${environment.apiUrl}/fakeReport/${targetUserId}`);
 	}
 
 	isProfileReported(userId: string): boolean {
-		return !!this.fakeReportList.value.find((report) => report.targetProfileId === userId);
+		return !!this.fakeReportList.value.find((report) => report.targetUserId === userId);
 	}
 }

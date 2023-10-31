@@ -16,7 +16,7 @@
 
 		
 	<div class="user-card-container rounded-box">
-		<div class="action-buttons" *ngIf="profile.id !== currentUserProfile?.id">
+		<div class="action-buttons" *ngIf="profile.id !== currentUser?.id">
 			<mat-icon matTooltip='Like' (click)="onLikeProfileClick()" [ngClass]="{ 'active-liked-button': isProfileLiked() }">thumb_up</mat-icon>
 			<mat-icon matTooltip='Dislike' (click)="onDislikeProfileClick()" [ngClass]="{ 'active-disliked-button': isProfileDisliked() }">thumb_down</mat-icon>
 			<mat-icon matTooltip='Message'>message</mat-icon>
@@ -69,11 +69,11 @@
 		</div>
 
 		<button (click)="onEditProfile()" class="custom-button submit-button" 
-				*ngIf="currentUserProfile?.id === profile.id && !isEditMode">Edit profile</button>
+				*ngIf="currentUser?.id === profile.id && !isEditMode">Edit profile</button>
 		<button (click)="onSubmitProfile()" class="custom-button submit-button" 
-				*ngIf="currentUserProfile?.id === profile.id && isEditMode">Submit</button>
+				*ngIf="currentUser?.id === profile.id && isEditMode">Submit</button>
 		<button (click)="onCancelEditProfile()" class="custom-button cancel-button" 
-				*ngIf="currentUserProfile?.id === profile.id && isEditMode">Cancel</button>
+				*ngIf="currentUser?.id === profile.id && isEditMode">Cancel</button>
 	</div>
 
 

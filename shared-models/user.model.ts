@@ -17,6 +17,7 @@ export interface User {
 	tags?: string[];
 	picturesIds?: ProfilePicturesIds;
 	stats?: ProfileStats;
+	isProfileFilled?: boolean;
 
 	isLiked?: boolean;
 	likedCurrentUser?: boolean;

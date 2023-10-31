@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@environment/environment';
-import { ProfileFilters, UserProfile } from '@shared-models/profile.model';
+import { ProfileFilters, User } from '@shared-models/user.model';
 import { BehaviorSubject } from 'rxjs';
-import { UserService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/user.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
 
@@ -19,7 +19,7 @@ export class UserListComponent {
 		batchSize: 8,
 		offset: 0
 	});
-	userList: UserProfile[] = [];
+	userList: User[] = [];
 	environment = environment;
 	getFirebasePictureUrl = getFirebasePictureUrl;
 	getAge = getAge;

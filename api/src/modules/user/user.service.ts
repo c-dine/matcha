@@ -32,7 +32,8 @@ export class UserService {
 			userGivenLocation: user.user_given_location_latitude ? {
 				latitude: user.user_given_location_latitude,
 				longitude: user.user_given_location_longitude
-			} : undefined
+			} : undefined,
+			isProfileFilled: user.is_profile_filled
 		}
 	}
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavbarProfile } from '@shared-models/profile.model';
+import { NavbarProfile } from '@shared-models/user.model';
 
 @Component({
 	selector: 'app-contacts-side-bar',

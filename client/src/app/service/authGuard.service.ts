@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { UserService } from './profile.service';
+import { UserService } from './user.service';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 

@@ -6,6 +6,7 @@ import { NewUser, User } from '@shared-models/user.model.js'
 import { AuthService } from './auth.service.js';
 import { MailService } from '../mail/mail.service.js';
 import { CustomError } from '../../utils/error.util.js';
+import { UserService } from '../user/user.service.js';
 
 export const authController = express();
 
@@ -67,11 +68,12 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 	try {
 		const refreshToken = req.body.refreshToken;
 		const authService = new AuthService(req.dbClient);
+		const userService = new UserService(req.dbClient);
 
 		if (!refreshToken)
 			throw new CustomError("Authentication error.", 400);
 		await jwt.verify(refreshToken, encryptionConfig.refreshSecret, async (err, decoded) => {
-			const user = await authService.getUser({ id: (decoded as any)?.userId });
+			const user = (await userService.getUsers({ id: (decoded as any)?.userId }))[0];
 			if (err || !user)
 				throw new CustomError("Authentication error.", 401);
 

@@ -3,11 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ageValidator, dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
-import { UserService } from 'src/app/service/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { PictureService } from 'src/app/service/picture.service';
-import { GeoCoordinate, Profile } from '@shared-models/profile.model';
+import { GeoCoordinate, User } from '@shared-models/user.model';
+import { UserService } from 'src/app/service/user.service';
 
 enum FirstFillingProfileMode {
 	INTRO = 0,
@@ -93,7 +93,7 @@ export class FirstProfileFillingComponent {
 			...formValue.sexualProfile,
 			picturesIds,
 			location: this.location
-		} as Profile;
+		} as User;
 
 		this.userService.createProfile(newProfile)
 			.subscribe({

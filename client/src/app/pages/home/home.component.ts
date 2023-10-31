@@ -9,10 +9,8 @@ import { VerifyEmailDialogComponent } from './verify-email-dialog/verify-email-d
 import { environment } from '@environment/environment';
 import { User } from '@shared-models/user.model';
 import { Subscription } from 'rxjs';
-import { Profile } from '@shared-models/profile.model';
-import { UserService } from 'src/app/service/profile.service';
-import { UserService } from 'src/app/service/user.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +22,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 	environment = environment;
 
 	user: User | undefined;
-	userProfile: Profile | null = null;
 
 	mySubscription: Subscription[] = [];
 
@@ -33,7 +30,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 	constructor(
 		private dialog: MatDialog,
 		private authService: AuthService,
-		private userService: UserService,
 		private userService: UserService,
 		private router: Router,
 		private route: ActivatedRoute
@@ -50,12 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 			return;
 		this.mySubscription.push(
 			this.userService.getCurrentUserObs().subscribe({
-				next: (user) => this.user = user
-			})
-		);
-		this.mySubscription.push(
-			this.userService.getCurrentUserProfileObs().subscribe({
-				next: (profile) => this.userProfile = profile
+				next: (user) => this.user = user as User | undefined
 			})
 		);
 	}
@@ -101,8 +92,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 	navigateToProfile() {
-		if (!this.userProfile?.id) return;
-		this.router.navigate([`/app/profile`], { queryParams: { id: this.userProfile.id } });
+		if (!this.user?.id) return;
+		this.router.navigate([`/app/profile`], { queryParams: { id: this.user.id } });
 	}
 
 }
