@@ -7,17 +7,13 @@ import {
 	HttpErrorResponse,
 	HttpResponse,
 } from '@angular/common/http';
-import { Observable, Subscription, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {
-
-	isRefreshingToken = false;
-
 	constructor(
 		private snackBar: MatSnackBar,
 		private authService: AuthService
@@ -31,18 +27,15 @@ export class HttpInterceptorService implements HttpInterceptor {
 
 		return next.handle(accessToken ? this.addTokenToRequest(request, accessToken) : request).pipe(
 			catchError((error: HttpErrorResponse) => {
-				if (this.isRefreshingToken && error.status === 401) {
-					this.isRefreshingToken = false;
+				if (error.status === 401 && request.url.includes("refreshAccessToken")) {
 					this.authService.logout();
 					return this.displayAndThrowError(error);
 				}
 				if (error.status === 401 && !request.url.includes("logIn")) {
-					this.isRefreshingToken = true;
 					console.log("Refreshing access token...");
 					return this.authService.refreshAccessToken().pipe(
 						switchMap(() => {
 							console.log("Token got refreshed.");
-							this.isRefreshingToken = false;
 							return next.handle(
 								this.addTokenToRequest(request, this.authService.getAccessToken() as string)
 							);
