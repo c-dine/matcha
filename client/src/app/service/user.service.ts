@@ -58,7 +58,8 @@ export class UserService {
 		const currentUser = this.currentUserSubject.value;
 		this.currentUserSubject.next({
 			...currentUser,
-			...updatedUser
+			...updatedUser,
+			isProfileFilled: true
 		});
 		return this.http.put<User>(environment.apiUrl + '/user/', updatedUser);
 	}
