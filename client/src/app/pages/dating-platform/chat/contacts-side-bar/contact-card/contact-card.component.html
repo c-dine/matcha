@@ -1,7 +1,7 @@
 <div [ngClass]="{'matcha-contact-card-activated': activated}" class="matcha-flex-row matcha-flex-align-center matcha-contact-card-container">
 	<div class="matcha-contact-card-padding-sides">
 		<div class="matcha-flex-row matcha-gap-10px">
-			<img class="matcha-contact-card-image matcha-object-fit-cover " [src]=pictureIdToUrl(conversation.picture_id)/>
+			<img class="matcha-contact-card-image matcha-object-fit-cover " [src]=pictureIdToUrl(conversation.picturesIds?.profilePicture)/>
 			<div class="matcha-flex-column matcha-flex-column">
 				<h6 class="matcha-contact-card-overflow-ellispis matcha-contact-card-name">
 					{{ conversation.lastname }} {{ conversation.firstname }}

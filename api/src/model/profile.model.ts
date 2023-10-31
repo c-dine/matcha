@@ -264,21 +264,26 @@ export class ProfileModel extends ModelBase {
 		LEFT JOIN picture ON picture.profile_id = profile.id`
 	}
 
-	async getMatchs(currentUserProfile: profile) {
+	async getMatchs(currentUserProfile: profile, userId: string) {
 		const query = this.getMatchsQuery();
-		const result = await this.dbClient.query(query, [currentUserProfile.id]);
+		const result = await this.dbClient.query(query, [currentUserProfile.id, userId]);
 		return result.rows;
 	}
 
 	private getMatchsQuery(): string {
 		let query = `
 			${this.getMatchsSelectQuery()}
-			WHERE
-				currentUserMatches.user_id = matchedUser.id
-				AND currentUserMatches.is_liked = true
-				AND profilePicture.is_profile_picture = true
-			ORDER BY
-			currentUserMatches.date DESC
+			WHERE 
+				"like".target_profile_id = $1
+			AND "like".is_liked = true 
+			AND "like".user_id 
+			IN (
+				SELECT matchedUser.id 
+				FROM "like" AS currentUserMatches
+				LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = matchedProfile.id
+				LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
+				WHERE currentUserMatches.user_id = $2 AND currentUserMatches.is_liked = true
+			);
 		`
 		return query;
 	}
@@ -286,6 +291,7 @@ export class ProfileModel extends ModelBase {
 	private getMatchsSelectQuery(): string {
 		return `
 			SELECT 
+				matchedUser.id as user_id,
 				matchedProfile.id,
 				matchedProfile.gender,
 				matchedProfile.birth_date,
@@ -295,12 +301,16 @@ export class ProfileModel extends ModelBase {
 				matchedUser.first_name,
 				matchedUser.last_name,
 				matchedUser.username,
-				currentUserMatches.is_liked,
+				"like".is_liked,
 				profilePicture.id AS profile_picture_id
-			FROM "like" AS currentUserMatches
-			LEFT JOIN profile AS matchedProfile ON currentUserMatches.target_profile_id = $1
-			LEFT JOIN "user" AS matchedUser ON matchedUser.id = matchedProfile.user_id
-			LEFT JOIN picture As profilePicture ON currentUserMatches.target_profile_id = profilePicture.profile_id
+			FROM "like"
+			LEFT JOIN "user" as matchedUser
+				ON "like".user_id = matchedUser.id
+			LEFT JOIN "profile" as matchedProfile
+				ON matchedProfile.user_id = matchedUser.id
+			LEFT JOIN picture As profilePicture ON matchedProfile.id = profilePicture.profile_id
 		`
 	}
 }
+
+

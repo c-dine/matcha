@@ -1,5 +1,5 @@
 <div class="matcha-contacts-side-bar-container">
-	<app-chat-search-bar/>
+	<app-chat-search-bar (onMatchClick)="setConversationUserID($event)"/>
 	<app-contact-card
 		*ngFor="let conversation of conversations"
 		[conversation]="conversation"

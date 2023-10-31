@@ -15,6 +15,7 @@ const routes: Routes = [
     children: [
       { path: '', component: DatingComponent },
       { path: 'chat', component: ChatComponent },
+      { path: 'chat/:id', component: ChatComponent },
       { path: 'dating', component: DatingComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'userList', component: UserListComponent },

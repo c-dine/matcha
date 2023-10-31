@@ -2,6 +2,7 @@
 	<div class="matcha-avatar-container" *ngFor="let match of matchs">
 		<app-avatar-picture
 			[src]="pictureIdToPictureUrl(match.picturesIds?.profilePicture)"
+			(click)="setConversation(match)"
 		/>
 	</div>
 	<p>

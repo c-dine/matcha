@@ -3,6 +3,7 @@ import { Conversation, Message } from '@shared-models/chat.models';
 import { ChatService } from 'src/app/service/chat.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
 	selector: 'app-conversation',
@@ -13,6 +14,8 @@ export class ConversationComponent {
 	@Input()
 	conversation!: Conversation | undefined;
 
+	conversationUserId!: string | null;
+
 	messages!: Message[]
 	profilePictureUrl!: string;
 	messageToSend!: string;
@@ -21,6 +24,7 @@ export class ConversationComponent {
 
 	constructor(
 		private chatService: ChatService,
+		private route: ActivatedRoute,
 	) {
 		this.conversation = undefined
 		this.messages = [];
@@ -30,12 +34,16 @@ export class ConversationComponent {
 	}
 
 	ngOnInit() {
+		this.route.paramMap.subscribe((params: ParamMap) => {
+			this.conversationUserId = params.get('id');
+		});
+		console.log('userr id ', this.conversationUserId);
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
 		if (this.conversation === undefined)
 			return;
-		this.profilePictureUrl = this.pictureIdToUrl(this.conversation.picture_id);
+		this.profilePictureUrl = this.pictureIdToUrl(this.conversation.picturesIds?.profilePicture);
 		this.subscriptions.push(
 			this.chatService.getMessages(this.conversation?.user_id).subscribe({
 				next: (messages) => {
@@ -45,11 +53,12 @@ export class ConversationComponent {
 		);
 	}
 
-	private pictureIdToUrl(pictureId: string) {
+	private pictureIdToUrl(pictureId: string | undefined) {
 		return getFirebasePictureUrl(pictureId);
 	}
 
 	sendMessage() {
+		console.log(this.conversation)
 		if (!this.conversation?.user_id) {
 			console.error("No conversation selected");
 			return;

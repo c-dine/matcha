@@ -20,7 +20,19 @@ export class ChatService {
 	}
 
 	async getConversations(currentUserId: string): Promise<Conversation[]> {
-		return this.messageModel.getUserConversations(currentUserId);
+		const conversations = 
+			await this.messageModel.getUserConversations(currentUserId);
+		return conversations.map(conversation => ({
+			lastname: conversation.lastname,
+			firstname: conversation.firstname,
+			profile_id: conversation.profile_id,
+			user_id: conversation.user_id,
+			picturesIds: {
+				profilePicture: conversation.picture_id,
+			},
+			last_message: conversation.last_message,
+			latest_date: conversation.latest_date
+		}))
 	}
 
 	async postMessage(fromUserId: string, toUserId: string, messageText: string): Promise<Message> {

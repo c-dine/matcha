@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ChatService } from 'src/app/service/chat.service';
 import { Conversation } from '@shared-models/chat.models';
 import { ProfileService } from 'src/app/service/profile.service';
 
@@ -12,7 +11,6 @@ export class ChatComponent {
 	selectedConversation: Conversation | undefined;
 
 	constructor(
-		private chatService: ChatService,
 		private profileService: ProfileService
 	) {
 		this.selectedConversation = undefined;

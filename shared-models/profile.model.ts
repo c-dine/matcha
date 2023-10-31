@@ -11,6 +11,7 @@ export interface Profile {
 	tags?: string[];
 	picturesIds?: ProfilePicturesIds;
 	stats?: ProfileStats;
+	userId?: string;
 }
 
 export interface UserProfile extends Profile {

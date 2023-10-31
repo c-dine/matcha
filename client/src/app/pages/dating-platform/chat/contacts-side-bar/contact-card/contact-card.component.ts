@@ -3,18 +3,18 @@ import { Conversation } from '@shared-models/chat.models';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
 @Component({
-  selector: 'app-contact-card',
-  templateUrl: './contact-card.component.html',
-  styleUrls: ['./contact-card.component.css']
+	selector: 'app-contact-card',
+	templateUrl: './contact-card.component.html',
+	styleUrls: ['./contact-card.component.css']
 })
 export class ContactCardComponent {
-  @Input()
-  conversation!: Conversation;
+	@Input()
+	conversation!: Conversation;
 
-  @Input()
-  activated!: boolean;
+	@Input()
+	activated!: boolean;
 
-  pictureIdToUrl(id: string) {
-	return getFirebasePictureUrl(id);
-  }
+	pictureIdToUrl(id: string | undefined) {
+		return getFirebasePictureUrl(id);
+	}
 }

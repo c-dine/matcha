@@ -173,7 +173,7 @@ export class ProfileService {
 		if (!currentUserProfile?.id)
 			return undefined;
 		const matchs = 
-			await this.profileModel.getMatchs(currentUserProfile);
+			await this.profileModel.getMatchs(currentUserProfile, userId);
 		return {
 			totalUserCount: matchs.length,
 			userList: matchs.map(user => ({
@@ -183,9 +183,10 @@ export class ProfileService {
 				picturesIds: {
 					profilePicture: user.profile_picture_id,
 				},
+				userId: user.user_id,
 				ditanceKm: user.distance_km
 			}))
-		} 
+		}
 	}
 
 	async getCurrentUserProfile(userId: string): Promise<profile | undefined>  {

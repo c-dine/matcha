@@ -15,14 +15,14 @@ export class ContactsSideBarComponent {
 	selectedConversation!: Conversation | undefined;
 
 	@Output()
-	onConversartionClick!: EventEmitter<any>;
+	onConversationClick!: EventEmitter<any>;
 
 	constructor(
 		private chatService: ChatService
 	) {
 		this.conversations = [];
 		this.selectedConversation = undefined;
-		this.onConversartionClick = new EventEmitter();
+		this.onConversationClick = new EventEmitter();
 	}
 
 	ngOnInit() {
@@ -32,6 +32,6 @@ export class ContactsSideBarComponent {
 	}
 
 	setConversationUserID(userId: Conversation) {
-		this.onConversartionClick.emit(userId);
+		this.onConversationClick.emit(userId);
 	}
 }

@@ -1,4 +1,5 @@
 import { User } from "./user.model";
+import { ProfilePicturesIds } from "./picture.model";
 
 export interface Message {
 	id?: string;
@@ -12,12 +13,14 @@ export interface MessageDto {
 	message: string;
 }
 
-export interface Conversation {
-	firstname: string;
-	lastname: string;
-	picture_id: string;
-	last_message: string;
-	latest_date: string;
-	profile_id: string;
-	user_id: string;
+export class Conversation {
+	constructor(
+		public firstname: string,
+		public lastname: string,
+		public last_message: string,
+		public latest_date: string,
+		public profile_id?: string,
+		public user_id?: string,
+		public picturesIds?: ProfilePicturesIds,
+	) { }
 }
