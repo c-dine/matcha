@@ -10,13 +10,16 @@ import { UserService } from '../user/user.service.js';
 
 export const authController = express();
 
+const ACCESS_TOKEN_TOMEOUT = 15;
+const REFRESH_TOKEN_TOMEOUT = 1200;
+
 authController.post("/signIn", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const userData: NewUser = req.body;
 		const authService = new AuthService(req.dbClient);
 		const newUser = await authService.createUser(userData);
-		const accessToken = authService.getNewToken(newUser.id, encryptionConfig.accessSecret, 15);
-		const refreshToken = authService.getNewToken(newUser.id, encryptionConfig.refreshSecret, 12000);
+		const accessToken = authService.getNewToken(newUser.id, encryptionConfig.accessSecret, ACCESS_TOKEN_TOMEOUT);
+		const refreshToken = authService.getNewToken(newUser.id, encryptionConfig.refreshSecret, REFRESH_TOKEN_TOMEOUT);
 		const mailService = new MailService();
 		await mailService.sendAccountVerificationMail(newUser.email, newUser.id);
 
@@ -43,8 +46,8 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		const userAuthData = req.body;
 		const authService = new AuthService(req.dbClient);
 		const loggedUser = await authService.getLoggedUser(userAuthData);
-		const accessToken = authService.getNewToken(loggedUser.id, encryptionConfig.accessSecret, 15);
-		const refreshToken = authService.getNewToken(loggedUser.id, encryptionConfig.refreshSecret, 12000);
+		const accessToken = authService.getNewToken(loggedUser.id, encryptionConfig.accessSecret, ACCESS_TOKEN_TOMEOUT);
+		const refreshToken = authService.getNewToken(loggedUser.id, encryptionConfig.refreshSecret, REFRESH_TOKEN_TOMEOUT);
 
 		res.status(200).json({
 			message: "Successfully logged in.",
@@ -80,7 +83,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 			res.status(200).json({
 				data: {
 					token: {
-						access: authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, 15)
+						access: authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, ACCESS_TOKEN_TOMEOUT)
 					},
 					... await userService.getFullProfile(user.id)
 				}
