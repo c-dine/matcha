@@ -11,7 +11,7 @@ import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
 import { LikeService } from 'src/app/service/like.service';
 import { PictureService } from 'src/app/service/picture.service';
-import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/profile.service';
 import { ViewService } from 'src/app/service/view.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
@@ -41,7 +41,7 @@ export class ProfileComponent {
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private profileService: ProfileService,
+		private userService: UserService,
 		private location: Location,
 		private snackBar: MatSnackBar,
 		private pictureService: PictureService,
@@ -52,10 +52,10 @@ export class ProfileComponent {
 	) { }
 
 	async ngOnInit() {
-		this.currentUserProfile = await firstValueFrom(this.profileService.getCurrentUserProfileObs());
+		this.currentUserProfile = await firstValueFrom(this.userService.getCurrentUserProfileObs());
 		this.route.queryParamMap.subscribe(async params => {
 			if (params.has("id") && params.get("id") !== this.currentUserProfile?.id)
-				this.profileService.getUserProfile(params.get("id") as string).subscribe({
+				this.userService.getUserProfile(params.get("id") as string).subscribe({
 					next: (profile) => {
 						this.profile = profile;
 						if (profile?.id)
@@ -72,7 +72,7 @@ export class ProfileComponent {
 	}
 
 	async getCurrentUserProfile() {
-		this.profileService.getUserProfile().subscribe({
+		this.userService.getUserProfile().subscribe({
 			next: (profile) => {
 				this.profile = profile;
 				this.initForm();
@@ -155,7 +155,7 @@ export class ProfileComponent {
 
 		this.isEditMode = false;
 		const formValue = this.profileForm?.getRawValue();
-		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
+		this.currentUserProfile = await firstValueFrom(this.userService.updateProfile({
 				...this.profile,
 				...formValue,
 				picturesIds: this.profile.picturesIds,

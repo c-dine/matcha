@@ -46,7 +46,7 @@ export class BlacklistService {
 		return this.http.delete<void>(`${environment.apiUrl}/blacklist/${targetProfileId}`);
 	}
 
-	isProfileBlocked(profileId: string): boolean {
-		return !!this.blacklist.value.find((blacklisted) => blacklisted.targetProfileId === profileId);
+	isProfileBlocked(userId: string): boolean {
+		return !!this.blacklist.value.find((blacklisted) => blacklisted.targetProfileId === userId);
 	}
 }

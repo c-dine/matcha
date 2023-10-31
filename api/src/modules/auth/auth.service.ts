@@ -1,33 +1,25 @@
 import { NewUser, User, UserWithProfileId } from "@shared-models/user.model.js";
-import { UserModel } from '../../model/user.model.js';
 import { PoolClient } from "pg";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { decryptToken } from "../../utils/encryption.util.js";
 import { encryptionConfig } from "../../config/config.js";
 import { CustomError } from "../../utils/error.util.js";
-import { ProfileModel } from "../../model/profile.model.js";
+import { UserModel } from "../../model/user.model.js";
+import { UserService } from "../user/user.service.js";
 
 export class AuthService {
 
 	dbClient: PoolClient;
 	userModel: UserModel;
+	userService: UserService;
 	
 	RESET_PASSWORD_TIME_LIMIT_MINUTES = 15;
 
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
 		this.userModel = new UserModel(dbClient);
-	}
-
-	formatUser(createdUser: user): User {
-		return {
-			id: createdUser?.id,
-			username: createdUser?.username,
-			lastName: createdUser?.last_name,
-			firstName: createdUser?.first_name,
-			email: createdUser?.email,
-		}
+		this.userService = new UserService(dbClient);
 	}
 
 	private async areStoredAndReceivedPasswordsEqual(
@@ -47,33 +39,6 @@ export class AuthService {
 		});
 	}
 
-	async getUser(
-		whereQuery: { [ key: string ]: any },
-		select?: string[]
-	) {
-		const user = (
-			await this.userModel.findMany([whereQuery],
-			select
-		))[0];
-		return user ? this.formatUser(user) : undefined;
-	}
-
-	async getUsersFromProfileIds(profileIds: string[]): Promise<UserWithProfileId[]> {
-		if (!profileIds.length) return [];
-		const profileModel = new ProfileModel(this.dbClient);
-		const usersAndProfileIds = await profileModel.findMany(
-				profileIds.map(id => ({ id })),
-				["id", "user_id"]
-			);
-		const matchingUsers = await this.userModel.findMany(
-				usersAndProfileIds.map(ids => ({ id: ids.user_id }))
-			);
-		return matchingUsers.map(user => ({
-			...this.formatUser(user),
-			profileId: usersAndProfileIds.find(ids => ids.user_id === user.id).id
-		}));
-	}
-
 	async createUser(
 		userData: NewUser
 	): Promise<User> {
@@ -84,7 +49,7 @@ export class AuthService {
 			email: userData.email,
 			password: await this.encryptPassword(userData.password)
 		}, ["id", "last_name", "first_name", "email", "username"]);
-		return newUser ? this.formatUser(newUser) : undefined;
+		return newUser ? this.userService.formatUser(newUser) : undefined;
 	}
 	
 	async updateUser(updatedUser: User, userId: string) {
@@ -112,7 +77,7 @@ export class AuthService {
 		))[0];
 		if (!loggedUser || !(await this.areStoredAndReceivedPasswordsEqual(loggedUser.password, userAuthData.password)))
 			throw new CustomError("Invalid username or password.", 401);
-		return loggedUser ? this.formatUser(loggedUser) : undefined;
+		return loggedUser ? this.userService.formatUser(loggedUser) : undefined;
 	}
 	
 	getNewToken(userId: string, secret: string, expireLimitMinutes: number): string {

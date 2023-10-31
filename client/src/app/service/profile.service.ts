@@ -8,7 +8,7 @@ import { buildHttpParams } from '../utils/http.utils';
 @Injectable({
   providedIn: 'root'
 })
-export class ProfileService {
+export class UserService {
 
 	private currentUserProfileSubject: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
 	private geolocationWatchId = -1;

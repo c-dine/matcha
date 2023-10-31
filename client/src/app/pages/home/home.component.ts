@@ -10,7 +10,7 @@ import { environment } from '@environment/environment';
 import { User } from '@shared-models/user.model';
 import { Subscription } from 'rxjs';
 import { Profile } from '@shared-models/profile.model';
-import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/profile.service';
 import { UserService } from 'src/app/service/user.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		private dialog: MatDialog,
 		private authService: AuthService,
 		private userService: UserService,
-		private profileService: ProfileService,
+		private userService: UserService,
 		private router: Router,
 		private route: ActivatedRoute
 	) {}
@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 			})
 		);
 		this.mySubscription.push(
-			this.profileService.getCurrentUserProfileObs().subscribe({
+			this.userService.getCurrentUserProfileObs().subscribe({
 				next: (profile) => this.userProfile = profile
 			})
 		);

@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ageValidator, dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
-import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/profile.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { PictureService } from 'src/app/service/picture.service';
@@ -51,7 +51,7 @@ export class FirstProfileFillingComponent {
 		private pictureService: PictureService,
 		private router: Router,
 		private snackBar: MatSnackBar,
-		private profileService: ProfileService
+		private userService: UserService
 	) { }
 
 	async ngOnInit() {
@@ -70,7 +70,7 @@ export class FirstProfileFillingComponent {
 	async redirectUserIfNotAllowed() {
 		if (!(await this.authService.isLoggedIn()))
 			this.router.navigate([""]);
-		if (await this.profileService.userHasProfile())
+		if (await this.userService.userHasProfile())
 			this.router.navigate(["/app"]);
 	}
 
@@ -95,7 +95,7 @@ export class FirstProfileFillingComponent {
 			location: this.location
 		} as Profile;
 
-		this.profileService.createProfile(newProfile)
+		this.userService.createProfile(newProfile)
 			.subscribe({
 				next: () => {
 					this.router.navigate(["/app"]);

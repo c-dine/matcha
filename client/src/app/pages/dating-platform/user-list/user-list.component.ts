@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { environment } from '@environment/environment';
 import { ProfileFilters, UserProfile } from '@shared-models/profile.model';
 import { BehaviorSubject } from 'rxjs';
-import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/profile.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
 
@@ -28,7 +28,7 @@ export class UserListComponent {
 	page: number = 1;
 
 	constructor(
-		private profileService: ProfileService,
+		private userService: UserService,
 		private router: Router
 	) {}
 
@@ -38,7 +38,7 @@ export class UserListComponent {
 
 	getUserList() {
 		this.isLoading = true;
-		this.profileService.getUserList(this.filtersSubject.getValue()).subscribe({
+		this.userService.getUserList(this.filtersSubject.getValue()).subscribe({
 			next: (userList) => {
 				this.totalUserCount = Number(userList.totalUserCount);
 				this.userList = userList.userList;
@@ -91,8 +91,8 @@ export class UserListComponent {
 		this.getUserList();
 	}
 
-	navigateToProfile(profileId: string | undefined) {
-		if (!profileId) return;
-		this.router.navigate([`/app/profile`], { queryParams: { id: profileId } });
+	navigateToProfile(userId: string | undefined) {
+		if (!userId) return;
+		this.router.navigate([`/app/profile`], { queryParams: { id: userId } });
 	}
 }

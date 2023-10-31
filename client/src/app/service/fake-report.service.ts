@@ -46,7 +46,7 @@ export class FakeReportService {
 		return this.http.delete<void>(`${environment.apiUrl}/fakeReport/${targetProfileId}`);
 	}
 
-	isProfileReported(profileId: string): boolean {
-		return !!this.fakeReportList.value.find((report) => report.targetProfileId === profileId);
+	isProfileReported(userId: string): boolean {
+		return !!this.fakeReportList.value.find((report) => report.targetProfileId === userId);
 	}
 }

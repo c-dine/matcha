@@ -11,15 +11,15 @@ export class ChatService {
 		this.profileModel = new MessageModel(this.dbClient);
 	}
 
-	async getMessages(fromUserId: string, toUSerId: string): Promise<Message[]> {
+	async getMessages(fromUserId: string, toUserId: string): Promise<Message[]> {
 		return this.profileModel.findMany([
-			{ from: fromUserId, to: toUSerId},
-			{ from: toUSerId, to: fromUserId}],
-			["id", "from_profile_id", "to_profile_id", "message", "date"]
+			{ from: fromUserId, to: toUserId},
+			{ from: toUserId, to: fromUserId}],
+			["id", "from_user_id", "to_user_id", "message", "date"]
 		)
 	}
 
-	async getConversations(fromUserId: string, toUSerId: string): Promise<Conversation[]> {
+	async getConversations(fromUserId: string, toUserId: string): Promise<Conversation[]> {
 		return [];
 	}
 

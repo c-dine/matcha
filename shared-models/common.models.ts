@@ -4,45 +4,45 @@ export interface Tag {
 }
 
 export interface ProfileTag {
-	profileId?: string;
+	userId?: string;
 	tagId?: string;
 }
 
 export interface Picture {
 	id?: string;
-	profileId?: string;
+	userId?: string;
 	url?: string;
 }
 
 export interface ProfileDefaultPicture {
-	profileId?: string;
+	userId?: string;
 	pictureId?: string;
 }
 
 export interface Like {
 	id?: string;
-	profileId?: string;
+	userId?: string;
 	likedProfileId?: string;
 	date?: Date;
 }
 
 export interface View {
 	id?: string;
-	profileId?: string;
+	userId?: string;
 	viewedProfileId?: string;
 	date?: Date;
 }
 
 export interface Blacklist {
 	id?: string;
-	profileId?: string;
+	userId?: string;
 	targetProfileId?: string;
 	date?: Date;
 }
 
 export interface FakeReport {
 	id?: string;
-	profileId?: string;
+	userId?: string;
 	fakeReportedProfileId?: string;
 	date?: Date;
 }
@@ -53,7 +53,7 @@ export interface User {
 	firstName?: string;
 	email?: string;
 	password?: string;
-	profileId?: string;
+	userId?: string;
 }
 
 export interface Notification {

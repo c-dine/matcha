@@ -175,13 +175,13 @@ export class SettingsComponent {
 
 	// BLACKLIST
 	
-	async deleteBlacklist(profileId: string) {
-		await firstValueFrom(this.blacklistService.deleteBlacklisted(profileId));
+	async deleteBlacklist(userId: string) {
+		await firstValueFrom(this.blacklistService.deleteBlacklisted(userId));
 	}
 
 	// FAKE REPORT
 	
-	async deleteFakeReport(profileId: string) {
-		await firstValueFrom(this.fakeReportService.deleteFakeReported(profileId));
+	async deleteFakeReport(userId: string) {
+		await firstValueFrom(this.fakeReportService.deleteFakeReported(userId));
 	}
 }
