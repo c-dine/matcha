@@ -1,3 +1,8 @@
+<div>
+	<h3>
+		matchs : 
+	</h3>
+</div>
 <div class="matcha-chat-search-container matcha-flex-row matcha-flex-align-center matcha-flex-justify-center">
 	<div class="matcha-avatar-container" *ngFor="let match of matchs">
 		<app-avatar-picture
@@ -5,7 +10,4 @@
 			(click)="setConversation(match)"
 		/>
 	</div>
-	<p>
-		{{matchCount}} matchs
-	</p>
 </div>

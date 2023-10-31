@@ -36,7 +36,7 @@ import {MatTableModule} from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-
+import { ChatTypingMessageComponent } from './chat/conversation/typing-message/chat-typing-message.component';
 @NgModule({
   declarations: [
     DatingPlatformComponent,
@@ -47,6 +47,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     DatingCardDescriptionComponent,
     DatingCardPassionsComponent,
     ChatComponent,
+	ChatTypingMessageComponent,
     ContactsSideBarComponent,
     ContactCardComponent,
     ConversationComponent,

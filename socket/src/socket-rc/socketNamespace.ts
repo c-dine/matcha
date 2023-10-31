@@ -22,8 +22,10 @@ export class SocketNamespace {
 		console.log(`open namespace on ${this.namespace}`)
 		SocketNamespace.server.io.of(this.namespace).on('connection', (socket) => {
 			console.log(`user connected to ${this.namespace}`)
-			this.connectedUsers.set(socket.id, socket.handshake.query.userId);
-			console.log(this.connectedUsers)
+			this.connectedUsers.set(socket.handshake.query.userId, {
+				id: socket.id,
+				socket: socket
+			});
 		
 			this.events.forEach((eventFunction, eventName) => {
 				socket.on(eventName, eventFunction);
@@ -31,7 +33,7 @@ export class SocketNamespace {
 
 			socket.on('disconnect', () => {
 				console.log(`user disconnected of ${this.namespace}`)
-				this.connectedUsers.delete(socket.id);
+				this.connectedUsers.delete(socket.handshake.query.userId);
 			});
 		});
 	}
@@ -40,6 +42,20 @@ export class SocketNamespace {
 		this.events.set(eventName, eventFunction);
 	}
 
+	emitTo(eventName: string, arg: any) {
+		let toUser = this.connectedUsers.get(arg.toUserId);
+		let fromUser = this.connectedUsers.get(arg.fromUserId);
+
+		if (!toUser)
+			throw new Error('User not connected');
+		fromUser.socket.to(toUser.id).emit(eventName, {
+			fromUserId: arg.fromUserId,
+			toUserId: arg.toUserId,
+			data: arg.message
+		});
+	}
+	  
+
 	listen(port: number) {
 		SocketNamespace.server.listen(port);
 	}
@@ -47,6 +63,7 @@ export class SocketNamespace {
 	useRoutes(routes?: SocketRoutes[]): void {
 		SocketNamespace.server.useRoutes(routes);
 	}
+
 };
 
 export const socketRC = (route?: string) => {

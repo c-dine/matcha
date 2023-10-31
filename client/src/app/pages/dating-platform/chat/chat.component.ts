@@ -10,18 +10,8 @@ import { ProfileService } from 'src/app/service/profile.service';
 export class ChatComponent {
 	selectedConversation: Conversation | undefined;
 
-	constructor(
-		private profileService: ProfileService
-	) {
+	constructor() {
 		this.selectedConversation = undefined;
-	}
-
-	ngOnInit() {
-	}
-
-	async sendMessage() {
-		let matchs = await this.profileService.getMatchs().subscribe();
-		console.log(matchs);
 	}
 
 	setSelectedConversation(userId: Conversation) {

@@ -1,6 +1,7 @@
 .matcha-contact-card-container {
 	height: 7vh;
 	width: 15vw;
+	cursor: pointer;
 }
 
 .matcha-contact-card-activated {

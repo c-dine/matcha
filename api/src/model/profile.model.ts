@@ -34,7 +34,6 @@ export class ProfileModel extends ModelBase {
 		currentUserProfile: profile,
 		isCurrentUser: boolean
 	): string {
-		console.log(currentUserProfile)
 		return `SELECT
 					"user".username,
 					"user".last_name,

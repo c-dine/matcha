@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { inject } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { User } from '@shared-models/user.model';
@@ -42,8 +42,21 @@ export class SocketService {
 		this.socket.disconnect();
 	}
 
-	public emit(event: string, message: string) {
-		this.socket.emit(event, message);
+	emit(event: string, arg: any) {
+		arg.fromUserId = this.currentUser?.id
+		this.socket.emit(event, arg);
+	}
+
+	on(eventName: string) {
+		let observable = new Observable<any>(observer => {
+			this.socket.on(eventName,
+				(data) => {
+					observer.next(data);
+				}
+			);
+				return () => { this.socket.disconnect(); };  
+			});
+		return observable;
 	}
 
 	onDestroy() {

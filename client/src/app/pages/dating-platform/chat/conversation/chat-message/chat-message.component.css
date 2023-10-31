@@ -1,3 +1,21 @@
+.chat-bubble {
+	background-color: var(--primary-light-color);
+	padding: 6px 16px;
+	border-radius: 20px;
+	border-bottom-left-radius: 2px;
+	display: inline-block;
+	font-size: 12px;
+}
+
+.chat-bubble-current {
+	background-color: var(--primary-lighter-color);
+	padding: 6px 16px;
+	border-radius: 20px;
+	border-bottom-right-radius: 2px;
+	display: inline-block;
+	font-size: 12px;
+}
+
 .matcha-conversation-message-container {
 	width: 47vw;
 	gap: 15px;
@@ -7,7 +25,7 @@
 
 .matcha-conversation-message {
 	font-size: 12px;
-	background-color: #5D5FEF;
+	background-color: var(--primary-medium-color);
 	border-radius: 20px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -25,8 +43,8 @@
 }
 
 .matcha-conversation-message-text {
-	margin-bottom: 10px;
 	max-width: 20vw;
+	margin: 0;
 }
 
 .matcha-conversation-message-image {

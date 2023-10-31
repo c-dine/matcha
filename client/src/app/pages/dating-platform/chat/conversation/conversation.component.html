@@ -4,23 +4,29 @@
 	<div class="matcha-conversation-container matcha-flex-column-reverse">
 		<div class="matcha-flex-row matcha-conversation-input-container">
 			<form #sendMessageForm="ngForm" (ngOnSubmit)="sendMessage()">
-				<input placeholder="send message" class="matcha-conversation-input" [(ngModel)]="messageToSend" name="send message"/>
-				<div
-					class="matcha-conversation-input-button matcha-flex-row matcha-flex-align-center matcha-flex-justiy-center"
-					type="submit"
-					(click)="sendMessage()">
+				<input
+					placeholder="send message"
+					class="matcha-conversation-input"
+					[(ngModel)]="messageToSend"
+					name="send message"
+					(keydown.enter)="sendMessage()"
+					(focus)="sendTyping()"
+					(focusout)="sendStopTyping()"/>
+				<div class="matcha-conversation-input-button matcha-flex-row matcha-flex-align-center matcha-flex-justiy-center"
+					type="submit" (click)="sendMessage()">
 					<mat-icon class="matcha-conversation-input-icon">send</mat-icon>
 				</div>
 			</form>
 		</div>
 		<div class="matcha-conversation-messages-container matcha-flex-column-reverse">
-		<app-chat-message 
-			*ngFor="let message of messages"
-			[message]="message.message"
-			[currentUser]="conversation?.user_id !== message.from_user_id"
-			[userProfilePictureSrc]="profilePictureUrl"
-		/>
+			<div *ngIf="isTyping" class="matcha-conversation-typing-container typewriter">
+				<app-typing-message></app-typing-message>
+			</div>
+			<app-chat-message *ngFor="let message of messages" [message]="message.message"
+				[currentUser]="conversation?.user_id !== message.from_user_id"
+				[userProfilePictureSrc]="(conversation?.user_id === message.from_user_id) ? profilePictureUrl :'' " />
 		</div>
+
 	</div>
 </ng-template>
 
