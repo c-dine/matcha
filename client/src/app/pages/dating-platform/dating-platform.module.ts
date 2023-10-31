@@ -35,6 +35,7 @@ import { SettingsComponent } from './settings/settings.component';
 import {MatTableModule} from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     MatNativeDateModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatTabsModule
+    MatTabsModule,
+    MatCheckboxModule
   ]
 })
 export class DatingPlatformModule { }

@@ -1,8 +1,8 @@
 .header-container {
 	width: 100%;
-	height: 6vh;
+	height: 44px;
 	background-color: white;
-	border-bottom: 0.5px solid #F7F7FF;
+	border-bottom: 1px solid #F7F7FF;
 	display: flex;
     align-items: center;
 	justify-content: space-between;
@@ -14,10 +14,35 @@
 	height: 100%;
 	margin-left: 20px;
 	margin-right: 20px;
-	cursor: pointer;
 }
 
 .logo {
 	height: 30px;
 	width: 100%;
+	cursor: pointer;
+}
+
+.logout-link {
+	cursor: pointer;
+}
+
+.toggle-button-container {
+	display: none;
+	cursor: pointer;
+	color: var(--primary-color);
+}
+
+@media screen and (max-width: 1200px) {
+	.toggle-button-container {
+		display: flex;
+		align-items: center;
+	}
+
+	.main-menu-icon {
+		margin-right: 20px;
+	}
+
+	.notification-menu-icon {
+		margin-left: 20px;
+	}
 }

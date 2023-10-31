@@ -1,6 +1,6 @@
 
 .nav-user-information-width {
-	width: 10vw;
+	width: 60%;
 }
 
 .nav-user-information-container {
@@ -13,7 +13,7 @@
 }
 
 .nav-user-information-image {
-	height: 10vw;
+	height: 20vh;
 	object-fit: cover;
 	border-radius: 10px;
 	border: thin solid var(--primary-lighter-color);

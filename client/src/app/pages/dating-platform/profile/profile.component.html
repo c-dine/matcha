@@ -32,8 +32,19 @@
 		</h1>
 		<div class="user-card-detail">
 			<mat-icon> place</mat-icon>
-			<span>{{profile.ditanceKm?.toFixed(1)}}km away</span>
+			<span *ngIf="!isEditMode">{{profile.ditanceKm?.toFixed(1)}}km away</span>
+			<div *ngIf="isEditMode" class="location-input-container" [formGroup]="profileForm">
+				<mat-form-field appearance="outline" class="location-input">
+					<mat-label>Longitude</mat-label>
+					<input matInput name="longitude" type="number" formControlName="userGivenLongitude" min="-180" max="180">
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="location-input">
+					<mat-label>Latitude</mat-label>
+					<input matInput name="latitude" type="number" formControlName="userGivenLatitude" min="-90" max="90">
+				</mat-form-field>
+			</div>
 		</div>
+		<mat-checkbox class="use-user-given-location-checkbox" *ngIf="isEditMode" [checked]="!useUserGivenLocation" (change)="changedUseUserGivenLocation()">Use GPS location</mat-checkbox>
 		<div class="user-card-detail">
 			<mat-icon>{{profile.gender === 'undefined' ? 'transgender' : profile.gender}}</mat-icon>
 			<span *ngIf="!isEditMode">{{profile.gender === 'undefined' ? 'Non-binary' : profile.gender}}</span>
@@ -119,7 +130,7 @@
 				<mat-radio-button value="male">Men</mat-radio-button>
 				<mat-radio-button value="undefined">All</mat-radio-button>
 			</mat-radio-group>
-			<app-tag-input [parentTagsInput]="profile.tags" (addedTag)="setTags($event)" [minArrayLength]=3 label="Tags"></app-tag-input>
+			<app-tag-input [parentTagsInput]="profile.tags" (addedTag)="setTags($event)" label="Tags"></app-tag-input>
 		</ng-container>
 	</div>
 
@@ -129,7 +140,7 @@
 		<ng-container *ngIf="isEditMode" [formGroup]="profileForm">
 			<mat-form-field appearance="outline" *ngIf="isEditMode">
 				<mat-label>Tell the world a bit more about you (50-500 characters)</mat-label>
-				<textarea matInput formControlName="biography" maxlength="500" name="biography"></textarea>
+				<textarea matInput formControlName="biography" minlength="50" maxlength="500" name="biography"></textarea>
 			</mat-form-field>
 		</ng-container>
 	</div>

@@ -1,8 +1,17 @@
 <div class="header-container">
+
 	<div class="header-flex-container">
+		<div class="toggle-button-container main-menu-icon" (click)="toggleMainMenu()">
+			<mat-icon>reorder</mat-icon>
+		</div>
 		<img (click)="goToHomePage()" [src]="environment.logoUrl" alt="logo matcha" class="logo">
 	</div>
-	<div class="header-flex-container" (click)="logOut()">
-		log out
+
+	<div class="header-flex-container">
+		<div class="logout-link" (click)="logOut()">log out</div>
+		<div class="toggle-button-container notification-menu-icon" (click)="toggleNotificationsMenu()">
+			<mat-icon>notifications_active</mat-icon>
+		</div>
 	</div>
+
 </div>

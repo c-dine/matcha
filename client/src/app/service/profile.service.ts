@@ -10,17 +10,19 @@ import { buildHttpParams } from '../utils/http.utils';
 })
 export class ProfileService {
 
-	private profileSubject: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
+	private currentUserProfileSubject: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
+	private geolocationWatchId = -1;
+
+	private approximateUserLocationHasBeenSent = false;
 
     constructor(
         private http: HttpClient
-    ) {}
-
-	private getProfile(): Observable<Profile | null> {
-		return this.http.get<Profile | null>(`${environment.apiUrl}/profile/`)
-			.pipe(
-				tap(profile => this.profileSubject.next(profile))
-			);
+    ) {	}
+	
+	getCurrentUserProfileObs(): Observable<Profile | null> {
+		if (!this.currentUserProfileSubject.value)
+			firstValueFrom(this.getCurrentUserProfile());
+		return this.currentUserProfileSubject.asObservable();
 	}
 	
 	getUserProfile(userProfileId?: string): Observable<UserProfile | null> {
@@ -28,24 +30,11 @@ export class ProfileService {
 		return this.http.get<UserProfile | null>(`${environment.apiUrl}/profile/userProfile`, { params });
 	}
 
-	createProfile(newProfile: Profile): Observable<Profile | null> {
-		return this.http.post<Profile | null>(`${environment.apiUrl}/profile/`, newProfile)
+	private getCurrentUserProfile(): Observable<Profile | null> {
+		return this.http.get<Profile | null>(`${environment.apiUrl}/profile/`)
 			.pipe(
-				tap(profile => this.profileSubject.next(profile))
+				tap(profile => this.currentUserProfileSubject.next(profile))
 			);
-	}
-
-	updateProfile(updatedProfile: Profile): Observable<Profile> {
-		this.profileSubject.next(updatedProfile)
-		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile);
-	}
-
-	setLocation(location: GeoCoordinate) {
-		return this.http.post<any>(`${environment.apiUrl}/profile/setLocation`, location);
-	}
-
-	getProfileObs(): Observable<Profile | null> {
-		return this.profileSubject.asObservable();
 	}
 
 	getUserList(filters: ProfileFilters): Observable<UserList> {
@@ -66,8 +55,47 @@ export class ProfileService {
 		return this.http.get<UserList>(`${environment.apiUrl}/profile/matchs`);
 	}
 
+	createProfile(newProfile: Profile): Observable<Profile | null> {
+		return this.http.post<Profile | null>(`${environment.apiUrl}/profile/`, newProfile)
+			.pipe(
+				tap(profile => this.currentUserProfileSubject.next(profile))
+			);
+	}
+
+	updateProfile(updatedProfile: Profile): Observable<Profile> {
+		this.currentUserProfileSubject.next(updatedProfile)
+		return this.http.put<Profile>(`${environment.apiUrl}/profile/`, updatedProfile);
+	}
+
 	async userHasProfile(): Promise<boolean> {
-		return !!(await firstValueFrom(this.getProfile()));
+		return !!(await firstValueFrom(this.getCurrentUserProfile()));
+	}
+
+	// GPS Tracking
+
+	trackUserLocation() {
+		if (!this.approximateUserLocationHasBeenSent) {
+			this.approximateUserLocationHasBeenSent = true;
+			firstValueFrom(this.setTrackingLocation());
+		}
+		if ("geolocation" in navigator && this.geolocationWatchId === -1) {
+			this.geolocationWatchId = navigator.geolocation.watchPosition(
+				async (position) => {
+					await firstValueFrom(this.setTrackingLocation({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude
+					}));
+				}
+			);
+		}
+	}
+
+	setTrackingLocation(location?: GeoCoordinate) {
+		return this.http.post<any>(`${environment.apiUrl}/profile/setTrackingLocation`, location);
+	}
+
+	stopTrackingLocationChanges() {
+		navigator.geolocation.clearWatch(this.geolocationWatchId);
 	}
 
 }

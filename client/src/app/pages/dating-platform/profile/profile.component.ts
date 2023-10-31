@@ -32,6 +32,8 @@ export class ProfileComponent {
 	profileForm!: FormGroup;
 	pictures!: DisplayableProfilePictures;
 
+	useUserGivenLocation!: boolean;
+
 	currentUserProfile!: Profile | null;
 	isEditMode = false;
 	isLoading = true;
@@ -50,9 +52,9 @@ export class ProfileComponent {
 	) { }
 
 	async ngOnInit() {
-		this.currentUserProfile = await firstValueFrom(this.profileService.getProfileObs());
+		this.currentUserProfile = await firstValueFrom(this.profileService.getCurrentUserProfileObs());
 		this.route.queryParamMap.subscribe(async params => {
-			if (params.has("id"))
+			if (params.has("id") && params.get("id") !== this.currentUserProfile?.id)
 				this.profileService.getUserProfile(params.get("id") as string).subscribe({
 					next: (profile) => {
 						this.profile = profile;
@@ -91,8 +93,23 @@ export class ProfileComponent {
 			sexualPreferences: new FormControl<string>(this.currentUserProfile?.sexualPreferences || "", [Validators.required]),
 			birthDate: new FormControl<Date | undefined>(this.currentUserProfile?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
 			biography: new FormControl<string>(this.currentUserProfile?.biography || "", [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
-			tags: new FormControl<string[]>(this.currentUserProfile?.tags || [], [Validators.required, minArrayLengthValidator(3)]),
+			tags: new FormControl<string[]>(this.currentUserProfile?.tags || []),
+			userGivenLongitude: new FormControl<number>({ value: this.currentUserProfile?.userGivenLocation?.longitude || 0, disabled: !this.currentUserProfile?.userGivenLocation }),
+			userGivenLatitude: new FormControl<number>({ value: this.currentUserProfile?.userGivenLocation?.latitude || 0, disabled: !this.currentUserProfile?.userGivenLocation }),
 		});
+		this.useUserGivenLocation = !!this.currentUserProfile?.userGivenLocation;
+	}
+
+	changedUseUserGivenLocation() {
+		this.useUserGivenLocation = !this.useUserGivenLocation;
+		if (this.useUserGivenLocation) {
+			this.profileForm.get('userGivenLongitude')?.enable();
+			this.profileForm.get('userGivenLatitude')?.enable();
+		}
+		else {
+			this.profileForm.get('userGivenLongitude')?.disable();
+			this.profileForm.get('userGivenLatitude')?.disable();
+		}
 	}
 
 	onGoBackClick() {
@@ -137,10 +154,15 @@ export class ProfileComponent {
 		}
 
 		this.isEditMode = false;
+		const formValue = this.profileForm?.getRawValue();
 		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
 				...this.profile,
-				...this.profileForm?.getRawValue(),
-				picturesIds: this.profile.picturesIds
+				...formValue,
+				picturesIds: this.profile.picturesIds,
+				userGivenLocation: this.useUserGivenLocation ? {
+					longitude: formValue.userGivenLongitude,
+					latitude: formValue.userGivenLatitude
+				} : null
 			} as Profile));
 		this.profile = {
 			...this.profile,
@@ -186,6 +208,7 @@ export class ProfileComponent {
 
 	async onLikeProfileClick() {
 		if (!this.profile?.id) return;
+		if (!this.checkIfUserCanLikeProfileAndAlert()) return;
 		if (this.profile.isLiked !== undefined && this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.likeProfile(this.profile));
@@ -195,11 +218,23 @@ export class ProfileComponent {
 
 	async onDislikeProfileClick() {
 		if (!this.profile?.id) return;
+		if (!this.checkIfUserCanLikeProfileAndAlert()) return;
 		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
 		this.updateProfileStats("dislike");
 		this.profile.isLiked = false;
+	}
+
+	checkIfUserCanLikeProfileAndAlert() : boolean {
+		const canLikeProfile = !!this.currentUserProfile?.picturesIds?.profilePicture;
+
+		if (!canLikeProfile)
+			this.snackBar.open("You need to have a profile picture to interract with a profile.", "Close", {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+		return canLikeProfile;
 	}
 
 	async unlikeProfile() {

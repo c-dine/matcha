@@ -10,8 +10,8 @@
 	flex-direction: column;
 }
 
-.notification-card-width-10-vw {
-	width: 10vw;
+.notification-card-width-70 {
+	width: 70%;
 }
 
 .notification-card-image {
@@ -41,7 +41,6 @@
 	color: #8F90AD;
 	font-weight: 500;
 	margin-bottom: 0px;
-	max-width: 6vw;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

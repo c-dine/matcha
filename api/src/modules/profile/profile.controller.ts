@@ -127,12 +127,12 @@ profileController.post("/", async (req: Request, res: Response, next: NextFuncti
 	}
 });
 
-profileController.post("/setLocation", async (req: Request, res: Response, next: NextFunction) => {
+profileController.post("/setTrackingLocation", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const profileService = new ProfileService(req.dbClient);
 		let location: GeoCoordinate = req.body;
 		
-		if (!location)
+		if (!location.latitude || !location.longitude)
 			location = await profileService.getLocationFromIpAddress(env.url.includes("localhost") ? await profileService.getLocalhostIpAddress() : req.ip);
 		await profileService.setProfileLocation(location, req.userId);
 

@@ -13,6 +13,8 @@ interface profile {
 	location_longitude?: number;
 	fame_rate?: number;
 	user_id: string;
+	user_given_location_latitude?: number;
+	user_given_location_longitude?: number;
 }
 
 interface profileTagAssociation {

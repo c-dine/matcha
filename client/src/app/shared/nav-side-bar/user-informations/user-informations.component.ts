@@ -29,7 +29,7 @@ export class UserInformationsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.mySubscriptions.push(
-			this.profileService.getProfileObs().subscribe({
+			this.profileService.getCurrentUserProfileObs().subscribe({
 				next: (profile) => {
 					if (!profile) return;
 					this.profile = profile;
