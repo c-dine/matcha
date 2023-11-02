@@ -1,6 +1,6 @@
 <div class="user-list-container">
 	<div class="user-list-filter-bar">
-		<app-user-list-filters (addedFilter)="setFilters($event)" [filtersObservable]="filtersSubject.asObservable()"></app-user-list-filters>
+		<app-user-list-filters (addedFilter)="setFilters($event)" [filters]="filters"></app-user-list-filters>
 	</div>
 
 	<div *ngIf="isLoading" class="spinner-container">
@@ -8,7 +8,7 @@
 	</div>
 	<div class="user-list" *ngIf="!isLoading">
 		<div 	class="user-item" 
-				*ngFor="let user of userList | paginate: { itemsPerPage: filtersSubject.getValue().batchSize, currentPage: page, totalItems: totalUserCount }"
+				*ngFor="let user of userList | paginate: { itemsPerPage: filters.batchSize, currentPage: page, totalItems: totalUserCount }"
 				[ngStyle]="{'background-image': 'linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)), url(' + getFirebasePictureUrl(user.picturesIds?.profilePicture) + ')'}"
 				(click)="navigateToProfile(user.id)">
 			<div class="user-item-container-details">

@@ -11,6 +11,8 @@ import { buildHttpParams } from '../utils/http.utils';
 export class UserService {
 
 	private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+	private userListFilters = new BehaviorSubject<ProfileFilters>({ batchSize: 8, offset: 0 });
+
 	private geolocationWatchId = -1;
 
 	private approximateUserLocationHasBeenSent = false;
@@ -18,6 +20,14 @@ export class UserService {
     constructor(
         private http: HttpClient
     ) {	}
+
+	getUserListFiltersObs() {
+		return this.userListFilters.asObservable();
+	}
+
+	setUserListFilters(filters: ProfileFilters) {
+		this.userListFilters.next(filters);
+	}
 
 	setCurrentUserSubject(currentUser: User) {
 		this.currentUserSubject.next(currentUser);

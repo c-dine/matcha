@@ -10,13 +10,8 @@ export class SliderPopupComponent {
 	@Input() label!: string;
 	@Input() description!: string;
 	@Input() max!: number;
+	@Input() maxValue!: number;
 	@Output() appliedValue = new EventEmitter<number | undefined>()
-
-	maxValue!: number;
-
-	ngOnInit() {
-		this.maxValue = this.max;
-	}
 
 	onResetClick() {
 		this.maxValue = this.max;

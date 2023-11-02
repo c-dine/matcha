@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
 import { ProfileFilters, UserListFilters } from "@shared-models/user.model";
-import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
 	selector: 'app-user-list-filters',
@@ -9,30 +9,17 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 })
 export class UserListFiltersComponent {
 
-	@Input() filtersObservable!: Observable<ProfileFilters>;
-	filters!: ProfileFilters;
+	@Input() filters!: ProfileFilters;
 	tagsSubject: BehaviorSubject<string[] | undefined> = new BehaviorSubject<string[] | undefined>(undefined);
 	@Output() addedFilter = new EventEmitter<ProfileFilters>()
-
-	mySubcriptions: Subscription[] = [];
 
 	age = UserListFilters.age;
 	fame = UserListFilters.fame;
 	distance = UserListFilters.distance;
 
-	ngOnInit() {
-		this.mySubcriptions.push(
-			this.filtersObservable.subscribe({
-				next: (filters) => {
-					this.filters = filters;
-					this.tagsSubject?.getValue() !== filters.tags && this.tagsSubject?.next(filters.tags);
-				}
-			})
-		);
-	}
-
-	ngOnDestroy() {
-		this.mySubcriptions.forEach(subscription => subscription.unsubscribe());
+	ngOnChanges(changes: SimpleChanges) {
+		if (changes['filters'])
+			this.tagsSubject?.getValue() !== this.filters.tags && this.tagsSubject?.next(this.filters.tags);
 	}
 
 	setTagsFilter(tags: string[]) {
