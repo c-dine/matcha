@@ -110,7 +110,9 @@ export class UserService {
 					ditanceKm: user.distance_km,
 					stats: {
 						fameRate: user.fame_rate
-					}
+					},
+					isLiked: user.is_liked === null ? undefined : user.is_liked,
+					likedCurrentUser: user.liked_current_user === null ? undefined : user.liked_current_user,
 				}))
 		};
 	}
