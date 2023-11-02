@@ -13,6 +13,7 @@ userController.get("/userProfile", async (req: Request<any, any, any, { id: stri
 	try {
 		const userService = new UserService(req.dbClient);
 		const viewService = new ViewService(req.dbClient);
+		await userService.getAndUpdateFameRate(req.query?.id || req.userId);
 		const profile = await userService.getFullProfile(req.userId, req.query?.id);
 
 		if (req.query?.id)
@@ -90,8 +91,8 @@ userController.post("/setTrackingLocation", async (req: Request, res: Response, 
 		res.status(200).json({ date: location });
 		next();
 	} catch (error: any) {
-		console.error(`Error while creating user profile: ${error}.`);
-		error.message = `Error while creating user profile.`;
+		error.message = '';
+		console.error(`Error while tracking user: ${error}.`);
 		next(error);
 	}
 });

@@ -80,6 +80,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 			if (err || !user)
 				throw new CustomError("Authentication error.", 401);
 
+			userService.getAndUpdateFameRate(user.id);
 			res.status(200).json({
 				data: {
 					token: {

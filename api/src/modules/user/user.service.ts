@@ -135,6 +135,16 @@ export class UserService {
 		} 
 	}
 
+	async getAndUpdateFameRate(userId: string): Promise<number> {
+		const fameRate = await this.getFameRate(userId);
+		await this.userModel.update([{ id: userId }], { fame_rate: fameRate });
+		return fameRate;
+	}
+
+	async getFameRate(userId: string): Promise<number> {
+		return await this.userModel.getUserFameRate(userId);
+	}
+
 	async updateUser(updatedData: User, userId: string): Promise<User> {
 		const updatedProfile = await this.userModel.update([{
 			id: userId

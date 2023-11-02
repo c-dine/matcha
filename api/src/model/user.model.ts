@@ -268,4 +268,44 @@ export class UserModel extends ModelBase {
 		)
 		LEFT JOIN picture ON picture.user_id = "user".id`
 	}
+
+	async getUserFameRate(userId: string): Promise<number> {
+		const query = this.getFameRateQuery(userId);
+		const result = (await this.dbClient.query(query)).rows[0];
+		
+		const fameRateWithoutMalus = (
+			(Number(result.other_like_count) / (Number(result.other_dislike_count) + Number(result.other_like_count) || 1)) * 2
+			+ (Number(result.match_count) / Number(result.self_like_count) || 1) * 1
+			+ (Number(result.view_count) / (Number(result.average_views) + Number(result.view_count) || 1)) * 1
+			+ (Number(result.picture_count) / 5) * 3
+			) / 7 * 100 + 10;
+			const fameRate = fameRateWithoutMalus - Number(result.fake_report_count) * 5 - Number(result.blacklist_count) * 2
+			+ (result.fake_report_count == 0 ? 5 : 0)
+			+ (result.blacklist_count == 0 ? 5 : 0);
+		return fameRate < 0 ? 
+				0 : fameRate > 100 ?
+					100 : Number(fameRate.toFixed(0));
+	}
+
+	getFameRateQuery(userId: string): string {
+		return `
+			SELECT
+				(SELECT COUNT(*) FROM picture AS pictureCount WHERE pictureCount.user_id = "user".id) AS picture_count,
+				(SELECT COUNT(*) FROM blacklist AS blacklistCount WHERE blacklistCount.target_user_id = "user".id) AS blacklist_count,
+				(SELECT COUNT(*) FROM fake_report AS fakeReportCount WHERE fakeReportCount.target_user_id = "user".id) AS fake_report_count,
+				(SELECT COUNT(*) FROM "like" AS otherLikeCount WHERE otherLikeCount.target_user_id = "user".id AND otherLikeCount.is_liked = true) AS other_like_count,
+				(SELECT COUNT(*) FROM "like" AS selfLikeCount WHERE selfLikeCount.user_id = "user".id AND selfLikeCount.is_liked = true) AS self_like_count,
+				(SELECT COUNT(*) FROM "like" AS dislikeCount WHERE dislikeCount.target_user_id = "user".id AND dislikeCount.is_liked = false) AS other_dislike_count,
+				(SELECT COUNT(*) FROM "like" AS matchCount WHERE matchCount.target_user_id = "user".id AND matchCount.is_liked = true AND matchCount.user_id IN (
+						SELECT matchedUser.id
+						FROM "like" AS currentUserMatches
+						LEFT JOIN "user" AS matchedUser ON matchedUser.id = currentUserMatches.target_user_id
+						WHERE currentUserMatches.user_id = "user".id AND currentUserMatches.is_liked = true
+						)) AS match_count,
+				(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_user_id = "user".id) AS view_count,
+				(SELECT AVG(view_count_per_user) FROM (SELECT target_user_id, COUNT(*) as view_count_per_user FROM "view" GROUP BY target_user_id) AS view_count_per_user_subquery) AS average_views
+			FROM "user"
+			WHERE "user".id ='${userId}'
+		`;
+	}
 }
