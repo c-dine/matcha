@@ -46,6 +46,7 @@ export class ModelBase {
 	}
 
 	async update(where: { [key: string]: any }[], updatedData: { [key: string]: any }, select?: string[]) {
+		updatedData = Object.fromEntries(Object.entries(updatedData).filter(([key, value]) => value !== undefined));
 		const query = `UPDATE "${this.table}" SET ${this.getUpdateQuery(updatedData)} ${this.getWhereQuery(where, Object.keys(updatedData).length)} RETURNING ${this.getSelectQuery(select)}`;
 		const values = [...Object.values(updatedData), ...where.flatMap(orObject => Object.values(orObject))];
 		const result = await this.dbClient.query(query, values);

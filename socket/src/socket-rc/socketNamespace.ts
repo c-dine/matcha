@@ -45,6 +45,8 @@ export class SocketNamespace {
 	emitTo(eventName: string, arg: any) {
 		let toUser = this.connectedUsers.get(arg.toUserId);
 		let fromUser = this.connectedUsers.get(arg.fromUserId);
+		console.log('from user', arg.fromUserId)
+		console.log('to user', arg.toUserId)
 
 		if (!toUser)
 			throw new Error('User not connected');

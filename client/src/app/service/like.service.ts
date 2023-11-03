@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { Interaction } from '@shared-models/interactions.model';
 import { BehaviorSubject, Observable, firstValueFrom, tap } from 'rxjs';
-import { UserProfile } from '@shared-models/profile.model';
 import { formatUserProfileToInteraction } from '../utils/profil.utils';
+import { User } from '@shared-models/user.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -43,23 +43,23 @@ export class LikeService {
 			);
 	}
 
-	likeProfile(profile: UserProfile) {
+	likeProfile(profile: User) {
 		const selfLikesList = this.selfLikesList.value;
 		selfLikesList.push(formatUserProfileToInteraction(profile));
 		this.selfLikesList.next(selfLikesList);
 		return this.http.post<void>(`${environment.apiUrl}/like/`, {
-			targetProfileId: profile.id,
+			targetUserId: profile.id,
 			isLiked: true
 		});
 	}																
 
-	dislikeProfile(targetProfileId: string) {
+	dislikeProfile(targetUserId: string) {
 		return this.http.post<void>(`${environment.apiUrl}/like/`, {
-			targetProfileId
+			targetUserId
 		});
 	}
 
-	unlikeProfile(targetProfileId: string) {
-		return this.http.delete<void>(`${environment.apiUrl}/like/${targetProfileId}`);
+	unlikeProfile(targetUserId: string) {
+		return this.http.delete<void>(`${environment.apiUrl}/like/${targetUserId}`);
 	}
 }

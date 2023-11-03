@@ -12,11 +12,8 @@ CREATE TABLE IF NOT EXISTS "user" (
     "first_name" VARCHAR(100) NOT NULL,
     "email" VARCHAR(255) NOT NULL UNIQUE,
     "password" VARCHAR(255) NOT NULL,
-    "verified_account" BOOLEAN DEFAULT FALSE
-);
+    "verified_account" BOOLEAN DEFAULT FALSE,
 
-CREATE TABLE IF NOT EXISTS "profile" (
-    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "gender" VARCHAR(100) DEFAULT 'undefined',
     "birth_date" TIMESTAMP,
     "sexual_preferences" VARCHAR(100) DEFAULT 'undefined',
@@ -26,63 +23,62 @@ CREATE TABLE IF NOT EXISTS "profile" (
     "user_given_location_latitude" FLOAT NULL,
 	"user_given_location_longitude" FLOAT NULL,
     "fame_rate" INTEGER DEFAULT 100,
-    "user_id" UUID NOT NULL UNIQUE,
-    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    "is_profile_filled" BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE IF NOT EXISTS "profile_tag_asso" (
-    "profile_id" UUID NOT NULL,
+CREATE TABLE IF NOT EXISTS "user_tag_asso" (
+    "user_id" UUID NOT NULL,
     "tag_id" UUID NOT NULL,
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY ("tag_id") REFERENCES "tag"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY ("profile_id", "tag_id")
+    PRIMARY KEY ("user_id", "tag_id")
 );
 
 CREATE TABLE IF NOT EXISTS "picture" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "profile_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
 	"is_profile_picture" BOOLEAN DEFAULT(FALSE),
-    FOREIGN KEY ("profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "like" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "user_id" UUID NOT NULL,
-    "target_profile_id" UUID NOT NULL,
+    "target_user_id" UUID NOT NULL,
     "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "is_liked" BOOLEAN DEFAULT(TRUE),
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT unique_user_target_profile_like_relation UNIQUE ("user_id", "target_profile_id")
+    FOREIGN KEY ("target_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT unique_user_target_user_like_relation UNIQUE ("user_id", "target_user_id")
 );
 
 CREATE TABLE IF NOT EXISTS "view" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "user_id" UUID NOT NULL,
-    "target_profile_id" UUID NOT NULL,
+    "target_user_id" UUID NOT NULL,
     "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("target_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "blacklist" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "user_id" UUID NOT NULL,
-    "target_profile_id" UUID NOT NULL,
+    "target_user_id" UUID NOT NULL,
     "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT unique_user_target_profile_blacklist_relation UNIQUE ("user_id", "target_profile_id")
+    FOREIGN KEY ("target_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT unique_user_target_user_blacklist_relation UNIQUE ("user_id", "target_user_id")
 );
 
 CREATE TABLE IF NOT EXISTS "fake_report" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "user_id" UUID NOT NULL,
-    "target_profile_id" UUID NOT NULL,
+    "target_user_id" UUID NOT NULL,
     "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("target_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT unique_user_target_profile_fake_report_relation UNIQUE ("user_id", "target_profile_id")
+    FOREIGN KEY ("target_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT unique_user_target_user_fake_report_relation UNIQUE ("user_id", "target_user_id")
 );
 
 CREATE TABLE IF NOT EXISTS "messages" (
@@ -98,12 +94,12 @@ CREATE TABLE IF NOT EXISTS "messages" (
 CREATE TABLE IF NOT EXISTS "notification" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "is_viewed" BOOLEAN DEFAULT FALSE,
-    "from_profile_id" UUID NOT NULL,
-    "to_profile_id" UUID NOT NULL,
+    "from_user_id" UUID NOT NULL,
+    "to_user_id" UUID NOT NULL,
     "type" VARCHAR(510) NOT NULL,
     "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("from_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY ("to_profile_id") REFERENCES "profile"("id") ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY ("from_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("to_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE OR REPLACE FUNCTION calculate_distance(lat1 float, lon1 float, lat2 float, lon2 float, units varchar)
@@ -181,16 +177,13 @@ BEGIN
         SELECT random() * 180 - 90 INTO location_latitude;
         SELECT random() * 360 - 180 INTO location_longitude;
 
-        -- Insérer un utilisateur
-        INSERT INTO "user" ("id", "username", "last_name", "first_name", "email", "password", "verified_account")
-        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2b$10$NFdgmiKxlmkUdoW7sk/WI.UyedzkJRADZpLDtByV2ci1Bb33P4vAi', TRUE);
-
         -- Générer des valeurs aléatoires pour gender et sexual_preferences
         SELECT array_agg(x ORDER BY random()) INTO genders FROM unnest(genders) t(x);
         SELECT array_agg(x ORDER BY random()) INTO genders FROM unnest(genders) t(x);
 
-        -- Insérer un profil correspondant à l'utilisateur
-        INSERT INTO "profile" ("id", "gender", "birth_date", "sexual_preferences", "biography", "location_latitude", "location_longitude", "fame_rate", "user_id")
-        VALUES (uuid_generate_v4(), genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 100, (SELECT "id" FROM "user" WHERE "username" = u_name));
+        -- Insérer un utilisateur
+        INSERT INTO "user" ("id", "username", "last_name", "first_name", "email", "password", "verified_account", "gender", "birth_date", "sexual_preferences", "biography", "location_latitude", "location_longitude", "fame_rate")
+        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2b$10$NFdgmiKxlmkUdoW7sk/WI.UyedzkJRADZpLDtByV2ci1Bb33P4vAi', TRUE, genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 100);
+
     END LOOP;
 END $$;

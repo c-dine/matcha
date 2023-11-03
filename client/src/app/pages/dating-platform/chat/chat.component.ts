@@ -8,13 +8,6 @@ import { ProfileService } from 'src/app/service/profile.service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent {
-	selectedConversation: Conversation | undefined;
-
 	constructor() {
-		this.selectedConversation = undefined;
-	}
-
-	setSelectedConversation(userId: Conversation) {
-		this.selectedConversation = userId;
 	}
 }

@@ -1,4 +1,4 @@
-import { NavbarProfile } from "@shared-models/profile.model";
+import { NavbarProfile } from "@shared-models/user.model";
 
 interface NotificationDto {
 	user: NavbarProfile;

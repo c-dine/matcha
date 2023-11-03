@@ -6,6 +6,7 @@ import { NewUser, User } from '@shared-models/user.model.js'
 import { AuthService } from './auth.service.js';
 import { MailService } from '../mail/mail.service.js';
 import { CustomError } from '../../utils/error.util.js';
+import { UserService } from '../user/user.service.js';
 
 export const authController = express();
 
@@ -70,20 +71,22 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 	try {
 		const refreshToken = req.body.refreshToken;
 		const authService = new AuthService(req.dbClient);
+		const userService = new UserService(req.dbClient);
 
 		if (!refreshToken)
 			throw new CustomError("Authentication error.", 400);
 		await jwt.verify(refreshToken, encryptionConfig.refreshSecret, async (err, decoded) => {
-			const user = await authService.getUser({ id: (decoded as any)?.userId });
+			const user = await userService.getUserById((decoded as any)?.userId);
 			if (err || !user)
 				throw new CustomError("Authentication error.", 401);
 
+			userService.getAndUpdateFameRate(user.id);
 			res.status(200).json({
 				data: {
 					token: {
 						access: authService.getNewToken(decoded.userId, encryptionConfig.accessSecret, ACCESS_TOKEN_TIMEOUT)
 					},
-					... user
+					... await userService.getFullProfile(user.id)
 				}
 			});
 		});
@@ -125,21 +128,6 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 	} catch (error: any) {
 		console.error(`Error while verifying email: ${error}`);
 		error.message = "Error while verifying email."; 
-		next(error);
-	}
-});
-
-authController.put("/", async (req: Request, res: Response, next: NextFunction) => {
-	try {
-		const updatedUser = req.body as User;
-		const authService = new AuthService(req.dbClient);
-
-		await authService.updateUser(updatedUser, req.userId);
-		res.status(200).json({ message: "User details successfully updated.", data: updatedUser });
-		next();
-	} catch (error: any) {
-		console.error(`Error while creating user: ${error}`);
-		error.message = "Username or email already taken."; 
 		next(error);
 	}
 });

@@ -3,7 +3,6 @@ import { v4 } from "uuid";
 import { bucket } from "../../app.js";
 import { PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model.js';
 import { PictureModel } from "../../model/picture.model.js";
-import { ProfileModel } from "../../model/profile.model.js";
 
 export class PictureService {
 
@@ -35,8 +34,8 @@ export class PictureService {
 		return { id: fileName, uploadUrl };
 	}
 
-	async updateProfilePictures(profilePictures: ProfilePicturesIds, profileId: string) {
-		const actualProfilePicturesIds = await this.getProfilePictures(profileId);
+	async updateProfilePictures(profilePictures: ProfilePicturesIds, userId: string) {
+		const actualProfilePicturesIds = await this.getProfilePictures(userId);
 		const picturesIdsToDelete = [
 			...profilePictures.profilePicture === actualProfilePicturesIds.profilePicture ? [] : [actualProfilePicturesIds.profilePicture],
 			...actualProfilePicturesIds.additionnalPicture.filter(id => !profilePictures.additionnalPicture.includes(id))
@@ -46,13 +45,13 @@ export class PictureService {
 			additionnalPicture: profilePictures.additionnalPicture.filter(id => !actualProfilePicturesIds.additionnalPicture.includes(id))
 		};
 
-		await this.deleteProfilePictures(picturesIdsToDelete, profileId);
-		await this.createProfilePictures(picturesToCreate, profileId);
+		await this.deleteProfilePictures(picturesIdsToDelete, userId);
+		await this.createProfilePictures(picturesToCreate, userId);
 	}
 
-	async getProfilePictures(profileId: string): Promise<ProfilePicturesIds> {
+	async getProfilePictures(userId: string): Promise<ProfilePicturesIds> {
 		const profilePictures = await this.pictureModel.findMany([{
-			profile_id: profileId
+			user_id: userId
 		}]);
 
 		return {
@@ -61,46 +60,44 @@ export class PictureService {
 		}
 	}
 
-	async deleteProfilePictures(picturesIdsToDelete: string[], profileId: string) {
+	async deleteProfilePictures(picturesIdsToDelete: string[], userId: string) {
 		if (!picturesIdsToDelete.length) return;
 		const deletedPicturesIds = (await this.pictureModel.delete(
 			picturesIdsToDelete.map(id => ({
-				profile_id: profileId,
+				user_id: userId,
 				id
 			})), ["id"])).map(picture => picture.id);
 		deletedPicturesIds.forEach(id => bucket.file(id).delete());
 	}
 
-	async createProfilePictures(profilePictures: ProfilePicturesIds, profileId: string) {
+	async createProfilePictures(profilePictures: ProfilePicturesIds, userId: string) {
 		await this.pictureModel.createMany([
-			...profilePictures.profilePicture ? [this.getPictureCreateQuery(profilePictures.profilePicture, profileId, true)] : [],
-			...profilePictures.additionnalPicture.map(pictureId => this.getPictureCreateQuery(pictureId, profileId, false))
+			...profilePictures.profilePicture ? [this.getPictureCreateQuery(profilePictures.profilePicture, userId, true)] : [],
+			...profilePictures.additionnalPicture.map(pictureId => this.getPictureCreateQuery(pictureId, userId, false))
 		]);
 	}
 
-	private getPictureCreateQuery(id: string, profileId: string, isProfilePicture: boolean) {
+	private getPictureCreateQuery(id: string, userId: string, isProfilePicture: boolean) {
 		return {
 			id,
-			profile_id: profileId,
+			user_id: userId,
 			is_profile_picture: isProfilePicture
 		}
 	}
 
-	async getProfilePicIdsOfProfileIds(profileIds: string[]) {
-		return (await this.pictureModel.findMany(profileIds.map(id => ({
-			profile_id: id,
+	async getProfilePicIdsOfUserIds(userIds: string[]) {
+		return (await this.pictureModel.findMany(userIds.map(id => ({
+			user_id: id,
 			is_profile_picture: true
 		})))).map(picture => ({
 			id: picture.id,
-			profileId: picture.profile_id
+			userId: picture.user_id
 		}));
 	}
 
 	async userHasProfilePic(userId: string): Promise<boolean> {
-		const profileModel = new ProfileModel(this.dbClient);
-		const userProfileId = (await profileModel.findMany([{ user_id: userId }], ["id"]))[0].id;
 		const profilePic = (await this.pictureModel.findMany([{
-			profile_id: userProfileId,
+			user_id: userId,
 			is_profile_picture: true
 		}]))[0];
 		return !!profilePic;

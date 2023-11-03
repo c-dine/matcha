@@ -1,7 +1,7 @@
 import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import { MailService } from './mail.service.js';
-import { AuthService } from '../auth/auth.service.js';
+import { UserService } from '../user/user.service.js';
 
 export const mailController = express();
 
@@ -9,8 +9,8 @@ mailController.post("/resetPassword", async (req: Request, res: Response, next: 
 	try {
 		const email = req.body.email;  
 		const mailService = new MailService();
-		const userService = new AuthService(req.dbClient);
-		const linkedUser = await userService.getUser({ email }, [ "id" ]);
+		const userService = new UserService(req.dbClient);
+		const linkedUser = (await userService.getUsers([{ email }], [ "id" ]))[0];
 
 		if (linkedUser)
 			await mailService.sendResetPasswordMail(email, linkedUser.id);

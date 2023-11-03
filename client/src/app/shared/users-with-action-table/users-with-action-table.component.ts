@@ -26,13 +26,13 @@ export class UsersWithActionTableComponent {
         this.users.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }
 
-	navigateToProfile(profileId: string | undefined) {
-		if (!profileId) return;
-		this.router.navigate([`/app/profile`], { queryParams: { id: profileId } });
+	navigateToProfile(userId: string | undefined) {
+		if (!userId) return;
+		this.router.navigate([`/app/profile`], { queryParams: { id: userId } });
 	}
 
-    onActionClick(profileId: string | undefined) {
-		if (!profileId) return;
-        this.action.emit(profileId);
+    onActionClick(userId: string | undefined) {
+		if (!userId) return;
+        this.action.emit(userId);
     }
 }

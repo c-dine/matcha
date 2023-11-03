@@ -3,7 +3,8 @@ import { Conversation } from '@shared-models/chat.models';
 import { ChatService } from 'src/app/service/chat.service';
 import { Output, Input, EventEmitter } from '@angular/core';
 import { firstValueFrom } from 'rxjs'
-import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/user.service';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 @Component({
 	selector: 'app-contacts-side-bar',
@@ -13,24 +14,26 @@ import { ProfileService } from 'src/app/service/profile.service';
 export class ContactsSideBarComponent {
 	conversations!: Conversation[];
 	matchs!: Conversation[];
-
-	@Input()
-	selectedConversation!: Conversation | undefined;
+	conversationUserId!: string | null;
 
 	@Output()
 	onConversationClick!: EventEmitter<any>;
 
 	constructor(
 		private chatService: ChatService,
-		private profileService: ProfileService
+		private userService: UserService,
+		private router: Router,
+		private route: ActivatedRoute,
 	) {
 		this.conversations = [];
 		this.matchs = [];
-		this.selectedConversation = undefined;
 		this.onConversationClick = new EventEmitter();
 	}
 
 	async ngOnInit() {
+		this.route.paramMap.subscribe((params: ParamMap) => {
+			this.conversationUserId = params.get('id');
+		});
 		this.conversations = await firstValueFrom(this.chatService.getConversations());
 		this.matchs = (await this.getMatchs())
 			.filter(
@@ -42,7 +45,7 @@ export class ContactsSideBarComponent {
 	}
 
 	private async getMatchs() {
-		return (await firstValueFrom(this.profileService.getMatchs()))
+		return (await firstValueFrom(this.userService.getMatchs()))
 				.userList.map(
 						user => new Conversation(
 							user.firstName,
@@ -50,7 +53,6 @@ export class ContactsSideBarComponent {
 							"",
 							"",
 							user.id,
-							user.userId,
 							user.picturesIds,
 						)
 				)
@@ -63,6 +65,12 @@ export class ContactsSideBarComponent {
 			this.conversations.unshift(match);
 		}
 		this.onConversationClick.emit(match);
+	}
+
+	navigateToUserConversation(userId: string | undefined) {
+		if (!userId)
+			return ;
+		this.router.navigate([`app/chat/${userId}`])
 	}
 
 }

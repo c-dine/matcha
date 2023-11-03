@@ -6,7 +6,7 @@
 	<app-contact-card
 		*ngFor="let conversation of conversations"
 		[conversation]="conversation"
-		[activated]="conversation.user_id === selectedConversation?.user_id"
-		(click)="setConversationUserID(conversation)"
+		[activated]="conversation.user_id === conversationUserId"
+		(click)="setConversationUserID(conversation);navigateToUserConversation(conversation.user_id)"
 	/>
 </div>

@@ -3,28 +3,28 @@
 <ng-template #conversationSelected>
 	<div class="matcha-conversation-container matcha-flex-column-reverse">
 		<div class="matcha-flex-row matcha-conversation-input-container">
-			<form #sendMessageForm="ngForm" (ngOnSubmit)="sendMessage()">
+			<form #sendMessageForm="ngForm" (ngOnSubmit)="messageService.sendMessage()">
 				<input
 					placeholder="send message"
 					class="matcha-conversation-input"
-					[(ngModel)]="messageToSend"
+					[(ngModel)]="messageService.messageToSend"
 					name="send message"
-					(keydown.enter)="sendMessage()"
-					(focus)="sendTyping()"
-					(focusout)="sendStopTyping()"/>
+					(keydown.enter)="messageService.sendMessage()"
+					(focus)="messageService.sendTyping()"
+					(focusout)="messageService.sendStopTyping()"/>
 				<div class="matcha-conversation-input-button matcha-flex-row matcha-flex-align-center matcha-flex-justiy-center"
-					type="submit" (click)="sendMessage()">
+					type="submit" (click)="messageService.sendMessage()">
 					<mat-icon class="matcha-conversation-input-icon">send</mat-icon>
 				</div>
 			</form>
 		</div>
 		<div class="matcha-conversation-messages-container matcha-flex-column-reverse">
-			<div *ngIf="isTyping" class="matcha-conversation-typing-container typewriter">
+			<div *ngIf="messageService.isTyping" class="matcha-conversation-typing-container typewriter">
 				<app-typing-message></app-typing-message>
 			</div>
-			<app-chat-message *ngFor="let message of messages" [message]="message.message"
-				[currentUser]="conversation?.user_id !== message.from_user_id"
-				[userProfilePictureSrc]="(conversation?.user_id === message.from_user_id) ? profilePictureUrl :'' " />
+			<app-chat-message *ngFor="let message of messageService.messages" [message]="message.message"
+				[currentUser]="this.conversationUser?.id !== message.from_user_id"
+				[userProfilePictureSrc]="(this.conversationUser?.id === message.from_user_id) ? getConversationUserProfilePictureUrl() : getCurrentUserProfilePictureUrl() " />
 		</div>
 
 	</div>
