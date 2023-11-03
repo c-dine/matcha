@@ -2,8 +2,8 @@
     <div class="home-navbar">
         <div class="company-name">MATCHA</div>
         <div *ngIf="user" class="home-top-right-container">
-            <div class="rounded-circle-container home-avatar-container" *ngIf="userProfile" (click)="navigateToProfile()">
-                <img [src]="getFirebasePictureUrl(userProfile.picturesIds?.profilePicture)" class="rounded-circle-image">
+            <div class="rounded-circle-container home-avatar-container" *ngIf="user" (click)="navigateToProfile()">
+                <img [src]="getFirebasePictureUrl(user.picturesIds?.profilePicture)" class="rounded-circle-image">
             </div>
             <div class="button login-button" (click)="onLogOutClick()">Log out</div>
         </div>

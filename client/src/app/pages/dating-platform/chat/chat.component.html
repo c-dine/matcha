@@ -1,7 +1,4 @@
 <div class="matcha-chat-container">
-  <app-contacts-side-bar
-    [selectedConversation]="selectedConversation"
-    (onConversationClick)="setSelectedConversation($event)"
-  />
-	<app-conversation [conversation]="selectedConversation"/>
+	<app-contacts-side-bar class="matcha-chat-side-bar"/>
+	<app-conversation class="matcha-chat-conversation-container"/>
 </div>

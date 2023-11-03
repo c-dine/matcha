@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChatSearchBarComponent } from './chat-search-bar.component';
+import { ChatMatchBarComponent } from './chat-match-bar.component';
 
-describe('ChatSearchBarComponent', () => {
-  let component: ChatSearchBarComponent;
-  let fixture: ComponentFixture<ChatSearchBarComponent>;
+describe('ChatMatchBarComponent', () => {
+  let component: ChatMatchBarComponent;
+  let fixture: ComponentFixture<ChatMatchBarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChatSearchBarComponent ]
+      declarations: [ ChatMatchBarComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChatSearchBarComponent);
+    fixture = TestBed.createComponent(ChatMatchBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

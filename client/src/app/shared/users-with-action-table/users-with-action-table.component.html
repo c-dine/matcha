@@ -13,7 +13,7 @@
         <tbody>
             <tr *ngFor="let user of users" class="user-row">
 
-                <td class="user-column" (click)="navigateToProfile(user.targetProfileId)">
+                <td class="user-column" (click)="navigateToProfile(user.targetUserId)">
                     <div class="user-avatar-container">
                         <div class="rounded-circle-container">
                             <img [src]="getFirebasePictureUrl(user.profilePicId)" class="rounded-circle-image">
@@ -28,7 +28,7 @@
                 <td>{{formatDate(user.date, 'dd-MM-YYYY HH:mm', 'en-US')}}</td>
 
                 <td class="action-column" *ngIf="actionLabel">
-                    <button class="custom-button cancel-button" (click)="onActionClick(user.targetProfileId)">{{actionLabel}}</button>
+                    <button class="custom-button cancel-button" (click)="onActionClick(user.targetUserId)">{{actionLabel}}</button>
                 </td>
 
             </tr>

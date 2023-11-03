@@ -1,0 +1,4 @@
+export const limits = {
+	MESSAGE_MAX_LENGTH: 510,
+	BIOGRAPHY_MAX_LENGTH: 510,
+}

@@ -20,9 +20,9 @@ fakeReportController.get("/", async (req: Request, res: Response, next: NextFunc
 
 fakeReportController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const targetProfileId = req.body.targetProfileId;
+		const targetUserId = req.body.targetUserId;
 		const fakeReport = new FakeReportService(req.dbClient);
-		const blacklistedUser = await fakeReport.addElement(req.userId, targetProfileId);
+		const blacklistedUser = await fakeReport.addElement(req.userId, targetUserId);
 
 		res.status(201).json({ 
 			data: blacklistedUser,
@@ -36,11 +36,11 @@ fakeReportController.post("/", async (req: Request, res: Response, next: NextFun
 	}
 });
 
-fakeReportController.delete("/:targetProfileId", async (req: Request, res: Response, next: NextFunction) => {
+fakeReportController.delete("/:targetUserId", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const targetProfileId = req.params.targetProfileId;
+		const targetUserId = req.params.targetUserId;
 		const fakeReport = new FakeReportService(req.dbClient);
-		await fakeReport.deleteElement(req.userId, targetProfileId);
+		await fakeReport.deleteElement(req.userId, targetUserId);
 
 		res.status(200).json({ 
 			message: "Report successfully cancelled." 

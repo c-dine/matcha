@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { ProfileService } from './profile.service';
+import { UserService } from './user.service';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 
@@ -11,7 +11,7 @@ import { ActivitySocketService } from './socket/activitySocket.service';
 export class AuthGuard {
     constructor(
         private authService: AuthService,
-        private profileService: ProfileService,
+        private userService: UserService,
         private router: Router,
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
@@ -22,7 +22,7 @@ export class AuthGuard {
 			this.router.navigate(['']);
 			return false;
 		}
-		if (!(await this.profileService.userHasProfile())) {
+		if (!(await this.userService.userHasProfile())) {
 			this.router.navigate(['/fillProfile']);
 			return true;
 		}

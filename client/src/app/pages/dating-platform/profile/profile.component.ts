@@ -5,13 +5,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '@environment/environment';
 import { DisplayableProfilePictures } from '@shared-models/picture.model';
-import { Profile, UserProfile } from '@shared-models/profile.model';
+import { User } from '@shared-models/user.model';
 import { firstValueFrom } from 'rxjs';
 import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
 import { LikeService } from 'src/app/service/like.service';
 import { PictureService } from 'src/app/service/picture.service';
-import { ProfileService } from 'src/app/service/profile.service';
+import { UserService } from 'src/app/service/user.service';
 import { ViewService } from 'src/app/service/view.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
@@ -27,21 +27,21 @@ export class ProfileComponent {
 	getAge = getAge;
 	formatDate = formatDate;
 	environment = environment;
-	profile: UserProfile | null = null;
+	profile: User | null = null;
 
 	profileForm!: FormGroup;
 	pictures!: DisplayableProfilePictures;
 
 	useUserGivenLocation!: boolean;
 
-	currentUserProfile!: Profile | null;
+	currentUser!: User | null;
 	isEditMode = false;
 	isLoading = true;
 
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
-		private profileService: ProfileService,
+		private userService: UserService,
 		private location: Location,
 		private snackBar: MatSnackBar,
 		private pictureService: PictureService,
@@ -52,27 +52,27 @@ export class ProfileComponent {
 	) { }
 
 	async ngOnInit() {
-		this.currentUserProfile = await firstValueFrom(this.profileService.getCurrentUserProfileObs());
+		this.currentUser = await firstValueFrom(this.userService.getCurrentUserObs());
 		this.route.queryParamMap.subscribe(async params => {
-			if (params.has("id") && params.get("id") !== this.currentUserProfile?.id)
-				this.profileService.getUserProfile(params.get("id") as string).subscribe({
+			if (params.has("id") && params.get("id") !== this.currentUser?.id)
+				this.userService.getUserProfile(params.get("id") as string).subscribe({
 					next: (profile) => {
 						this.profile = profile;
 						if (profile?.id)
 							this.viewService.addView(profile);
 						this.isLoading = false;
 					},
-					error: async () => { await this.getCurrentUserProfile(); this.isLoading = false; },
+					error: async () => { await this.getCurrentUser(); this.isLoading = false; },
 				});
 			else {
-				await this.getCurrentUserProfile();
+				await this.getCurrentUser();
 				this.isLoading = false;
 			}
 		});
 	}
 
-	async getCurrentUserProfile() {
-		this.profileService.getUserProfile().subscribe({
+	async getCurrentUser() {
+		this.userService.getUserProfile().subscribe({
 			next: (profile) => {
 				this.profile = profile;
 				this.initForm();
@@ -83,21 +83,21 @@ export class ProfileComponent {
 
 	initForm() {
 		this.pictures = {
-			profilePicture: this.currentUserProfile?.picturesIds?.profilePicture ? 
-				{ id: this.currentUserProfile?.picturesIds?.profilePicture, url: getFirebasePictureUrl(this.currentUserProfile?.picturesIds?.profilePicture) }
+			profilePicture: this.currentUser?.picturesIds?.profilePicture ? 
+				{ id: this.currentUser?.picturesIds?.profilePicture, url: getFirebasePictureUrl(this.currentUser?.picturesIds?.profilePicture) }
 				: undefined,
-			additionnalPictures: this.currentUserProfile?.picturesIds?.additionnalPicture?.map(id => ({ id, url: getFirebasePictureUrl(id)})) || []
+			additionnalPictures: this.currentUser?.picturesIds?.additionnalPicture?.map(id => ({ id, url: getFirebasePictureUrl(id)})) || []
 		};
 		this.profileForm  = new FormGroup({
-			gender: new FormControl<string>(this.currentUserProfile?.gender || "", [Validators.required]),
-			sexualPreferences: new FormControl<string>(this.currentUserProfile?.sexualPreferences || "", [Validators.required]),
-			birthDate: new FormControl<Date | undefined>(this.currentUserProfile?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
-			biography: new FormControl<string>(this.currentUserProfile?.biography || "", [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
-			tags: new FormControl<string[]>(this.currentUserProfile?.tags || []),
-			userGivenLongitude: new FormControl<number>({ value: this.currentUserProfile?.userGivenLocation?.longitude || 0, disabled: !this.currentUserProfile?.userGivenLocation }),
-			userGivenLatitude: new FormControl<number>({ value: this.currentUserProfile?.userGivenLocation?.latitude || 0, disabled: !this.currentUserProfile?.userGivenLocation }),
+			gender: new FormControl<string>(this.currentUser?.gender || "", [Validators.required]),
+			sexualPreferences: new FormControl<string>(this.currentUser?.sexualPreferences || "", [Validators.required]),
+			birthDate: new FormControl<Date | undefined>(this.currentUser?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
+			biography: new FormControl<string>(this.currentUser?.biography || "", [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
+			tags: new FormControl<string[]>(this.currentUser?.tags || []),
+			userGivenLongitude: new FormControl<number>({ value: this.currentUser?.userGivenLocation?.longitude || 0, disabled: !this.currentUser?.userGivenLocation }),
+			userGivenLatitude: new FormControl<number>({ value: this.currentUser?.userGivenLocation?.latitude || 0, disabled: !this.currentUser?.userGivenLocation }),
 		});
-		this.useUserGivenLocation = !!this.currentUserProfile?.userGivenLocation;
+		this.useUserGivenLocation = !!this.currentUser?.userGivenLocation;
 	}
 
 	changedUseUserGivenLocation() {
@@ -155,7 +155,7 @@ export class ProfileComponent {
 
 		this.isEditMode = false;
 		const formValue = this.profileForm?.getRawValue();
-		this.currentUserProfile = await firstValueFrom(this.profileService.updateProfile({
+		this.currentUser = await firstValueFrom(this.userService.updateUser({
 				...this.profile,
 				...formValue,
 				picturesIds: this.profile.picturesIds,
@@ -163,10 +163,10 @@ export class ProfileComponent {
 					longitude: formValue.userGivenLongitude,
 					latitude: formValue.userGivenLatitude
 				} : null
-			} as Profile));
+			} as User));
 		this.profile = {
 			...this.profile,
-			...this.currentUserProfile as UserProfile
+			...this.currentUser as User
 		};
 		this.isLoading = false;
 	}
@@ -227,7 +227,7 @@ export class ProfileComponent {
 	}
 
 	checkIfUserCanLikeProfileAndAlert() : boolean {
-		const canLikeProfile = !!this.currentUserProfile?.picturesIds?.profilePicture;
+		const canLikeProfile = !!this.currentUser?.picturesIds?.profilePicture;
 
 		if (!canLikeProfile)
 			this.snackBar.open("You need to have a profile picture to interract with a profile.", "Close", {

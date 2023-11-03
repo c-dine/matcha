@@ -1,7 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { LoginDialogComponent } from "../login-dialog/login-dialog.component";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { UserService } from "src/app/service/user.service";
+import { AuthService } from "src/app/service/auth.service";
 
 @Component({
     selector: 'app-verify-email-dialog',
@@ -19,11 +19,11 @@ export class VerifyEmailDialogComponent {
 		},
 		private dialog: MatDialog,
 		private dialogRef: MatDialogRef<VerifyEmailDialogComponent>,
-		private userService: UserService,
+		private authService: AuthService,
 	) {}
 
 	async ngOnInit() {
-		this.userService.verifyEmail(this.data.verificationToken).subscribe(
+		this.authService.verifyEmail(this.data.verificationToken).subscribe(
 			() => { 
 				this.isVerified = true;
 				this.isLoading = false;

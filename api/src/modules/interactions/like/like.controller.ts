@@ -35,17 +35,17 @@ likeController.get("/others", async (req: Request, res: Response, next: NextFunc
 });
 
 likeController.post("/", async (req: Request, res: Response, next: NextFunction) => {
-	const targetProfileId = req.body.targetProfileId;
+	const targetUserId = req.body.targetUserId;
 	const isLiked = !!req.body.isLiked;
 	try {
 		const pictureService = new PictureService(req.dbClient);
 		if (!(await pictureService.userHasProfilePic(req.userId)))
 			throw new CustomError(`You need to have a profile picture to ${isLiked ? "like" : "dislike"} a profile.`, 403);
 		const likeService = new LikeService(req.dbClient);
-		await likeService.deleteElement(req.userId, targetProfileId);
+		await likeService.deleteElement(req.userId, targetUserId);
 		const addedLike = await likeService.addElement(
 			req.userId,
-			targetProfileId,
+			targetUserId,
 			{ is_liked: isLiked }
 		);
 
@@ -61,11 +61,11 @@ likeController.post("/", async (req: Request, res: Response, next: NextFunction)
 	}
 });
 
-likeController.delete("/:targetProfileId", async (req: Request, res: Response, next: NextFunction) => {
+likeController.delete("/:targetUserId", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const targetProfileId = req.params.targetProfileId;
+		const targetUserId = req.params.targetUserId;
 		const likeService = new LikeService(req.dbClient);
-		await likeService.deleteElement(req.userId, targetProfileId);
+		await likeService.deleteElement(req.userId, targetUserId);
 
 		res.status(200).json({ 
 			message: "Profile successfully unliked." 

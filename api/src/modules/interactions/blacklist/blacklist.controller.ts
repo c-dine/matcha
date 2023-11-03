@@ -20,9 +20,9 @@ blacklistController.get("/", async (req: Request, res: Response, next: NextFunct
 
 blacklistController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const targetProfileId = req.body.targetProfileId;
+		const targetUserId = req.body.targetUserId;
 		const blacklistService = new BlacklistService(req.dbClient);
-		const blacklistedUser = await blacklistService.addElement(req.userId, targetProfileId);
+		const blacklistedUser = await blacklistService.addElement(req.userId, targetUserId);
 
 		res.status(201).json({ 
 			data: blacklistedUser,
@@ -36,11 +36,11 @@ blacklistController.post("/", async (req: Request, res: Response, next: NextFunc
 	}
 });
 
-blacklistController.delete("/:targetProfileId", async (req: Request, res: Response, next: NextFunction) => {
+blacklistController.delete("/:targetUserId", async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const targetProfileId = req.params.targetProfileId;
+		const targetUserId = req.params.targetUserId;
 		const blacklistService = new BlacklistService(req.dbClient);
-		await blacklistService.deleteElement(req.userId, targetProfileId);
+		await blacklistService.deleteElement(req.userId, targetUserId);
 
 		res.status(200).json({ 
 			message: "Profile successfully unblacklisted." 

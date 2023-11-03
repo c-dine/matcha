@@ -10,7 +10,7 @@ import { Conversation, Message, MessageDto } from '@shared-models/chat.models';
 	providedIn: 'root'
 })
 export class ChatService {
-	currentUser!: User | undefined;
+	currentUser!: User | null;
 	subscriptions!: Subscription[];
 	route!: string;
 	
@@ -29,7 +29,7 @@ export class ChatService {
 	private storeCurrentUser() {
 		this.subscriptions.push(
 			this.userService.getCurrentUserObs().subscribe({
-				next: (user: User | undefined) =>
+				next: (user: User | null) =>
 					this.currentUser = user
 			})
 		);

@@ -1,58 +1,61 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
-import { ProfileService } from 'src/app/service/profile.service';
-import { ProfileFilters, UserList, UserProfile } from '@shared-models/profile.model';
 import { picturesIdsToPicturesUrls } from 'src/app/utils/picture.utils';
+import { ProfileFilters, User, UserList } from '@shared-models/user.model';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
 	selector: 'app-dating',
 	templateUrl: './dating.component.html',
-	styleUrls: ['./dating.component.css']
+	styleUrls: ['./dating.component.css'],
 })
 export class DatingComponent implements OnInit {
-	isLoading: boolean;
-	matchingProfiles!: UserProfile[];
-	filters: ProfileFilters;
-	picturesUrl!: string[];
+	isLoading = true;
+	matchingProfiles: User[] = [];
+	filters: ProfileFilters = { batchSize: 5, offset: 0 };
+	picturesUrl: string[] = [];
 	picturesIdsToPicturesUrls = picturesIdsToPicturesUrls;
 
-	constructor(
-		private profileService: ProfileService,
-	) {
+	constructor(private userService: UserService) { }
+
+	ngOnInit() {
+		this.initializeComponent();
+	}
+
+	private initializeComponent() {
+		this.loadMatchingProfiles();
+	}
+
+	private loadMatchingProfiles() {
 		this.isLoading = true;
-		this.picturesUrl = [];
-		this.filters = {
-			batchSize: 5,
-			offset: 0
-		};
-	}
-
-	async ngOnInit() {
-		this.getMatchingProfiles();
-	}
-
-	onDatingButtonClick() {
-		this.matchingProfiles = this.matchingProfiles.slice(1, this.matchingProfiles.length);
-		if (!this.matchingProfiles.length) {
-			this.getMatchingProfiles();
-		}
-	}
-
-	private getMatchingProfiles() {
-		this.isLoading = true;
-		this.profileService.getMatchingProfiles(this.filters).subscribe({
+		this.userService.getMatchingProfiles(this.filters).subscribe({
 			next: (userList: UserList) => {
-				this.filters.offset += userList.totalUserCount;
-				this.matchingProfiles = userList.userList;
-				this.isLoading = false;
+				this.handleMatchingProfilesLoaded(userList);
 			},
 			error: () => {
 				this.isLoading = false;
-			}
-		})
+			},
+		});
+	}
+
+	private handleMatchingProfilesLoaded(userList: UserList) {
+		this.filters.offset += userList.totalUserCount;
+		this.matchingProfiles = userList.userList;
+		this.isLoading = false;
+	}
+
+	onDatingButtonClick() {
+		this.removeTopMatchingProfile();
+		if (this.matchingProfiles.length === 0) {
+			this.loadMatchingProfiles();
+		}
+	}
+
+	private removeTopMatchingProfile() {
+		this.matchingProfiles.shift();
 	}
 
 	hasMatchingProfiles() {
-		return this.matchingProfiles?.length;
+		return this.matchingProfiles.length > 0;
 	}
 }
