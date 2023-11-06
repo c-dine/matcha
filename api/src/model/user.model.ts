@@ -47,6 +47,8 @@ export class UserModel extends ModelBase {
 					${isCurrentUser ? `
 					"user".user_given_location_latitude,
 					"user".user_given_location_longitude,
+					"user".location_longitude,
+					"user".location_latitude,
 					"user".email,` : ""}
 					currentUserLike.is_liked,
 					likedCurrentUser.is_liked as liked_current_user,

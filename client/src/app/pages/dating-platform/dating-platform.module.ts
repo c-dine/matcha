@@ -36,6 +36,7 @@ import {MatTableModule} from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     ProfileComponent,
     UserListComponent,
     UserListFiltersComponent,
-    SettingsComponent
+    SettingsComponent,
+	InteractiveMapComponent
   ],
   imports: [
     CommonModule,
