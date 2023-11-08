@@ -49,6 +49,13 @@
     grid-column: 2 / 19;
 }
 
+.conversation-input:focus {
+	outline: none !important;
+	outline-style: none !important;
+	box-shadow: none !important;
+	border-color: transparent !important;
+}
+
 .conversation-input-button {
 	height: 35px;
 	background-color: #F7F7FF;
@@ -59,6 +66,7 @@
 	justify-content: center;
 	align-items: center;
 	grid-column: 19 / 20;
+	cursor: pointer;
 }
 
 .conversation-input-icon {

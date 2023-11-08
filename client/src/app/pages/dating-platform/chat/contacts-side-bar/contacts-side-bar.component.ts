@@ -14,7 +14,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 export class ContactsSideBarComponent {
 	conversations!: Conversation[];
 	matchs!: Conversation[];
-	conversationUserId!: string | null;
+	routeUserId!: string | null;
 
 	@Output()
 	onConversationClick!: EventEmitter<any>;
@@ -31,46 +31,67 @@ export class ContactsSideBarComponent {
 	}
 
 	async ngOnInit() {
+		await this.handleRouteParams();
+		await this.loadConversations();
+		await this.loadMatchs();
+		this.processConversationsBasedOnRoute();
+	}
+
+	private async handleRouteParams() {
 		this.route.paramMap.subscribe((params: ParamMap) => {
-			this.conversationUserId = params.get('id');
+			this.routeUserId = params.get('id');
 		});
+	}
+
+	private async loadConversations() {
 		this.conversations = await firstValueFrom(this.chatService.getConversations());
-		this.matchs = (await this.getMatchs())
-			.filter(
-				(match) => !this.conversations.some(
-						(conversation) => conversation.user_id === match.user_id,
-						match
-					)
-			)
-		this.matchs = [...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs];
+	}
+
+	private async loadMatchs() {
+		this.matchs = await this.getMatchs();
 	}
 
 	private async getMatchs() {
 		return (await firstValueFrom(this.userService.getMatchs()))
-				.userList.map(
-						user => new Conversation(
-							user.firstName,
-							user.lastName,
-							"",
-							"",
-							user.id,
-							user.picturesIds,
-						)
+			.userList.map(
+				user => new Conversation(
+					user.firstName,
+					user.lastName,
+					"",
+					new Date(),
+					user.id,
+					user.picturesIds,
 				)
+			)
 	}
 
-	setConversationUserID(match: Conversation) {
-		let indexOfMatch = this.matchs.indexOf(match);
-		if (indexOfMatch > -1) {
-			this.matchs.splice(indexOfMatch, 1);
-			this.conversations.unshift(match);
+	private processConversationsBasedOnRoute() {
+		if (this.routeUserId && !this.conversationsHasUserId(this.routeUserId)) {
+			this.addMatchToConversations();
 		}
-		this.onConversationClick.emit(match);
+		this.filterAndRemoveExistingMatches();
+	}
+
+	private addMatchToConversations() {
+		let match = this.matchs.find((conv) => conv.user_id === this.routeUserId);
+		if (match) {
+			this.conversations.push(match);
+		}
+	}
+
+	private filterAndRemoveExistingMatches() {
+		this.matchs = this.matchs.filter((match) => {
+			return !this.conversations.some((conversation) => conversation.user_id === match.user_id) && match.user_id !== this.routeUserId;
+		});
+	}
+
+	private conversationsHasUserId(userId: string): boolean {
+		return this.conversations.some((conversation) => conversation.user_id === userId);
 	}
 
 	navigateToUserConversation(userId: string | undefined) {
 		if (!userId)
-			return ;
-		this.router.navigate([`app/chat/${userId}`])
+			return;
+		return this.router.navigate([`app/chat/${userId}`])
 	}
 }

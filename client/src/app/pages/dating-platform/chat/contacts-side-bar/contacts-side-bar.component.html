@@ -1,6 +1,5 @@
 <div class="chat-side-bar-container">
 	<app-chat-match-bar
-		(onMatchClick)="setConversationUserID($event)"
 		[matchs]="matchs"
 	/>
 	<h4 class="chat-section-title">CHATS</h4>
@@ -9,8 +8,8 @@
 			*ngFor="let conversation of conversations"
 			class="contact-cards"
 			[conversation]="conversation"
-			[activated]="conversation.user_id === conversationUserId"
-			(click)="setConversationUserID(conversation);navigateToUserConversation(conversation.user_id)"
+			[activated]="conversation.user_id === routeUserId"
+			(click)="navigateToUserConversation(conversation.user_id)"
 		/>
 	</div>
 </div>

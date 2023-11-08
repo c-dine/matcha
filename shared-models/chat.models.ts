@@ -18,7 +18,7 @@ export class Conversation {
 		public firstname: string,
 		public lastname: string,
 		public last_message: string,
-		public latest_date: string,
+		public latest_date: Date,
 		public user_id?: string,
 		public picturesIds?: ProfilePicturesIds,
 	) { }

@@ -13,21 +13,12 @@ export class ChatMatchBarComponent {
 	@Input()
 	matchs!: Conversation[];
 
-	@Output()
-	onMatchClick!: EventEmitter<any>;
-
 	constructor(
 		private router: Router
-	) {
-		this.onMatchClick = new EventEmitter();
-	}
+	) {}
 
 	pictureIdToPictureUrl(id: string| undefined) {
 		return getFirebasePictureUrl(id);
-	}
-
-	setConversation(conversation: Conversation) {
-		this.onMatchClick.emit(conversation);
 	}
 
 	getProfilePictureUrl(userId: string | undefined): string {
@@ -37,6 +28,6 @@ export class ChatMatchBarComponent {
 	navigateToUserConversation(userId: string | undefined) {
 		if (!userId)
 			return ;
-		this.router.navigate([`app/chat/${userId}`])
+		this.router.navigate([`app/chat/${userId}`]);
 	}
 }
