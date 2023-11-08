@@ -73,3 +73,13 @@
 	font-size: 20px;
 	color: #5D5FEF;
 }
+
+.lottie_container {
+	display: grid;
+	height: calc(100% - 60px);
+	grid-template-columns: repeat(10, 1fr);
+}
+
+.lottie_grid_position {
+	grid-column: 4 / 12;
+}

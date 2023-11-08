@@ -37,7 +37,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ChatTypingMessageComponent } from './chat/conversation/typing-message/chat-typing-message.component';
+import { LottieModule } from 'ngx-lottie';
 
+export function playerFactory() {
+  return import(/* webpackChunkName: 'lottie-web' */ 'lottie-web');
+}
 @NgModule({
 	declarations: [
 		DatingPlatformComponent,
@@ -82,7 +86,8 @@ import { ChatTypingMessageComponent } from './chat/conversation/typing-message/c
 		MatTableModule,
 		MatProgressSpinnerModule,
 		MatTabsModule,
-		MatCheckboxModule
+		MatCheckboxModule,
+		LottieModule.forRoot({ player: playerFactory }),
 	]
 })
 export class DatingPlatformModule { }
