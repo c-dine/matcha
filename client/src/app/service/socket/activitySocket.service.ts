@@ -9,7 +9,11 @@ export class ActivitySocketService extends SocketService {
 		super('/activity');
 	}
 
-	sendMessage(message: string) {
-		this.emit('sendMessage', message);
+	newActivity(type: string, toUserId: string) {
+		this.emit('new activity', { message: type, toUserId: toUserId });
+	}
+
+	getNewActivity() {
+		return this.on('new activity');
 	}
 }

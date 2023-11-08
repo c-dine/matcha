@@ -10,6 +10,9 @@ import { Component } from '@angular/core';
 })
 export class DatingButtonComponent {
 	@Input()
+	name!: string;
+
+	@Input()
 	iconName!: string;
 
 	@Input()
@@ -19,6 +22,6 @@ export class DatingButtonComponent {
 	clicked: EventEmitter<any> = new EventEmitter();
 
 	onClick(): void {
-		this.clicked.emit();
+		this.clicked.emit(this.name);
 	}
 }

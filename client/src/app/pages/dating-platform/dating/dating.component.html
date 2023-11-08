@@ -7,7 +7,7 @@
 				<app-image-slider [picturesUrl]="picturesIdsToPicturesUrls(matchingProfiles[0].picturesIds)"></app-image-slider>
 			</div>
 			<app-dating-card-description
-				(clicked)="onDatingButtonClick()"
+				(clicked)="onDatingButtonClick($event)"
 				[firstName]="matchingProfiles[0].firstName"
 				[lastName]="matchingProfiles[0].lastName"
 				[distance]="matchingProfiles[0].ditanceKm"

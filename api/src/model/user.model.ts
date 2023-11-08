@@ -213,6 +213,7 @@ export class UserModel extends ModelBase {
 			WHERE "user".id != '${currentUser.id}'
 			AND "user".gender = '${currentUser.sexual_preferences}'
 			AND "user".sexual_preferences = '${currentUser.gender}'
+			AND "user".id NOT IN (SELECT target_user_id FROM "like" WHERE user_id = '${currentUser.id}')
 			GROUP BY
 				"user".id,
 				"user".username,

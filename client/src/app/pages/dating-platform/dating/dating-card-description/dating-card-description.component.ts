@@ -24,7 +24,7 @@ export class DatingCardDescriptionComponent {
   @Output()
   clicked: EventEmitter<any> = new EventEmitter();
 
-  receiveClickEvent(): void {
-    this.clicked.emit();
+  receiveClickEvent(name: string): void {
+    this.clicked.emit(name);
   }
 }

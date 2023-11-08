@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { picturesIdsToPicturesUrls } from 'src/app/utils/picture.utils';
 import { ProfileFilters, User, UserList } from '@shared-models/user.model';
 import { UserService } from 'src/app/service/user.service';
+import { LikeService } from 'src/app/service/like.service';
+import { take } from 'rxjs';
 
 @Component({
 	selector: 'app-dating',
@@ -16,7 +18,10 @@ export class DatingComponent implements OnInit {
 	picturesUrl: string[] = [];
 	picturesIdsToPicturesUrls = picturesIdsToPicturesUrls;
 
-	constructor(private userService: UserService) { }
+	constructor(
+		private userService: UserService,
+		private likeService: LikeService,
+	) { }
 
 	ngOnInit() {
 		this.initializeComponent();
@@ -44,7 +49,14 @@ export class DatingComponent implements OnInit {
 		this.isLoading = false;
 	}
 
-	onDatingButtonClick() {
+	onDatingButtonClick(buttonName: string) {
+		if (buttonName === 'like') {
+			console.log('like')
+			this.likeService.likeProfile(this.matchingProfiles[0]).pipe(take(1)).subscribe();
+		}
+		else if (buttonName === 'dislike' && this.matchingProfiles[0].id) {
+			this.likeService.dislikeProfile(this.matchingProfiles[0].id).pipe(take(1)).subscribe();
+		}
 		this.removeTopMatchingProfile();
 		if (this.matchingProfiles.length === 0) {
 			this.loadMatchingProfiles();
