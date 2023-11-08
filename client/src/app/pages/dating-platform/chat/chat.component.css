@@ -1,8 +1,16 @@
 .matcha-chat-container {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
+    display: grid;
     width: 100%;
     height: 100%;
-    flex: 2 1 auto;
+	grid-template-columns: repeat(40, 1fr);
+}
+
+.matcha-chat-side-bar {
+    grid-column: 1 / 10;
+}
+
+.matcha-chat-conversation-container {
+    grid-column: 10 / 41;
+    height: 100%;
+    background-color: white;
 }

@@ -7,52 +7,55 @@ import { UserService } from 'src/app/service/user.service';
 @Component({
 	selector: 'app-dating',
 	templateUrl: './dating.component.html',
-	styleUrls: ['./dating.component.css']
+	styleUrls: ['./dating.component.css'],
 })
 export class DatingComponent implements OnInit {
-	isLoading: boolean;
-	matchingProfiles!: User[];
-	filters: ProfileFilters;
-	picturesUrl!: string[];
+	isLoading = true;
+	matchingProfiles: User[] = [];
+	filters: ProfileFilters = { batchSize: 5, offset: 0 };
+	picturesUrl: string[] = [];
 	picturesIdsToPicturesUrls = picturesIdsToPicturesUrls;
 
-	constructor(
-		private userService: UserService,
-	) {
-		this.isLoading = true;
-		this.picturesUrl = [];
-		this.filters = {
-			batchSize: 5,
-			offset: 0
-		};
+	constructor(private userService: UserService) { }
+
+	ngOnInit() {
+		this.initializeComponent();
 	}
 
-	async ngOnInit() {
-		this.getMatchingProfiles();
+	private initializeComponent() {
+		this.loadMatchingProfiles();
 	}
 
-	onDatingButtonClick() {
-		this.matchingProfiles = this.matchingProfiles.slice(1, this.matchingProfiles.length);
-		if (!this.matchingProfiles.length) {
-			this.getMatchingProfiles();
-		}
-	}
-
-	private getMatchingProfiles() {
+	private loadMatchingProfiles() {
 		this.isLoading = true;
 		this.userService.getMatchingProfiles(this.filters).subscribe({
 			next: (userList: UserList) => {
-				this.filters.offset += userList.totalUserCount;
-				this.matchingProfiles = userList.userList;
-				this.isLoading = false;
+				this.handleMatchingProfilesLoaded(userList);
 			},
 			error: () => {
 				this.isLoading = false;
-			}
-		})
+			},
+		});
+	}
+
+	private handleMatchingProfilesLoaded(userList: UserList) {
+		this.filters.offset += userList.totalUserCount;
+		this.matchingProfiles = userList.userList;
+		this.isLoading = false;
+	}
+
+	onDatingButtonClick() {
+		this.removeTopMatchingProfile();
+		if (this.matchingProfiles.length === 0) {
+			this.loadMatchingProfiles();
+		}
+	}
+
+	private removeTopMatchingProfile() {
+		this.matchingProfiles.shift();
 	}
 
 	hasMatchingProfiles() {
-		return this.matchingProfiles?.length;
+		return this.matchingProfiles.length > 0;
 	}
 }

@@ -11,7 +11,7 @@ import { DatingCardPassionsComponent } from './dating/dating-card-passions/datin
 import { ContactsSideBarComponent } from './chat/contacts-side-bar/contacts-side-bar.component';
 import { ContactCardComponent } from './chat/contacts-side-bar/contact-card/contact-card.component';
 import { ConversationComponent } from './chat/conversation/conversation.component';
-import { ChatSearchBarComponent } from './chat/contacts-side-bar/chat-search-bar/chat-search-bar.component';
+import { ChatMatchBarComponent } from './chat/contacts-side-bar/chat-match-bar/chat-match-bar.component';
 import { ChatMessageComponent } from './chat/conversation/chat-message/chat-message.component';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,61 +27,62 @@ import { UserListComponent } from './user-list/user-list.component';
 import { SharedModule } from "../../shared/shared.module";
 import { UserListFiltersComponent } from './user-list/user-list-filters/user-list-filters.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {MatSelectModule} from '@angular/material/select';
-import {NgxPaginationModule} from 'ngx-pagination';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { SettingsComponent } from './settings/settings.component';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ChatTypingMessageComponent } from './chat/conversation/typing-message/chat-typing-message.component';
+
 @NgModule({
-  declarations: [
-    DatingPlatformComponent,
-    ChatComponent,
-    DatingComponent,
-    ProfileComponent,
-    DatingButtonComponent,
-    DatingCardDescriptionComponent,
-    DatingCardPassionsComponent,
-    ChatComponent,
-	ChatTypingMessageComponent,
-    ContactsSideBarComponent,
-    ContactCardComponent,
-    ConversationComponent,
-    ChatSearchBarComponent,
-    ChatMessageComponent,
-    ProfileComponent,
-    UserListComponent,
-    UserListFiltersComponent,
-    SettingsComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatIconModule,
-    MatChipsModule,
-    MatAutocompleteModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatDialogModule,
-    ReactiveFormsModule,
-    FormsModule,
-    DatingPlatformRoutingModule,
-    MatInputModule,
-    MatRadioModule,
-    MatTooltipModule,
-    SharedModule,
-    MatSelectModule,
-    NgxPaginationModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
-    MatCheckboxModule
-  ]
+	declarations: [
+		DatingPlatformComponent,
+		ChatComponent,
+		DatingComponent,
+		ProfileComponent,
+		DatingButtonComponent,
+		DatingCardDescriptionComponent,
+		DatingCardPassionsComponent,
+		ChatComponent,
+		ChatTypingMessageComponent,
+		ContactsSideBarComponent,
+		ContactCardComponent,
+		ConversationComponent,
+		ChatMatchBarComponent,
+		ChatMessageComponent,
+		ProfileComponent,
+		UserListComponent,
+		UserListFiltersComponent,
+		SettingsComponent,
+	],
+	imports: [
+		CommonModule,
+		RouterModule,
+		MatIconModule,
+		MatChipsModule,
+		MatAutocompleteModule,
+		MatFormFieldModule,
+		MatButtonModule,
+		MatDialogModule,
+		ReactiveFormsModule,
+		FormsModule,
+		DatingPlatformRoutingModule,
+		MatInputModule,
+		MatRadioModule,
+		MatTooltipModule,
+		SharedModule,
+		MatSelectModule,
+		NgxPaginationModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
+		MatTableModule,
+		MatProgressSpinnerModule,
+		MatTabsModule,
+		MatCheckboxModule
+	]
 })
 export class DatingPlatformModule { }

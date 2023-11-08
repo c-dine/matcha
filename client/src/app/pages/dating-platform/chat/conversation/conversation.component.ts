@@ -23,12 +23,16 @@ export class ConversationComponent extends SubscriptionBase implements OnInit, O
 		private route: ActivatedRoute,
 		private router: Router,
 	) {
-		super()
+		super();
 	}
 
 	ngOnInit(): void {
 		this.setUpCurrentUserSubscription();
 		this.setupRouteSubscription();
+	}
+
+	override ngOnDestroy(): void {
+		this.messageService.clearMesages();
 	}
 
 	private setUpCurrentUserSubscription(): void {
@@ -78,6 +82,6 @@ export class ConversationComponent extends SubscriptionBase implements OnInit, O
 	}
 
 	hasConversationSelected(): boolean {
-		return this.conversationUser?.id !== null;
+		return !!this.conversationUser?.id;
 	}
 }

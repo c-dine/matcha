@@ -1,16 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { ProfileService } from 'src/app/service/profile.service';
-import { Subscription } from 'rxjs'
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { Output, EventEmitter } from '@angular/core';
 import { Conversation } from '@shared-models/chat.models';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-chat-search-bar',
-  templateUrl: './chat-search-bar.component.html',
-  styleUrls: ['./chat-search-bar.component.css']
+  selector: 'app-chat-match-bar',
+  templateUrl: './chat-match-bar.component.html',
+  styleUrls: ['./chat-match-bar.component.css', '../../../../../styles/text.css']
 })
-export class ChatSearchBarComponent {
+export class ChatMatchBarComponent {
 	@Input()
 	matchs!: Conversation[];
 
@@ -18,11 +17,9 @@ export class ChatSearchBarComponent {
 	onMatchClick!: EventEmitter<any>;
 
 	constructor(
+		private router: Router
 	) {
 		this.onMatchClick = new EventEmitter();
-	}
-
-	ngOnInit() {
 	}
 
 	pictureIdToPictureUrl(id: string| undefined) {
@@ -31,5 +28,15 @@ export class ChatSearchBarComponent {
 
 	setConversation(conversation: Conversation) {
 		this.onMatchClick.emit(conversation);
+	}
+
+	getProfilePictureUrl(userId: string | undefined): string {
+		return getFirebasePictureUrl(userId);
+	}
+
+	navigateToUserConversation(userId: string | undefined) {
+		if (!userId)
+			return ;
+		this.router.navigate([`app/chat/${userId}`])
 	}
 }

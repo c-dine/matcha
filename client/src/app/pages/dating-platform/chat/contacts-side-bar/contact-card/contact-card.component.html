@@ -1,18 +1,17 @@
-<div [ngClass]="{'matcha-contact-card-activated': activated}" class="matcha-flex-row matcha-flex-align-center matcha-contact-card-container">
-	<div class="matcha-contact-card-padding-sides">
-		<div class="matcha-flex-row matcha-gap-10px">
-			<img class="matcha-contact-card-image matcha-object-fit-cover " [src]=pictureIdToUrl(conversation.picturesIds?.profilePicture)/>
-			<div class="matcha-flex-column matcha-flex-column">
-				<h6 class="matcha-contact-card-overflow-ellispis matcha-contact-card-name">
-					{{ conversation.lastname }} {{ conversation.firstname }}
-				</h6>
-				<p class="matcha-contact-card-message matcha-contact-card-overflow-ellispis">
-					{{ conversation.last_message }}
-				</p>
-			</div>
-			<div class="matcha-contact-card-time-container matcha-flex-row-reverse">
-				<p class="matcha-contact-card-message">12m</p>
-			</div>
+<div [ngClass]="{'contact-card-activated': activated}" class="contact-card-container">
+		<div class="contact-card-image-cotainer">
+			<img class="contact-card-image object-fit-cover "
+				[src]=pictureIdToUrl(conversation.picturesIds?.profilePicture) />
 		</div>
-	</div>
+		<div class="contact-card-text-container">
+			<h6 class="contact-card-overflow-ellispis contact-card-name">
+				{{ conversation.lastname }} {{ conversation.firstname }}
+			</h6>
+			<p class="contact-card-message contact-card-overflow-ellispis">
+				{{ conversation.last_message }}
+			</p>
+		</div>
+		<div class="contact-card-time-container">
+			<p class="contact-card-message">12m</p>
+		</div>
 </div>

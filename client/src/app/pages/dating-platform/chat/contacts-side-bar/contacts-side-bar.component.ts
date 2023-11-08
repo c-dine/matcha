@@ -9,7 +9,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 @Component({
 	selector: 'app-contacts-side-bar',
 	templateUrl: './contacts-side-bar.component.html',
-	styleUrls: ['./contacts-side-bar.component.css']
+	styleUrls: ['./contacts-side-bar.component.css', '../../../../styles/text.css']
 })
 export class ContactsSideBarComponent {
 	conversations!: Conversation[];
@@ -42,6 +42,7 @@ export class ContactsSideBarComponent {
 						match
 					)
 			)
+		this.matchs = [...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs, ...this.matchs];
 	}
 
 	private async getMatchs() {
@@ -72,5 +73,4 @@ export class ContactsSideBarComponent {
 			return ;
 		this.router.navigate([`app/chat/${userId}`])
 	}
-
 }

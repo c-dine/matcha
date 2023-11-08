@@ -1,0 +1,11 @@
+.matcha-chat-matchs-container {
+	overflow-x: scroll;
+	gap: 6px;
+	height: 50px;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+.matcha-avatar-container {
+	cursor: pointer;
+}

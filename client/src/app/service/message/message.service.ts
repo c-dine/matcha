@@ -3,8 +3,9 @@ import { Message } from '@shared-models/chat.models';
 import { take } from 'rxjs';
 import { ChatService } from '../chat.service';
 import { ChatSocketService } from '../socket/chatSocket.service';
-import MessageError, { MessageErrorCode } from './message.error';
+import { MessageError, MessageErrorCode } from './message.error';
 import { SubscriptionBase } from 'src/app/shared/subscriptionBase/subscription-base.component';
+import { limits } from '@environment/database_limits';
 
 @Injectable({
 	providedIn: 'root'
@@ -18,6 +19,7 @@ export class MessageService extends SubscriptionBase {
 	constructor(
 		private chatService: ChatService,
 		private chatSocket: ChatSocketService,
+		private messageError: MessageError,
 	) {
 		super();
 		this.setupSocketSubscriptions();
@@ -34,27 +36,46 @@ export class MessageService extends SubscriptionBase {
 	}
 
 	sendMessage(): void {
-		if (!this.conversationUserId) {
-			MessageError.handleError(MessageErrorCode.NoConversationSelected);
-			return;
+		try {
+			this.tryMessageError();
+			this.chatService.sendMessage(this.conversationUserId!, this.messageToSend).pipe(take(1)).subscribe({
+				next: (sendedMessage) => {
+					this.messages.unshift(sendedMessage);
+					this.chatSocket.sendMessage(sendedMessage.message, this.conversationUserId!);
+					this.messageToSend = '';
+				},
+			});
 		}
-		if (this.isEmptyMessageToSend()) {
-			return;	
+		catch (error: any) {
+			this.messageError.handleError(error.message);
 		}
+	}
 
-		this.chatService.sendMessage(this.conversationUserId, this.messageToSend).pipe(take(1)).subscribe({
-			next: (sendedMessage) => {
-				if (!this.conversationUserId) return;
-				this.messages.unshift(sendedMessage);
-				this.chatSocket.sendMessage(sendedMessage.message, this.conversationUserId);
-				this.messageToSend = '';
-			},
+	private tryMessageError(): void {
+		const errors = [
+			[ !this.conversationUserId, MessageErrorCode.NoConversationSelected ],
+			[ this.isEmptyMessageToSend(), MessageErrorCode.EmptyMessage ],
+			[ this.isOverMaxMessageLength(), MessageErrorCode.OverMaxLenth ],
+		]
+
+		errors.forEach(hasError => {
+			if (hasError[0] === true) {
+				throw new Error(hasError[1] as string);
+			}
 		});
+	}
+
+	private isEmptyMessageToSend(): boolean {
+		return this.messageToSend.length === 0;
+	}
+
+	private isOverMaxMessageLength(): boolean {
+		return this.messageToSend.length > limits.MESSAGE_MAX_LENGTH;
 	}
 
 	sendTyping(): void {
 		if (!this.conversationUserId) {
-			MessageError.handleError(MessageErrorCode.NoConversationSelected);
+			this.messageError.handleError(MessageErrorCode.NoConversationSelected);
 			return;
 		}
 		this.chatSocket.sendTyping(this.conversationUserId);
@@ -62,14 +83,14 @@ export class MessageService extends SubscriptionBase {
 
 	sendStopTyping(): void {
 		if (!this.conversationUserId) {
-			MessageError.handleError(MessageErrorCode.NoConversationSelected);
+			this.messageError.handleError(MessageErrorCode.NoConversationSelected);
 			return;
 		}
 		this.chatSocket.sendStopTyping(this.conversationUserId);
 	}
 
-	isEmptyMessageToSend(): boolean {
-		return this.messageToSend.length === 0;
+	clearMesages() {
+		this.messages = [];
 	}
 
 	private setupSocketSubscriptions(): void {
@@ -116,4 +137,3 @@ export class MessageService extends SubscriptionBase {
 		this.messages.unshift(message);
 	}
 }
-
