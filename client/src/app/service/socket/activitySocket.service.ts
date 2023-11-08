@@ -9,8 +9,8 @@ export class ActivitySocketService extends SocketService {
 		super('/activity');
 	}
 
-	newActivity(type: string, toUserId: string) {
-		this.emit('new activity', { message: type, toUserId: toUserId });
+	newActivity(message: "like" | "unlike" | "dislike" | "view" | "match", toUserId: string) {
+		this.emit('new activity', { message: message, toUserId: toUserId });
 	}
 
 	getNewActivity() {

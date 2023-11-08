@@ -11,11 +11,12 @@ import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
 import { LikeService } from 'src/app/service/like.service';
 import { PictureService } from 'src/app/service/picture.service';
+import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
 import { UserService } from 'src/app/service/user.service';
 import { ViewService } from 'src/app/service/view.service';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
-import { ageValidator, dateIsPastDateValidator, minArrayLengthValidator } from 'src/app/validators/custom-validators';
+import { ageValidator, dateIsPastDateValidator } from 'src/app/validators/custom-validators';
 
 @Component({
   selector: 'app-profile',
@@ -48,7 +49,8 @@ export class ProfileComponent {
 		private blacklistService: BlacklistService,
 		private fakeReportService: FakeReportService,
 		private viewService: ViewService,
-		private likeService: LikeService
+		private likeService: LikeService,
+		private activitySocket: ActivitySocketService,
 	) { }
 
 	async ngOnInit() {
@@ -58,8 +60,10 @@ export class ProfileComponent {
 				this.userService.getUserProfile(params.get("id") as string).subscribe({
 					next: (profile) => {
 						this.profile = profile;
-						if (profile?.id)
+						if (profile?.id) {
 							this.viewService.addView(profile);
+							this.activitySocket.newActivity('view', profile.id);
+						}
 						this.isLoading = false;
 					},
 					error: async () => { await this.getCurrentUser(); this.isLoading = false; },
@@ -212,6 +216,10 @@ export class ProfileComponent {
 		if (this.profile.isLiked !== undefined && this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.likeProfile(this.profile));
+		if (this.profileLikedCurrentUser())
+			this.activitySocket.newActivity('match', this.profile?.id);
+		else
+			this.activitySocket.newActivity('like', this.profile?.id);
 		this.updateProfileStats("like");
 		this.profile.isLiked = true;
 	}
@@ -222,6 +230,7 @@ export class ProfileComponent {
 		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
+		this.activitySocket.newActivity('dislike', this.profile?.id);
 		this.updateProfileStats("dislike");
 		this.profile.isLiked = false;
 	}
@@ -240,6 +249,7 @@ export class ProfileComponent {
 	async unlikeProfile() {
 		if (!this.profile?.id) return;
 		await firstValueFrom(this.likeService.unlikeProfile(this.profile.id));
+		this.activitySocket.newActivity('unlike', this.profile?.id);
 		this.updateProfileStats("unlike");
 		this.profile.isLiked = undefined;
 	}

@@ -5,6 +5,7 @@ import { ProfileFilters, User, UserList } from '@shared-models/user.model';
 import { UserService } from 'src/app/service/user.service';
 import { LikeService } from 'src/app/service/like.service';
 import { take } from 'rxjs';
+import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
 
 @Component({
 	selector: 'app-dating',
@@ -21,6 +22,7 @@ export class DatingComponent implements OnInit {
 	constructor(
 		private userService: UserService,
 		private likeService: LikeService,
+		private activitySocket: ActivitySocketService,
 	) { }
 
 	ngOnInit() {
@@ -51,15 +53,28 @@ export class DatingComponent implements OnInit {
 
 	onDatingButtonClick(buttonName: string) {
 		if (buttonName === 'like') {
-			console.log('like')
-			this.likeService.likeProfile(this.matchingProfiles[0]).pipe(take(1)).subscribe();
+			this.likeSubscribeAndNewActivity();
 		}
-		else if (buttonName === 'dislike' && this.matchingProfiles[0].id) {
-			this.likeService.dislikeProfile(this.matchingProfiles[0].id).pipe(take(1)).subscribe();
+		else if (buttonName === 'dislike') {
+			this.dislikeSubscribeAndNewActivity();
 		}
 		this.removeTopMatchingProfile();
 		if (this.matchingProfiles.length === 0) {
 			this.loadMatchingProfiles();
+		}
+	}
+
+	private likeSubscribeAndNewActivity() {
+		if (this.matchingProfiles[0].id) {
+			this.likeService.likeProfile(this.matchingProfiles[0]).pipe(take(1)).subscribe();
+			this.activitySocket.newActivity('like', this.matchingProfiles[0].id);
+		}
+	}
+
+	private dislikeSubscribeAndNewActivity() {
+		if (this.matchingProfiles[0].id) {
+			this.likeService.dislikeProfile(this.matchingProfiles[0].id).pipe(take(1)).subscribe();
+			this.activitySocket.newActivity('dislike', this.matchingProfiles[0].id)
 		}
 	}
 
