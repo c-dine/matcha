@@ -70,6 +70,7 @@ export class UserService {
 	}
 
 	updateUser(updatedUser: User): Observable<User> {
+		console.log(updatedUser)
 		const currentUser = this.currentUserSubject.value;
 		this.currentUserSubject.next({
 			...currentUser,

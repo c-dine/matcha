@@ -107,6 +107,7 @@ export class InteractiveMapComponent {
 
 			if (!popup || !this.selectedFeature) return;
 			const user = this.otherUsers.find(user => user.id === this.selectedFeature.getProperties()['name']);
+			if (!user) return;
 			
 			(document.getElementById('popup-user-details') as HTMLElement).innerHTML = `
 				<span class="popup-user-name">${user?.username}</span>
@@ -161,7 +162,7 @@ export class InteractiveMapComponent {
 				this.currentUser?.userGivenLocation?.latitude || this.currentUser?.location?.latitude || 0
 			])),
 			projection: 'EPSG:4326',
-			name: 'currentUser'
+			name: this.currentUser?.id
 		});
 		pinFeature.setStyle(
 			new Style({
