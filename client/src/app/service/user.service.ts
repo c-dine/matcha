@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { BehaviorSubject, Observable, firstValueFrom, map, tap } from 'rxjs';
-import { GeoCoordinate, ProfileFilters, UserList, User } from "@shared-models/user.model.js"
+import { GeoCoordinate, ProfileFilters, UserList, User, MapGeoCoordinates } from "@shared-models/user.model.js"
 import { buildHttpParams } from '../utils/http.utils';
 
 @Injectable({
@@ -57,6 +57,13 @@ export class UserService {
 		});
 	}
 
+	getMapUsers(mapCoordinates: MapGeoCoordinates): Observable<UserList> {
+		const params = buildHttpParams(mapCoordinates);
+		return this.http.get<UserList>(`${environment.apiUrl}/user/mapUsers`, {
+			params
+		});
+	}
+
 	getMatchingProfiles(filters: ProfileFilters): Observable<UserList> {
 		const params = buildHttpParams(filters);
 		return this.http.get<UserList>(`${environment.apiUrl}/user/matchingProfiles`, {
@@ -100,6 +107,14 @@ export class UserService {
 	}
 
 	setTrackingLocation(location?: GeoCoordinate) {
+		if (location && (location.latitude === this.currentUserSubject.value?.location?.latitude &&
+			location.longitude === this.currentUserSubject.value?.location.longitude))
+			return new Observable(undefined);
+		if (location && this.currentUserSubject.value) {
+			const currentUser = this.currentUserSubject.value;
+			currentUser.location = location;
+			this.currentUserSubject.next(currentUser);
+		}
 		return this.http.post<any>(`${environment.apiUrl}/user/setTrackingLocation`, location);
 	}
 

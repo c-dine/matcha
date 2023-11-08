@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ModelBase } from "./base.js";
-import { GeoCoordinate, ProfileFilters, UserListFilters } from "@shared-models/user.model.js";
+import { GeoCoordinate, MapGeoCoordinates, ProfileFilters, UserListFilters } from "@shared-models/user.model.js";
 
 export class UserModel extends ModelBase {
 
@@ -308,6 +308,34 @@ export class UserModel extends ModelBase {
 				(SELECT AVG(view_count_per_user) FROM (SELECT target_user_id, COUNT(*) as view_count_per_user FROM "view" GROUP BY target_user_id) AS view_count_per_user_subquery) AS average_views
 			FROM "user"
 			WHERE "user".id ='${userId}'
+		`;
+	}
+
+	async getMapUsers(mapCoordinates: MapGeoCoordinates, currentUserId: string) {
+		const query = this.getMapUsersQuery(currentUserId);
+		const values = [
+			mapCoordinates.topLatitude,
+			mapCoordinates.bottomLatitude,
+			mapCoordinates.rightLongitude,
+			mapCoordinates.leftLongitude
+		];
+		const result = await this.dbClient.query(query);
+		return result.rows;
+	}
+
+	getMapUsersQuery(currentUserId: string) {
+		return `
+			SELECT
+				"user".username,
+				"user".location_latitude,
+				"user".location_longitude,
+				"user".user_given_location_latitude,
+				"user".user_given_location_longitude,
+				"user".id
+			FROM "user"
+			WHERE ("user".location_latitude < $1 AND "user".location_latitude > $2 AND "user".location_longitude < $3 AND "user".location_longitude > $4) OR
+				  ("user".user_given_location_latitude < $1 AND "user".user_given_location_latitude > $2 AND "user".user_given_location_longitude < $3 AND "user".user_given_location_longitude > $4)
+				  AND "user".id <> ${currentUserId}
 		`;
 	}
 }

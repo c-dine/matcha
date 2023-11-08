@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { UserModel } from "../../model/user.model.js";
-import { GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/user.model.js"
+import { GeoCoordinate, MapGeoCoordinates, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/user.model.js"
 import { env } from "../../config/config.js";
 import { User } from "@shared-models/user.model.js";
 
@@ -115,6 +115,11 @@ export class UserService {
 					likedCurrentUser: user.liked_current_user === null ? undefined : user.liked_current_user,
 				}))
 		};
+	}
+
+	async getMapList(mapCoordinates: MapGeoCoordinates, userId: string) {
+		const users = await this.userModel.getMapUsers(mapCoordinates, userId);
+		return users.map(this.formatUser);
 	}
 
 	async getMatchingProfiles(userId: string, filters: ProfileFilters): Promise<UserList> {

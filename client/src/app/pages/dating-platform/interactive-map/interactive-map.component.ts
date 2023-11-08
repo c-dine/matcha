@@ -1,14 +1,17 @@
 import { Component } from "@angular/core";
-import { User } from "@shared-models/user.model";
+import { MapUser, User } from "@shared-models/user.model";
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { Subscription } from "rxjs";
 import { UserService } from "src/app/service/user.service";
+import VectorLayer from 'ol/layer/Vector.js';
+import VectorSource from 'ol/source/Vector.js';
+import Point from 'ol/geom/Point'
 import Feature from 'ol/Feature.js';
-import Layer from 'ol/';
-import Point from 'ol/geom/Point.js';
+import Icon from 'ol/style/Icon';
+import Style from 'ol/style/Style';
 
 @Component({
 	selector: 'app-interactive-map',
@@ -19,6 +22,7 @@ export class InteractiveMapComponent {
 
 	map!: Map;
 	currentUser: User | null = null;
+	otherUsers: MapUser[] = [];
 
 	mySubscriptions: Subscription[] = [];
 
@@ -35,6 +39,9 @@ export class InteractiveMapComponent {
 				}
 			})
 		);
+		this.mySubscriptions.push(
+			this.userService.
+		)
 		this.initMap();
 	}
 
@@ -56,9 +63,9 @@ export class InteractiveMapComponent {
 					this.currentUser?.userGivenLocation?.latitude || this.currentUser?.location?.latitude || 0
 				],
 				projection: 'EPSG:4326',
-				zoom: 15,
+				zoom: 18,
 				minZoom: 10,
-				maxZoom: 20,
+				maxZoom: 19,
 			}),
 		});
 		this.addUsersPins();
@@ -66,20 +73,34 @@ export class InteractiveMapComponent {
 
 	addUsersPins() {
 		this.addCurrentUserPin();
+		this.addOtherUsersPins();
 	}
 
 	addCurrentUserPin() {
-		// const layer = new Layer({
-		// 	source: new Source({
-		// 		features: [
-		// 			new Feature({
-		// 				geometry: new Point(([
-		// 					this.currentUser?.userGivenLocation?.longitude || this.currentUser?.location?.longitude || 0,
-		// 					this.currentUser?.userGivenLocation?.latitude || this.currentUser?.location?.latitude || 0
-		// 				]))
-		// 			})
-		// 		]
-		// 	})
-		// });
+		const pinFeature = new Feature({
+			geometry: new Point(([
+				this.currentUser?.userGivenLocation?.longitude || this.currentUser?.location?.longitude || 0,
+				this.currentUser?.userGivenLocation?.latitude || this.currentUser?.location?.latitude || 0
+			])),
+			projection: 'EPSG:4326'
+		});
+		pinFeature.setStyle(
+			new Style({
+				image: new Icon({
+					src: 'https://cdn-icons-png.flaticon.com/512/149/149059.png',
+					scale: 0.1,
+				}),
+			})
+		);
+		const vectorLayer = new VectorLayer({
+			source: new VectorSource({
+				features: [ pinFeature ],
+			}),
+		});
+		this.map.addLayer(vectorLayer);
+	}
+
+	addOtherUsersPins() {
+
 	}
 }

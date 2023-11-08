@@ -4,7 +4,7 @@ import { UserService } from './user.service.js';
 import { TagService } from '../tag/tag.service.js';
 import { PictureService } from '../picture/picture.service.js';
 import { env } from '../../config/config.js';
-import { GeoCoordinate, ProfileFilters, ProfileFiltersRequest, User } from '@shared-models/user.model.js';
+import { GeoCoordinate, MapGeoCoordinates, ProfileFilters, ProfileFiltersRequest, User } from '@shared-models/user.model.js';
 import { ViewService } from '../interactions/view/view.service.js';
 
 export const userController = express();
@@ -32,6 +32,21 @@ userController.get("/userList", async (req: Request<any, any, any, ProfileFilter
 		const userService = new UserService(req.dbClient);
 		const filters: ProfileFilters = userService.formatUserFilters(req.query);
 		const userList = await userService.getUserList(filters, req.userId);
+
+		res.status(200).json({ data: userList });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching user list: ${error}.`);
+		error.message = `Error while fetching user list.`;
+		next(error);
+	}
+});
+
+userController.get("/mapUsers", async (req: Request<any, any, any, ProfileFiltersRequest>, res: Response, next: NextFunction) => {
+	try {
+		const userService = new UserService(req.dbClient);
+		const mapGeoCoordinates: MapGeoCoordinates = req.query as unknown as MapGeoCoordinates;
+		const userList = await userService.getMapList(mapGeoCoordinates, req.userId);
 
 		res.status(200).json({ data: userList });
 		next();
