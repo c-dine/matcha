@@ -118,7 +118,8 @@ export class UserService {
 	}
 
 	async getMapList(mapCoordinates: MapGeoCoordinates, userId: string) {
-		const users = await this.userModel.getMapUsers(mapCoordinates, userId);
+		const currentUserProfile = await this.getUserById(userId);
+		const users = await this.userModel.getMapUsers(mapCoordinates, currentUserProfile);
 		return users.map(user => ({
 			id: user.id,
 			location: {

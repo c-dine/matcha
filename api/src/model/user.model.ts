@@ -311,8 +311,8 @@ export class UserModel extends ModelBase {
 		`;
 	}
 
-	async getMapUsers(mapCoordinates: MapGeoCoordinates, currentUserId: string) {
-		const query = this.getMapUsersQuery(currentUserId);
+	async getMapUsers(mapCoordinates: MapGeoCoordinates, currentUser: user) {
+		const query = this.getMapUsersQuery(currentUser);
 		const values = [
 			mapCoordinates.topLatitude,
 			mapCoordinates.bottomLatitude,
@@ -323,7 +323,7 @@ export class UserModel extends ModelBase {
 		return result.rows;
 	}
 
-	getMapUsersQuery(currentUserId: string) {
+	getMapUsersQuery(currentUser: user) {
 		return `
 			SELECT
 				"user".username,
@@ -344,7 +344,8 @@ export class UserModel extends ModelBase {
 					"user".user_given_location_latitude < $1 AND "user".user_given_location_latitude > $2 AND "user".user_given_location_longitude < $3 AND "user".user_given_location_longitude > $4
 				)
 			)
-				  AND "user".id <> '${currentUserId}'
+				  AND "user".id <> '${currentUser.id}'
+				  ${this.getSexualProfileFiltersQuery(currentUser)}
 		`;
 	}
 }
