@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ModelBase } from "./base.js";
-import { GeoCoordinate, MapGeoCoordinates, ProfileFilters, UserListFilters } from "@shared-models/user.model.js";
+import { GeoCoordinate, ProfileFilters, MapGeoCoordinates, User, UserListFilters } from "@shared-models/user.model.js";
 
 export class UserModel extends ModelBase {
 
@@ -215,6 +215,7 @@ export class UserModel extends ModelBase {
 			WHERE "user".id != '${currentUser.id}'
 			AND "user".gender = '${currentUser.sexual_preferences}'
 			AND "user".sexual_preferences = '${currentUser.gender}'
+			AND "user".id NOT IN (SELECT target_user_id FROM "like" WHERE user_id = '${currentUser.id}')
 			GROUP BY
 				"user".id,
 				"user".username,
@@ -347,5 +348,49 @@ export class UserModel extends ModelBase {
 				  AND "user".id <> '${currentUser.id}'
 				  ${this.getSexualProfileFiltersQuery(currentUser)}
 		`;
+	}
+	
+	async getMatchs(userId: string) {
+		const query = this.getMatchsQuery();
+		const result = await this.dbClient.query(query, [userId]);
+		return result.rows;
+	}
+
+	private getMatchsQuery(): string {
+		let query = `
+			${this.getMatchsSelectQuery()}
+			WHERE 
+				"like".target_user_id = $1
+			AND "like".is_liked = true 
+			AND "like".user_id 
+			IN (
+				SELECT currentUserMatches.target_user_id 
+				FROM "like" AS currentUserMatches
+				WHERE currentUserMatches.user_id = $1 AND currentUserMatches.is_liked = true
+			);
+		`
+		return query;
+	}
+
+	private getMatchsSelectQuery(): string {
+		return `
+			SELECT 
+				matchedUser.id as user_id,
+				matchedUser.id,
+				matchedUser.gender,
+				matchedUser.birth_date,
+				matchedUser.sexual_preferences,
+				matchedUser.biography,
+				matchedUser.fame_rate,
+				matchedUser.first_name,
+				matchedUser.last_name,
+				matchedUser.username,
+				"like".is_liked,
+				profilePicture.id AS profile_picture_id
+			FROM "like"
+			LEFT JOIN "user" as matchedUser
+				ON "like".user_id = matchedUser.id
+			LEFT JOIN picture As profilePicture ON matchedUser.id = profilePicture.user_id
+		`
 	}
 }

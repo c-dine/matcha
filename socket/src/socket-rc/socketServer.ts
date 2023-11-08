@@ -1,17 +1,16 @@
 import http from 'http';
 import express from 'express';
 import { Server } from 'socket.io';
-import { SocketRouter } from './sockerRouter.js';
-import { SocketRoutes } from './sockerRouter.js';
+import { SocketRouter } from './socketRouter.js';
+import { SocketRoutes } from './socketRouter.js';
 
-export class SocketServer {
+class SocketServer {
 	private app;
 	private httpServer;
 	public io;
 	private socketRouter: SocketRouter;
 
-	constructor(
-	) {
+	constructor() {
 		this.app = express();
 		this.httpServer = http.createServer(this.app);
 		this.io = this.createSocketServer('/socket');
@@ -35,17 +34,21 @@ export class SocketServer {
 	}
 
 	private initializeControllers() {
-		this.socketRouter.forEach(
-			(socketNamespace, route) => {
-				socketNamespace.setNamespace(route);
-				socketNamespace.connect();
-			}
-		);
+		this.socketRouter.forEach(this.setupSocketNamespace.bind(this));
+	}
+
+	private setupSocketNamespace(socketNamespace, route) {
+		socketNamespace.setNamespace(route);
+		socketNamespace.connect();
 	}
 
 	useRoutes(routes?: SocketRoutes[]): void {
-		routes.forEach(
-			(route) => this.socketRouter.setRoute(route.route, route.socketNamespace)
-		)
+		routes.forEach(this.setupRoute.bind(this));
+	}
+
+	private setupRoute(route: SocketRoutes) {
+		this.socketRouter.setRoute(route.route, route.socketNamespace);
 	}
 }
+
+export { SocketServer };

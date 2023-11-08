@@ -21,6 +21,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FirstProfileFillingComponent } from "./first-profile-filling/first-profile-filling.component";
 import { CommonModule } from "@angular/common";
 import { SharedModule } from "src/app/shared/shared.module";
+import { PageNotFoundComponent } from "./404/404.component";
 
 @NgModule({
 	declarations: [
@@ -31,7 +32,8 @@ import { SharedModule } from "src/app/shared/shared.module";
 		SigninDialogComponent,
 		ResetPasswordDialogComponent,
 		VerifyEmailDialogComponent,
-		FirstProfileFillingComponent
+		FirstProfileFillingComponent,
+		PageNotFoundComponent,
 	],
 	imports: [
 		CommonModule,

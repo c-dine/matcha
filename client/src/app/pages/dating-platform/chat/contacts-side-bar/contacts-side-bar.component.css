@@ -1,10 +1,12 @@
-.matcha-contacts-side-bar-container {
-    width: 16vw;
-    height: 93vh;
+.matcha-contact-cards-container {
     display: flex;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 5px;
-    overflow: scroll;
-    padding-left: 5px;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+.chat-side-bar-container {
+    padding: 10px;
 }

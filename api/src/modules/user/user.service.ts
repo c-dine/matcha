@@ -209,4 +209,22 @@ export class UserService {
 			console.error("Can't locate user.")
 		}
 	}
+
+	async getMatchs(userId: string): Promise<UserList> {
+		const matchs = 
+			await this.userModel.getMatchs(userId);
+		return {
+			totalUserCount: matchs.length,
+			userList: matchs.map(user => ({
+				...this.formatUser(user as user),
+				tags: user.tags?.split(',') || [],
+				picturesIds: {
+					profilePicture: user.profile_picture_id,
+				},
+				userId: user.user_id,
+				ditanceKm: user.distance_km
+			}))
+		}
+	}
+
 }

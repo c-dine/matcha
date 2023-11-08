@@ -4,21 +4,24 @@ import { Input } from '@angular/core';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-dating-button',
-  templateUrl: './dating-button.component.html',
-  styleUrls: ['./dating-button.component.css']
+	selector: 'app-dating-button',
+	templateUrl: './dating-button.component.html',
+	styleUrls: ['./dating-button.component.css']
 })
 export class DatingButtonComponent {
-  @Input()
-  iconName!: string;
+	@Input()
+	name!: string;
 
-  @Input()
-  isHighlighted!: boolean;
+	@Input()
+	iconName!: string;
 
-  @Output()
-  clicked: EventEmitter<any> = new EventEmitter();
+	@Input()
+	isHighlighted!: boolean;
 
-  onClick(): void {
-    this.clicked.emit();
-  }
+	@Output()
+	clicked: EventEmitter<any> = new EventEmitter();
+
+	onClick(): void {
+		this.clicked.emit(this.name);
+	}
 }

@@ -69,6 +69,10 @@ export class UserService {
 		});
 	}
 
+	getMatchs(): Observable<UserList> {
+		return this.http.get<UserList>(`${environment.apiUrl}/user/matchs`);
+	}
+
 	updateUser(updatedUser: User): Observable<User> {
 		console.log(updatedUser)
 		const currentUser = this.currentUserSubject.value;

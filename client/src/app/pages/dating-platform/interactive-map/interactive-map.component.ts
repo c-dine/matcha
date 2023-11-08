@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { GeoCoordinate, MapUser, User } from "@shared-models/user.model";
+import { MapUser, User } from "@shared-models/user.model";
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';

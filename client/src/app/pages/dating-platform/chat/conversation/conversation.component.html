@@ -1,20 +1,39 @@
-<div class="matcha-conversation-container matcha-flex-column-reverse">
-	<div class="matcha-flex-row matcha-conversation-input-container">
-		<input placeholder="send message" class="matcha-conversation-input"/>
-		<div class="matcha-conversation-input-button matcha-flex-row matcha-flex-align-center matcha-flex-justiy-center">
-			<mat-icon class="matcha-conversation-input-icon">send</mat-icon>
+<div *ngIf="hasConversationSelected(); then conversationSelected else noConversationSelected"></div>
+
+<ng-template #conversationSelected>
+	<div id="conversation" class="conversation-container">
+		<div class="conversation-messages-container">
+			<div class="message-reverse-flex-container">
+				<div *ngIf="messageService.isTyping">
+					<app-typing-message></app-typing-message>
+				</div>
+				<app-chat-message *ngFor="let message of messageService.messages" [id]="message.id"
+					[message]="message.message" [currentUser]="this.conversationUser?.id !== message.from_user_id"
+					[userProfilePictureSrc]="(this.conversationUser?.id === message.from_user_id) ? getConversationUserProfilePictureUrl() : getCurrentUserProfilePictureUrl()" />
+			</div>
+		</div>
+
+		<div class="conversation-input-container">
+			<form class="flex-row" #sendMessageForm="ngForm" (ngOnSubmit)="messageService.sendMessage()">
+				<div class="chat-input-grid">
+					<input placeholder="send message" class="conversation-input"
+						[(ngModel)]="messageService.messageToSend" name="send message"
+						(keydown.enter)="messageService.sendMessage()" (focus)="messageService.sendTyping()"
+						(focusout)="messageService.sendStopTyping()" />
+					<div class="conversation-input-button" type="submit" (click)="messageService.sendMessage()">
+						<mat-icon class="conversation-input-icon">send</mat-icon>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
-	<div class="matcha-conversation-messages-container matcha-flex-column-reverse">
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin Bonjour je suis robin Bonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robinBonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="false" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
-		<app-chat-message message="Bonjour je suis robin" [currentUser]="true" userProfilePictureSrc="https://plus.unsplash.com/premium_photo-1663047595510-65abd9c1162e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" />
+</ng-template>
+
+<ng-template #noConversationSelected>
+	<div class="lottie_container">
+		<div class="lottie-animation lottie_grid_position mt-10">
+			<ng-lottie width="62%" [options]="options">
+			</ng-lottie>
+		</div>
 	</div>
-</div>
+</ng-template>

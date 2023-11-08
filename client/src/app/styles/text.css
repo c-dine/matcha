@@ -1,0 +1,6 @@
+.chat-section-title {
+	font-weight: 500 !important;
+	font-size: 10px;
+	color: var(--secondary-text-color);
+	margin-bottom: 5px;
+}

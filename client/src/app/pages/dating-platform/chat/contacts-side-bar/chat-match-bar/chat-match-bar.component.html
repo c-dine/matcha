@@ -1,0 +1,7 @@
+<h4 class="chat-section-title">MATCHES</h4>
+<div class="matcha-chat-matchs-container matcha-flex-row">
+	<div class="matcha-avatar-container" *ngFor="let match of matchs">
+		<app-avatar-picture [src]="pictureIdToPictureUrl(match.picturesIds?.profilePicture)"
+			(click)="navigateToUserConversation(match.user_id);"></app-avatar-picture>
+	</div>
+</div>

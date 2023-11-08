@@ -1,13 +1,31 @@
+.chat-bubble {
+	background-color: var(--primary-light-color);
+	padding: 6px 16px;
+	border-radius: 20px;
+	border-bottom-left-radius: 2px;
+	display: inline-block;
+	font-size: 12px;
+	word-wrap: break-word;
+}
+
+.chat-bubble-current {
+	background-color: var(--primary-lighter-color);
+	padding: 6px 16px;
+	border-radius: 20px;
+	border-bottom-right-radius: 2px;
+	display: inline-block;
+	font-size: 12px;
+	word-wrap: break-word;
+}
+
 .matcha-conversation-message-container {
-	width: 47vw;
+	width: 100%;
 	gap: 15px;
-	margin-right: 10px;
-	margin-left: 10px;
 }
 
 .matcha-conversation-message {
 	font-size: 12px;
-	background-color: #5D5FEF;
+	background-color: var(--primary-medium-color);
 	border-radius: 20px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -25,10 +43,9 @@
 }
 
 .matcha-conversation-message-text {
-	margin-bottom: 10px;
 	max-width: 20vw;
+	margin: 0;
 }
-
 
 .matcha-conversation-message-image {
 	height: 4vh;

@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './pages/home/home.module';
 import { DatingPlatformModule } from './pages/dating-platform/dating-platform.module';
 
+
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -19,7 +20,7 @@ import { DatingPlatformModule } from './pages/dating-platform/dating-platform.mo
 		HttpClientModule,
 		AppRoutingModule,
 		HomeModule,
-		DatingPlatformModule
+		DatingPlatformModule,
 	],
 	providers: [
 		AuthService,
@@ -29,7 +30,6 @@ import { DatingPlatformModule } from './pages/dating-platform/dating-platform.mo
 			useClass: HttpInterceptorService,
 			multi: true
 		},
-
 		{
 			provide: MAT_DATE_LOCALE, 
 			useValue: 'fr-FR'

@@ -1,5 +1,15 @@
-<div class="matcha-contacts-side-bar-container">
-	<app-chat-search-bar/>
-	<app-contact-card *ngFor="let user of users" [user]="user" [activated]="false" />
-	<app-contact-card [user]="users[0]" [activated]="true" />
+<div class="chat-side-bar-container">
+	<app-chat-match-bar
+		[matchs]="matchs"
+	/>
+	<h4 class="chat-section-title">CHATS</h4>
+	<div class="matcha-contact-cards-container">
+		<app-contact-card
+			*ngFor="let conversation of conversations"
+			class="contact-cards"
+			[conversation]="conversation"
+			[activated]="conversation.user_id === routeUserId"
+			(click)="navigateToUserConversation(conversation.user_id)"
+		/>
+	</div>
 </div>

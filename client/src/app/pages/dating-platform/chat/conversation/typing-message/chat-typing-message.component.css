@@ -1,0 +1,71 @@
+.chat-bubble {
+	background-color: var(--primary-light-color);
+	padding: 12px 18px;
+	border-radius: 20px;
+	border-bottom-left-radius: 2px;
+	display: inline-block;
+	font-size: 12px;
+}
+
+.typing {
+	align-items: center;
+	display: flex;
+	height: 10px;
+}
+
+.typing .dot {
+	animation: mercuryTypingAnimation 1.8s infinite ease-in-out;
+	background-color: var(--primary-color);
+	border-radius: 50%;
+	height: 4px;
+	margin-right: 4px;
+	vertical-align: middle;
+	width: 4px;
+	display: inline-block;
+}
+
+.typing .dot:nth-child(1) {
+	animation-delay: 200ms;
+}
+
+.typing .dot:nth-child(2) {
+	animation-delay: 300ms;
+}
+
+.typing .dot:nth-child(3) {
+	animation-delay: 400ms;
+}
+
+.typing .dot:last-child {
+	margin-right: 0;
+}
+
+@keyframes mercuryTypingAnimation {
+	0% {
+		transform: translateY(0px);
+		background-color: var(--primary-color);
+	}
+
+	28% {
+		transform: translateY(-7px);
+		background-color: #7C7CFF;
+	}
+
+	44% {
+		transform: translateY(0px);
+		background-color: #9B9BFF;
+	}
+}
+
+.matcha-conversation-message-image {
+	height: 4vh;
+	width: 4vh;
+	border-radius: 500px;
+}
+
+.matcha-conversation-message-container {
+	width: 47vw;
+	gap: 15px;
+	margin-right: 10px;
+	margin-left: 10px;
+}

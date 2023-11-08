@@ -2,17 +2,13 @@ import {socketRC} from '../../socket-rc/socketNamespace.js';
 
 const activityController = socketRC();
 
-activityController.event('new message', (message) => {
-	console.log(message, ' ', activityController.namespace)
+activityController.event('new activity', (arg) => {
+	try {
+		activityController.emitTo('new activity', arg);
+	}
+	catch (e){
+		console.log(e.message);
+	}
 });
-
-activityController.event('typing', (message) => {
-	console.log(message, ' ', activityController.namespace)
-});
-
-activityController.event('stop typing', (message) => {
-	console.log(message, ' ', activityController.namespace)
-});
-
 
 export default activityController;

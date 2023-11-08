@@ -73,6 +73,20 @@ userController.get("/matchingProfiles", async (req: Request<any, any, any, Profi
 	}
 });
 
+userController.get("/matchs", async (req: Request<any, any, any, ProfileFiltersRequest>, res: Response, next: NextFunction) => {
+	try {
+		const userService = new UserService(req.dbClient);
+		const matchingProfiles = await userService.getMatchs(req.userId);
+
+		res.status(200).json({ data: matchingProfiles });
+		next();
+	} catch (error: any) {
+		console.error(`Error while fetching matched profiles: ${error}.`);
+		error.message = `Error while fetching matched profiles.`;
+		next(error);
+	}
+});
+
 userController.put("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		let updatedProfileData: User = req.body;
