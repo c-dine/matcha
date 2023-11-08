@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { BehaviorSubject, Observable, firstValueFrom, map, tap } from 'rxjs';
-import { GeoCoordinate, ProfileFilters, UserList, User, MapGeoCoordinates } from "@shared-models/user.model.js"
+import { GeoCoordinate, ProfileFilters, UserList, User, MapGeoCoordinates, MapUser } from "@shared-models/user.model.js"
 import { buildHttpParams } from '../utils/http.utils';
 
 @Injectable({
@@ -14,8 +14,6 @@ export class UserService {
 	private userListFilters = new BehaviorSubject<ProfileFilters>({ batchSize: 8, offset: 0 });
 
 	private geolocationWatchId = -1;
-
-	private approximateUserLocationHasBeenSent = false;
 
     constructor(
         private http: HttpClient
@@ -57,9 +55,9 @@ export class UserService {
 		});
 	}
 
-	getMapUsers(mapCoordinates: MapGeoCoordinates): Observable<UserList> {
+	getMapUsers(mapCoordinates: MapGeoCoordinates): Observable<MapUser[]> {
 		const params = buildHttpParams(mapCoordinates);
-		return this.http.get<UserList>(`${environment.apiUrl}/user/mapUsers`, {
+		return this.http.get<MapUser[]>(`${environment.apiUrl}/user/mapUsers`, {
 			params
 		});
 	}
@@ -90,10 +88,6 @@ export class UserService {
 	// GPS Tracking
 
 	trackUserLocation() {
-		if (!this.approximateUserLocationHasBeenSent) {
-			this.approximateUserLocationHasBeenSent = true;
-			firstValueFrom(this.setTrackingLocation());
-		}
 		if ("geolocation" in navigator && this.geolocationWatchId === -1) {
 			this.geolocationWatchId = navigator.geolocation.watchPosition(
 				async (position) => {
@@ -101,7 +95,8 @@ export class UserService {
 						latitude: position.coords.latitude,
 						longitude: position.coords.longitude
 					}));
-				}
+				},
+				() => firstValueFrom(this.setTrackingLocation())
 			);
 		}
 	}

@@ -4,7 +4,7 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import { Subscription } from "rxjs";
+import { Subscription, firstValueFrom } from "rxjs";
 import { UserService } from "src/app/service/user.service";
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
@@ -35,21 +35,15 @@ export class InteractiveMapComponent {
 			this.userService.getCurrentUserObs().subscribe({
 				next: (user) => {
 					this.currentUser = user;
-					this.initMap();
+					if (this.map)
+						this.updateMap();
 				}
 			})
 		);
-		this.mySubscriptions.push(
-			this.userService.
-		)
 		this.initMap();
 	}
 
-	ngOnDestroy() {
-		this.mySubscriptions.forEach(subscription => subscription.unsubscribe());
-	}
-
-	initMap() {
+	async initMap() {
 		this.map = new Map({
 			layers: [
 				new TileLayer({
@@ -64,10 +58,31 @@ export class InteractiveMapComponent {
 				],
 				projection: 'EPSG:4326',
 				zoom: 18,
-				minZoom: 10,
 				maxZoom: 19,
 			}),
 		});
+		await this.getOtherUsers();
+		this.addUsersPins();
+	}
+
+	async getOtherUsers() {
+		const extent = this.map.getView().calculateExtent(this.map.getSize());
+		this.otherUsers = await firstValueFrom(
+			this.userService.getMapUsers({
+				bottomLatitude: extent[1],
+				topLatitude: extent[3],
+				leftLongitude: extent[0],
+				rightLongitude: extent[2]
+			})
+		);
+	}
+	
+	ngOnDestroy() {
+		this.mySubscriptions.forEach(subscription => subscription.unsubscribe());
+	}
+
+	updateMap() {
+		this.map.getLayers().clear();
 		this.addUsersPins();
 	}
 
@@ -101,6 +116,27 @@ export class InteractiveMapComponent {
 	}
 
 	addOtherUsersPins() {
-
+		const featuresArray: Feature[] = [];
+		this.otherUsers.map(user => {
+			featuresArray.push(new Feature({
+				geometry: new Point(([
+					user.location.longitude,
+					user.location.latitude
+				])),
+				projection: 'EPSG:4326',
+			}));
+		});
+		featuresArray.forEach(feature => feature.setStyle(new Style({
+			image: new Icon({
+				src: 'https://cdn-icons-png.flaticon.com/512/4315/4315546.png',
+				scale: 0.05,
+			}),
+		})));
+		const vectorLayer = new VectorLayer({
+			source: new VectorSource({
+				features: featuresArray,
+			}),
+		});
+		this.map.addLayer(vectorLayer);
 	}
 }

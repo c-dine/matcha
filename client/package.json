@@ -43,6 +43,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "ngx-pagination": "^6.0.3",
+    "ol": "^8.1.0",
     "socket.io-client": "^4.7.2",
     "typescript": "~4.9.4"
   }
