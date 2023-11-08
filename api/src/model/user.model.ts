@@ -319,7 +319,7 @@ export class UserModel extends ModelBase {
 			mapCoordinates.rightLongitude,
 			mapCoordinates.leftLongitude
 		];
-		const result = await this.dbClient.query(query);
+		const result = await this.dbClient.query(query, values);
 		return result.rows;
 	}
 
@@ -331,11 +331,20 @@ export class UserModel extends ModelBase {
 				"user".location_longitude,
 				"user".user_given_location_latitude,
 				"user".user_given_location_longitude,
-				"user".id
+				"user".id,
+				"user".fame_rate,
+				(SELECT picture.id FROM picture WHERE picture.user_id = "user".id and is_profile_picture=true) as picture_id
 			FROM "user"
-			WHERE ("user".location_latitude < $1 AND "user".location_latitude > $2 AND "user".location_longitude < $3 AND "user".location_longitude > $4) OR
-				  ("user".user_given_location_latitude < $1 AND "user".user_given_location_latitude > $2 AND "user".user_given_location_longitude < $3 AND "user".user_given_location_longitude > $4)
-				  AND "user".id <> ${currentUserId}
+			WHERE (
+				(
+					"user".location_latitude < $1 AND "user".location_latitude > $2 AND "user".location_longitude < $3 AND "user".location_longitude > $4 AND "user".user_given_location_latitude IS NULL
+				)
+				OR
+				(
+					"user".user_given_location_latitude < $1 AND "user".user_given_location_latitude > $2 AND "user".user_given_location_longitude < $3 AND "user".user_given_location_longitude > $4
+				)
+			)
+				  AND "user".id <> '${currentUserId}'
 		`;
 	}
 }

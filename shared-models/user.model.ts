@@ -34,7 +34,8 @@ export interface MapUser {
 	id: string,
 	location: GeoCoordinate,
 	username: string,
-	fameRate: number
+	fameRate: number,
+	pictureId: string
 }
 
 export interface NewUser extends User {
