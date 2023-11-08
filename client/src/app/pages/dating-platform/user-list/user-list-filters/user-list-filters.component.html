@@ -13,7 +13,9 @@
 		<div class="filter">
 			<span class="filter-label">Age gap</span>
 			<app-double-slider-popup [label]="filters.ageMax ? filters.ageMin + ' - ' + filters.ageMax : 'All'"
-				description="Select an age gap" [min]=18 [max]=100 (appliedValue)="setAgeGapFilter($event)">
+				description="Select an age gap" [min]=18 [max]=120
+				[minValue]="filters.ageMin || 18" [maxValue]="filters.ageMax || 120"
+				(appliedValue)="setAgeGapFilter($event)">
 			</app-double-slider-popup>
 		</div>
 
@@ -21,7 +23,9 @@
 			<span class="filter-label">Fame gap</span>
 			<app-double-slider-popup
 				[label]="filters.fameRateMax ? filters.fameRateMin + ' - ' + filters.fameRateMax : 'All'" label="Select"
-				description="Select a fame gap" [min]=0 [max]=100 (appliedValue)="setFameGapFilter($event)">
+				description="Select a fame gap"
+				[min]=0 [max]=100
+				[minValue]="filters.fameRateMin || 0" [maxValue]="filters.fameRateMax || 100" (appliedValue)="setFameGapFilter($event)">
 			</app-double-slider-popup>
 		</div>
 
@@ -29,6 +33,7 @@
 			<span class="filter-label">Distance max. (km)</span>
 			<app-slider-popup [label]="filters.distanceKilometers ? filters.distanceKilometers + 'km' : 'All'"
 				label="Select" description="Select a max distance in kilometers" [max]=1000
+				[maxValue]="filters.distanceKilometers || 1000"
 				(appliedValue)="setDistanceFilter($event)">
 			</app-slider-popup>
 		</div>
@@ -40,7 +45,7 @@
 		<div class="setting">
 			<div class="setting-label">Sort by</div>
 			<mat-form-field appearance="outline">
-				<mat-select (selectionChange)="setOrderBy($event)">
+				<mat-select (selectionChange)="setOrderBy($event)" [value]="filters.orderBy">
 					<mat-option [value]=""></mat-option>
 					<mat-option [value]="age">Age</mat-option>
 					<mat-option [value]="fame">Fame</mat-option>
@@ -52,7 +57,7 @@
 		<div class="setting">
 			<div class="setting-label">Order</div>
 			<mat-form-field appearance="outline">
-				<mat-select (selectionChange)="setOrder($event)">
+				<mat-select (selectionChange)="setOrder($event)" [value]="filters.order">
 					<mat-option [value]=""></mat-option>
 					<mat-option value="asc">Ascending</mat-option>
 					<mat-option value="desc">Descending</mat-option>
@@ -63,7 +68,7 @@
 		<div class="setting">
 			<div class="setting-label">Display items</div>
 			<mat-form-field appearance="outline">
-				<mat-select (selectionChange)="setBatchSize($event)">
+				<mat-select (selectionChange)="setBatchSize($event)" [value]="filters.batchSize">
 					<mat-option value=4>4</mat-option>
 					<mat-option value=8>8</mat-option>
 					<mat-option value=20>20</mat-option>

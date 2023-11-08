@@ -11,15 +11,9 @@ export class DoubleSliderPopupComponent {
 	@Input() description!: string;
 	@Input() min!: number;
 	@Input() max!: number;
+	@Input() minValue!: number;
+	@Input() maxValue!: number;
 	@Output() appliedValue = new EventEmitter<{ min: number, max: number } | undefined>()
-
-	minValue!: number;
-	maxValue!: number;
-
-	ngOnInit() {
-		this.minValue = this.min;
-		this.maxValue = this.max;
-	}
 
 	onResetClick() {
 		this.minValue = this.min;
