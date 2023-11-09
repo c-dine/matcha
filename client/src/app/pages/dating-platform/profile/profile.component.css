@@ -159,6 +159,7 @@ mat-icon {
 	padding: 20px;
 	background: unset;
 	align-items: center;
+	position: relative;
 }
 
 mat-progress-spinner {
