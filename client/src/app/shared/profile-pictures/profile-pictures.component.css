@@ -1,7 +1,7 @@
 .profile-pictures-container {
 	display: flex;
 	gap: 10px;
-	align-items: end;
+	align-items: flex-end;
 }
 
 .additionnal-pictures-container {
