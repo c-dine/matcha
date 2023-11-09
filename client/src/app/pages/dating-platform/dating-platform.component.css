@@ -12,13 +12,14 @@
 	}
     app-nav-side-bar {
         display: none;
-		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		z-index: 5 !important;
     }
     app-notifications-side-bar {
         display: none;
 		background-color: var(--primary-light-text-color);
 		padding-left: 5px;
-		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
 	.page-content-container {
 		width: 100% !important;

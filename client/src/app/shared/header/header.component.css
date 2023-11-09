@@ -12,7 +12,13 @@
 	display: flex;
     align-items: center;
 	height: 100%;
+}
+
+.header-flex-container-left {
 	margin-left: 20px;
+}
+
+.header-flex-container-right {
 	margin-right: 20px;
 }
 
