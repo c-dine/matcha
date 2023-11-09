@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Conversation } from '@shared-models/chat.models';
-import { ProfileService } from 'src/app/service/profile.service';
 
 @Component({
   selector: 'app-chat',

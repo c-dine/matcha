@@ -3,6 +3,7 @@ import { UserModel } from "../../model/user.model.js";
 import { GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/user.model.js"
 import { env } from "../../config/config.js";
 import { User } from "@shared-models/user.model.js";
+import { Conversation } from "@shared-models/chat.models.js";
 
 export class UserService {
 
@@ -195,21 +196,10 @@ export class UserService {
 		}
 	}
 
-	async getMatchs(userId: string): Promise<UserList> {
-		const matchs = 
-			await this.userModel.getMatchs(userId);
-		return {
-			totalUserCount: matchs.length,
-			userList: matchs.map(user => ({
-				...this.formatUser(user as user),
-				tags: user.tags?.split(',') || [],
-				picturesIds: {
-					profilePicture: user.profile_picture_id,
-				},
-				userId: user.user_id,
-				ditanceKm: user.distance_km
-			}))
-		}
+	async getMatchs(userId: string): Promise<{data: Conversation[]}> {
+		const matchs = await this.userModel.getMatchs(userId);
+		console.log(matchs)
+		return matchs//await this.userModel.getMatchs(userId);
 	}
 
 }

@@ -8,8 +8,8 @@
 			*ngFor="let conversation of conversations"
 			class="contact-cards"
 			[conversation]="conversation"
-			[activated]="conversation.user_id === routeUserId"
-			(click)="navigateToUserConversation(conversation.user_id)"
+			[activated]="conversation.author.id === routeUserId"
+			(click)="navigateToUserConversation(conversation.author.id)"
 		/>
 	</div>
 </div>

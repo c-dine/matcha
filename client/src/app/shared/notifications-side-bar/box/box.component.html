@@ -1,7 +1,7 @@
 <div class="notifications-side-bar-box-container">
 	<div class="notifications-side-bar-box-header">
-		<h3 class="notifications-side-bar-box-title">{{title}}</h3>
-		<h3 (click)="onClickSeeAll()" class="notifications-side-bar-box-link">see all</h3>
+		<h3 class="notifications-side-bar-box-title">{{ title }}</h3>
 	</div>
-	<app-notification-card *ngFor="let notification of notifications" [notification]="notification"></app-notification-card>
+	<app-notification-card *ngFor="let notification of notifications"
+		[notification]="notification"></app-notification-card>
 </div>

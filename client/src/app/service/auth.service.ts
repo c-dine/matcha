@@ -9,6 +9,7 @@ import { map, tap } from 'rxjs/operators';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 import { UserService } from './user.service';
+import { connectionSocketService } from './socket/connectionSocket.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -22,6 +23,7 @@ export class AuthService {
 		private userService: UserService,
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
+		private connectionSocket: connectionSocketService,
 	) { }
 
 	signIn(newUser: NewUser): Observable<AuthenticatedUser> {
@@ -57,6 +59,7 @@ export class AuthService {
 		this.removeRefreshToken();
 		this.chatSocket.disconnect();
 		this.activitySocket.disconnect();
+		this.connectionSocket.disconnect();
 		window.location.reload();
 	}
 

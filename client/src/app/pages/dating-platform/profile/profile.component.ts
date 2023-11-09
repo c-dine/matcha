@@ -6,29 +6,32 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '@environment/environment';
 import { DisplayableProfilePictures } from '@shared-models/picture.model';
 import { User } from '@shared-models/user.model';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, timer } from 'rxjs';
 import { BlacklistService } from 'src/app/service/blacklist.service';
 import { FakeReportService } from 'src/app/service/fake-report.service';
 import { LikeService } from 'src/app/service/like.service';
+import { NotificationService } from 'src/app/service/notification.service';
 import { PictureService } from 'src/app/service/picture.service';
-import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
+import { connectionSocketService } from 'src/app/service/socket/connectionSocket.service';
 import { UserService } from 'src/app/service/user.service';
 import { ViewService } from 'src/app/service/view.service';
+import { SubscriptionBase } from 'src/app/shared/subscriptionBase/subscription-base.component';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
 import { ageValidator, dateIsPastDateValidator } from 'src/app/validators/custom-validators';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css', '../../../styles/buttons.css']
+	selector: 'app-profile',
+	templateUrl: './profile.component.html',
+	styleUrls: ['./profile.component.css', '../../../styles/buttons.css']
 })
-export class ProfileComponent {
+export class ProfileComponent extends SubscriptionBase {
 
 	getAge = getAge;
 	formatDate = formatDate;
 	environment = environment;
 	profile: User | null = null;
+	isConnected: boolean = false;
 
 	profileForm!: FormGroup;
 	pictures!: DisplayableProfilePictures;
@@ -50,10 +53,12 @@ export class ProfileComponent {
 		private fakeReportService: FakeReportService,
 		private viewService: ViewService,
 		private likeService: LikeService,
-		private activitySocket: ActivitySocketService,
-	) { }
+		private notificationService: NotificationService,
+		private connectionSocket: connectionSocketService,
+	) { super() }
 
 	async ngOnInit() {
+		this.handleIsUserConnected();
 		this.currentUser = await firstValueFrom(this.userService.getCurrentUserObs());
 		this.route.queryParamMap.subscribe(async params => {
 			if (params.has("id") && params.get("id") !== this.currentUser?.id)
@@ -62,7 +67,7 @@ export class ProfileComponent {
 						this.profile = profile;
 						if (profile?.id) {
 							this.viewService.addView(profile);
-							this.activitySocket.newActivity('view', profile.id);
+							this.notificationService.sendNewActivity('view', profile.id);
 						}
 						this.isLoading = false;
 					},
@@ -87,12 +92,12 @@ export class ProfileComponent {
 
 	initForm() {
 		this.pictures = {
-			profilePicture: this.currentUser?.picturesIds?.profilePicture ? 
+			profilePicture: this.currentUser?.picturesIds?.profilePicture ?
 				{ id: this.currentUser?.picturesIds?.profilePicture, url: getFirebasePictureUrl(this.currentUser?.picturesIds?.profilePicture) }
 				: undefined,
-			additionnalPictures: this.currentUser?.picturesIds?.additionnalPicture?.map(id => ({ id, url: getFirebasePictureUrl(id)})) || []
+			additionnalPictures: this.currentUser?.picturesIds?.additionnalPicture?.map(id => ({ id, url: getFirebasePictureUrl(id) })) || []
 		};
-		this.profileForm  = new FormGroup({
+		this.profileForm = new FormGroup({
 			gender: new FormControl<string>(this.currentUser?.gender || "", [Validators.required]),
 			sexualPreferences: new FormControl<string>(this.currentUser?.sexualPreferences || "", [Validators.required]),
 			birthDate: new FormControl<Date | undefined>(this.currentUser?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
@@ -148,7 +153,7 @@ export class ProfileComponent {
 			this.pictures.additionnalPictures.splice(0, 1);
 		}
 		this.profile.picturesIds = await this.pictureService.uploadAndGetPicturesIds(this.pictures);
-		if (!this.profile.picturesIds){
+		if (!this.profile.picturesIds) {
 			this.isLoading = false;
 			this.snackBar.open("An error occurred while uploading the pictures.", "Close", {
 				duration: 4000,
@@ -160,14 +165,14 @@ export class ProfileComponent {
 		this.isEditMode = false;
 		const formValue = this.profileForm?.getRawValue();
 		this.currentUser = await firstValueFrom(this.userService.updateUser({
-				...this.profile,
-				...formValue,
-				picturesIds: this.profile.picturesIds,
-				userGivenLocation: this.useUserGivenLocation ? {
-					longitude: formValue.userGivenLongitude,
-					latitude: formValue.userGivenLatitude
-				} : null
-			} as User));
+			...this.profile,
+			...formValue,
+			picturesIds: this.profile.picturesIds,
+			userGivenLocation: this.useUserGivenLocation ? {
+				longitude: formValue.userGivenLongitude,
+				latitude: formValue.userGivenLatitude
+			} : null
+		} as User));
 		this.profile = {
 			...this.profile,
 			...this.currentUser as User
@@ -184,7 +189,7 @@ export class ProfileComponent {
 		if (!this.profileForm) return;
 		this.profileForm.get("tags")?.setValue(tags);
 	}
-	
+
 	updatePictures(pictures: DisplayableProfilePictures) {
 		this.pictures = pictures;
 	}
@@ -217,9 +222,9 @@ export class ProfileComponent {
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.likeProfile(this.profile));
 		if (this.profileLikedCurrentUser())
-			this.activitySocket.newActivity('match', this.profile?.id);
+			this.notificationService.sendNewActivity('match', this.profile?.id);
 		else
-			this.activitySocket.newActivity('like', this.profile?.id);
+			this.notificationService.sendNewActivity('like', this.profile?.id);
 		this.updateProfileStats("like");
 		this.profile.isLiked = true;
 	}
@@ -230,12 +235,12 @@ export class ProfileComponent {
 		if (this.profile.isLiked !== undefined && !this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.dislikeProfile(this.profile.id));
-		this.activitySocket.newActivity('dislike', this.profile?.id);
+		this.notificationService.sendNewActivity('dislike', this.profile?.id);
 		this.updateProfileStats("dislike");
 		this.profile.isLiked = false;
 	}
 
-	checkIfUserCanLikeProfileAndAlert() : boolean {
+	checkIfUserCanLikeProfileAndAlert(): boolean {
 		const canLikeProfile = !!this.currentUser?.picturesIds?.profilePicture;
 
 		if (!canLikeProfile)
@@ -249,7 +254,7 @@ export class ProfileComponent {
 	async unlikeProfile() {
 		if (!this.profile?.id) return;
 		await firstValueFrom(this.likeService.unlikeProfile(this.profile.id));
-		this.activitySocket.newActivity('unlike', this.profile?.id);
+		this.notificationService.sendNewActivity('unlike', this.profile?.id);
 		this.updateProfileStats("unlike");
 		this.profile.isLiked = undefined;
 	}
@@ -274,7 +279,7 @@ export class ProfileComponent {
 					this.profile.stats.likeCount -= 1;
 				else
 					this.profile.stats.dislikeCount -= 1;
-			}
+		}
 	}
 
 	isProfileBlacklisted() {
@@ -295,5 +300,26 @@ export class ProfileComponent {
 
 	profileLikedCurrentUser() {
 		return this.profile?.likedCurrentUser !== undefined && this.profile?.likedCurrentUser;
+	}
+
+	private handleIsUserConnected() {
+		this.listentIfUserConnected();
+		this.askIfUserConnectedEvery(3000);
+	}
+
+	private askIfUserConnectedEvery(timeInterval: number): void {
+		const intervalSub = timer(500, timeInterval).subscribe(
+			() => {
+				if (!this.profile?.id) return;
+				this.connectionSocket.askIfConnected(this.profile.id)
+			})
+		this.saveSubscription(intervalSub);
+	}
+
+	private listentIfUserConnected() {
+		const sub = this.connectionSocket.getisConnected().subscribe({
+			next: (resp) => this.isConnected = (resp.message) === "connected",
+		})
+		this.saveSubscription(sub);
 	}
 }

@@ -5,34 +5,29 @@ import { UserService } from './user.service';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '@shared-models/user.model';
 import { Conversation, Message, MessageDto } from '@shared-models/chat.models';
+import { NotificationWithAuthor } from '@shared-models/notification.model';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ChatService {
 	currentUser!: User | null;
-	subscriptions!: Subscription[];
-	route!: string;
-	
+	route: string = '/chat';
+
 	constructor(
 		private http: HttpClient,
 		private userService: UserService
-	) {
-		this.subscriptions = [];
-		this.route = '/chat'
-	}
+	) {}
 
 	ngOnInit() {
 		this.storeCurrentUser();
 	}
 
 	private storeCurrentUser() {
-		this.subscriptions.push(
-			this.userService.getCurrentUserObs().subscribe({
-				next: (user: User | null) =>
-					this.currentUser = user
-			})
-		);
+		this.userService.getCurrentUserObs().subscribe({
+			next: (user: User | null) =>
+				this.currentUser = user
+		})
 	}
 
 	sendMessage(toUserId: string, messageText: string): Observable<Message> {
@@ -40,27 +35,30 @@ export class ChatService {
 			message: messageText
 		};
 		return this.http.post<Message>(
-				`${environment.apiUrl}${this.route}/message/${toUserId}`, message
-			);
+			`${environment.apiUrl}${this.route}/message/${toUserId}`, message
+		);
 	}
 
 	getMessages(toUserId: string | undefined): Observable<Message[]> {
 		if (toUserId === undefined)				//Verifier ca
 			return new Observable<Message[]>();				//Verifier ca
 		return this.http.get<Message[]>(
-				`${environment.apiUrl}${this.route}/messages/${toUserId}`
-			);
+			`${environment.apiUrl}${this.route}/messages/${toUserId}`
+		);
 	}
 
 	getConversations(): Observable<Conversation[]> {
 		return this.http.get<Conversation[]>(
-				`${environment.apiUrl}${this.route}/conversations`
-			);
+			`${environment.apiUrl}${this.route}/conversations`
+		);
 	}
 
-	onDestroy() {
-		this.subscriptions.forEach(
-			(subscription: Subscription) => subscription.unsubscribe()
-		)
+	viewMessage(messageId: string): Observable<NotificationWithAuthor> {
+		let body = {
+			id: messageId,
+		};
+		return this.http.put<NotificationWithAuthor>(
+			`${environment.apiUrl}${this.route}/view`, body
+		);
 	}
 }

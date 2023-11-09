@@ -6,7 +6,7 @@
 
 .conversation-messages-container {
 	width: 100%;
-	height: 80vh;
+	height: 88vh;
 }
 
 .message-reverse-flex-container::-webkit-scrollbar {
@@ -15,7 +15,7 @@
 
 .message-reverse-flex-container {
 	padding: 15px;
-	height: 100%;
+	height: 93%;
 	overflow: auto;
 	display: flex;
 	flex-direction: column-reverse;
@@ -25,9 +25,9 @@
 }
 
 .conversation-input-container {
-	width: 53%;
+	width: 100%;
 	height: 60px;
-	position: fixed;
+	position: sticky;
 	bottom: 0;
 	background-color: transparent;
 }

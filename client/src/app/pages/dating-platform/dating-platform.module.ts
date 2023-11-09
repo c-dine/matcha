@@ -40,7 +40,7 @@ import { ChatTypingMessageComponent } from './chat/conversation/typing-message/c
 import { LottieModule } from 'ngx-lottie';
 
 export function playerFactory() {
-  return import(/* webpackChunkName: 'lottie-web' */ 'lottie-web');
+  return import('lottie-web');
 }
 @NgModule({
 	declarations: [

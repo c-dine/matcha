@@ -313,7 +313,7 @@ export class UserModel extends ModelBase {
 	async getMatchs(userId: string) {
 		const query = this.getMatchsQuery();
 		const result = await this.dbClient.query(query, [userId]);
-		return result.rows;
+		return result.rows[0];
 	}
 
 	private getMatchsQuery(): string {
@@ -335,18 +335,34 @@ export class UserModel extends ModelBase {
 	private getMatchsSelectQuery(): string {
 		return `
 			SELECT 
-				matchedUser.id as user_id,
-				matchedUser.id,
-				matchedUser.gender,
-				matchedUser.birth_date,
-				matchedUser.sexual_preferences,
-				matchedUser.biography,
-				matchedUser.fame_rate,
-				matchedUser.first_name,
-				matchedUser.last_name,
-				matchedUser.username,
-				"like".is_liked,
-				profilePicture.id AS profile_picture_id
+			array_agg(
+				json_build_object(
+					'author', json_build_object(
+					'id', matchedUser.id,
+					'gender', matchedUser.gender,
+					'username', matchedUser.username,
+					'lastName', matchedUser.last_name,
+					'firstName', matchedUser.first_name,
+					'biography', matchedUser.biography,
+					'location', json_build_object(
+						'latitude', matchedUser.location_latitude,
+						'longitude', matchedUser.location_longitude
+					),
+					'userGivenLocation', json_build_object(
+						'latitude', matchedUser.user_given_location_latitude,
+						'longitude', matchedUser.user_given_location_longitude
+					),
+					'distanceKm', calculate_distance(matchedUser.location_latitude, matchedUser.location_longitude, matchedUser.user_given_location_latitude, matchedUser.user_given_location_longitude, 'K'),
+					'tags', (SELECT array_agg(tag.label) FROM user_tag_asso JOIN tag ON user_tag_asso.tag_id = tag.id WHERE user_tag_asso.user_id = matchedUser.id),
+					'picturesIds', json_build_object(
+						'profilePicture', profilePicture.id,
+						'additionnalPicture', (SELECT array_agg(id) FROM picture WHERE picture.user_id = matchedUser.id)
+					),
+					'stats', (SELECT json_build_object('isLiked', false, 'likedCurrentUser', false)),
+					'userId', matchedUser.id
+					)
+					)
+				) as data
 			FROM "like"
 			LEFT JOIN "user" as matchedUser
 				ON "like".user_id = matchedUser.id

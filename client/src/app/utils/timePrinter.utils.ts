@@ -22,7 +22,7 @@ const convertMsToTimeUnits = {
 
 export function printTime(time: number) {
 	let timeUnit: string = "s";
-	let timeInUnit;
+	let timeInUnit = '1';
 
 	for (const [key, value] of msToTimeUnits.entries()) {
 		if (time >= value) {

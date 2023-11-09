@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 	providedIn: 'root'
 })
 export abstract class ErrorBase {
-	protected errorMessages: Map<any, string> = new Map();
+	protected errors: Map<any, string> = new Map();
 	private snackBar! : MatSnackBar;
 
 	constructor(
@@ -14,7 +14,7 @@ export abstract class ErrorBase {
 	}
 
 	handleError(errorCode: string): void {
-		const errorMessage = this.errorMessages.get(errorCode);
+		const errorMessage = this.errors.get(errorCode);
 
 		if (errorMessage) {
 			this.displayError(errorMessage);

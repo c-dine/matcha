@@ -1,13 +1,16 @@
-<div class="notification-card-flex-row">
-	<img class="notification-card-image" [src]="notification.user.profilePictureUrl"/>
+<div class="notification-card-flex-row" (click)="logNotif()">
+	<img class="notification-card-image"
+		[src]="getFirebasePictureUrl(notification.author.picturesIds?.profilePicture)" />
 	<div class="notification-card-flex-column notification-card-width-70">
-		<p class="notification-card-name">{{ notification.user.firstName }} {{ notification.user.lastName }}</p>
-		<p class="notification-card-message">{{ notification.message }}</p>
+		<p class="notification-card-name" (click)="navigateToNotification(notification.author.id);viewNotification()">{{
+			notification.author.firstName }} {{ notification.author.lastName }}</p>
+		<p class="notification-card-message">new <span class="notification-card-type">{{
+				notification.notification?.message }}</span>.</p>
 	</div>
 	<div class="notification-card-flex-column">
-		<p class="notification-card-message">{{ notification.date | date: 'HH:mm' }}</p>
+		<p class="notification-card-message">{{ getNotificationTime() }}</p>
 		<div class="notification-card-dot-container">
-			<span [ngClass]="{'notification-card-dot': !notification.viewed}"></span>
+			<span [ngClass]="{'notification-card-dot': !isNotificationViewed()}"></span>
 		</div>
 	</div>
 </div>

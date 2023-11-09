@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SocketService } from './socket.service';
+import { ActivityTypes } from '@shared-models/notification.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -9,8 +10,8 @@ export class ActivitySocketService extends SocketService {
 		super('/activity');
 	}
 
-	newActivity(message: "like" | "unlike" | "dislike" | "view" | "match", toUserId: string) {
-		this.emit('new activity', { message: message, toUserId: toUserId });
+	newActivity(message: ActivityTypes, toUserId: string, id?: string) {
+		this.emit('new activity', { message: message, toUserId: toUserId, id: id });
 	}
 
 	getNewActivity() {

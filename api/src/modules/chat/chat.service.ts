@@ -11,6 +11,10 @@ export class ChatService {
 		this.messageModel = new MessageModel(this.dbClient);
 	}
 
+	async getMessage(notificationId: string): Promise<Message> {
+		return this.messageModel.findById(notificationId);
+	}
+
 	async getMessages(fromUserId: string, toUSerId: string): Promise<Message[]> {
 		return this.messageModel.findMany([
 			{ from_user_id: fromUserId, to_user_id: toUSerId},
@@ -19,20 +23,9 @@ export class ChatService {
 		)
 	}
 
-	async getConversations(currentUserId: string): Promise<Conversation[]> {
-		const conversations = 
-			await this.messageModel.getUserConversations(currentUserId);
-		return conversations.map(conversation => ({
-			lastname: conversation.lastname,
-			firstname: conversation.firstname,
-			profile_id: conversation.profile_id,
-			user_id: conversation.user_id,
-			picturesIds: {
-				profilePicture: conversation.picture_id,
-			},
-			last_message: conversation.last_message,
-			latest_date: conversation.latest_date
-		}))
+	async getConversations(currentUserId: string): Promise<{data: Conversation[]}> {
+		const conversations = await this.messageModel.getUserConversations(currentUserId);
+		return conversations;
 	}
 
 	async postMessage(fromUserId: string, toUserId: string, messageText: string): Promise<Message> {
@@ -41,5 +34,12 @@ export class ChatService {
 			to_user_id: toUserId,
 			message: messageText,
 		});
+	}
+
+	async view(messageId: string): Promise<Message> {
+		return this.messageModel.updateById(messageId, {
+			is_viewed: true 
+		}
+		) as Promise<Message>
 	}
 }

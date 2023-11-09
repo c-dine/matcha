@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Conversation } from '@shared-models/chat.models';
 import { ChatService } from 'src/app/service/chat.service';
-import { Output, Input, EventEmitter } from '@angular/core';
-import { firstValueFrom } from 'rxjs'
+import { Output, EventEmitter } from '@angular/core';
+import { firstValueFrom, take } from 'rxjs'
 import { UserService } from 'src/app/service/user.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
@@ -52,17 +52,7 @@ export class ContactsSideBarComponent {
 	}
 
 	private async getMatchs() {
-		return (await firstValueFrom(this.userService.getMatchs()))
-			.userList.map(
-				user => new Conversation(
-					user.firstName,
-					user.lastName,
-					"",
-					new Date(),
-					user.id,
-					user.picturesIds,
-				)
-			)
+		return (await firstValueFrom(this.userService.getMatchs()));
 	}
 
 	private processConversationsBasedOnRoute() {
@@ -73,7 +63,7 @@ export class ContactsSideBarComponent {
 	}
 
 	private addMatchToConversations() {
-		let match = this.matchs.find((conv) => conv.user_id === this.routeUserId);
+		let match = this.matchs.find((conv) => conv.author.id === this.routeUserId);
 		if (match) {
 			this.conversations.push(match);
 		}
@@ -81,12 +71,12 @@ export class ContactsSideBarComponent {
 
 	private filterAndRemoveExistingMatches() {
 		this.matchs = this.matchs.filter((match) => {
-			return !this.conversations.some((conversation) => conversation.user_id === match.user_id) && match.user_id !== this.routeUserId;
+			return !this.conversations.some((conversation) => conversation.author.id === match.author.id) && match.author.id !== this.routeUserId;
 		});
 	}
 
 	private conversationsHasUserId(userId: string): boolean {
-		return this.conversations.some((conversation) => conversation.user_id === userId);
+		return this.conversations.some((conversation) => conversation.author.id === userId);
 	}
 
 	navigateToUserConversation(userId: string | undefined) {

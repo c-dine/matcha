@@ -14,15 +14,15 @@ export enum MessageErrorCode {
 export class MessageError extends ErrorBase {
 	constructor() {
 		super();
-		this.errorMessages.set(
+		this.errors.set(
 			MessageErrorCode.NoConversationSelected,
 			'No conversation selected'
 		);
-		this.errorMessages.set(
+		this.errors.set(
 			MessageErrorCode.EmptyMessage,
 			'The message is empty'
 		);
-		this.errorMessages.set(
+		this.errors.set(
 			MessageErrorCode.OverMaxLenth,
 			'The message is too long'
 		);

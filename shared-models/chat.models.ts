@@ -1,5 +1,5 @@
-import { User } from "./user.model";
 import { ProfilePicturesIds } from "./picture.model";
+import { NotificationWithAuthor } from "./notification.model";
 
 export interface Message {
 	id?: string;
@@ -7,19 +7,12 @@ export interface Message {
 	to_user_id: string;
 	message: string;
 	date: Date;
+	isViewed: boolean;
 }
 
 export interface MessageDto {
 	message: string;
 }
 
-export class Conversation {
-	constructor(
-		public firstname: string,
-		public lastname: string,
-		public last_message: string,
-		public latest_date: Date,
-		public user_id?: string,
-		public picturesIds?: ProfilePicturesIds,
-	) { }
+export interface Conversation extends NotificationWithAuthor{
 }

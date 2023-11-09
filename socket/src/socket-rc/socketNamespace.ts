@@ -25,7 +25,6 @@ class SocketNamespace {
 
 	handleConnection(socket) {
 		const userId = socket.handshake.query.userId;
-		console.log(`user connected to ${this.namespace}`);
 		this.connectedUsers.set(userId, {
 			id: socket.id,
 			socket: socket,
@@ -54,6 +53,7 @@ class SocketNamespace {
 	}
 
 	emitTo(eventName: string, arg: any) {
+		// envoyer a tous
 		const toUserId = arg.toUserId;
 		const fromUserId = arg.fromUserId;
 
@@ -65,9 +65,26 @@ class SocketNamespace {
 		const fromUser = this.connectedUsers.get(fromUserId);
 
 		fromUser.socket.to(toUser.id).emit(eventName, {
+			id: arg.id,
 			fromUserId,
 			toUserId,
-			data: arg.message,
+			date: new Date(),
+			message: arg.message,
+		});
+	}
+
+	emitIsConnected(eventName: string, arg: any) {
+		const toUserId = arg.toUserId;
+		const fromUserId = arg.fromUserId;
+
+		const fromUser = this.connectedUsers.get(fromUserId);
+		console.log(this.connectedUsers.has(toUserId))
+		fromUser.socket.emit(eventName, {
+			id: arg.id,
+			fromUserId,
+			toUserId,
+			date: new Date(),
+			message: (this.connectedUsers.has(toUserId)) ? "connected" : "not connected",
 		});
 	}
 

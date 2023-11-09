@@ -326,6 +326,22 @@ textarea {
 	background-color: var(--primary-color) !important;
 }
 
+.user-dot {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	margin-left: 5px;
+}
+
+.connected-user-dot {
+	background-color: var(--success-color);
+}
+
+.diconnected-user-dot {
+	background-color: var(--error-color);
+}
+
 @media screen and (max-width: 1000px) {
 	.label {
 		display: flex;

@@ -51,7 +51,7 @@ export class ConversationComponent extends SubscriptionBase implements OnInit, O
 	}
 
 	private subscribeToRouteParams(): void {
-		this.subscriptions.push(
+		this.saveSubscription(
 			this.route.paramMap.subscribe((params: ParamMap) => {
 				const userId = params.get('id');
 				if (userId) {

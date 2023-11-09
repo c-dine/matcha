@@ -1,14 +1,14 @@
 <div [ngClass]="{'contact-card-activated': activated}" class="contact-card-container">
 		<div class="contact-card-image-cotainer">
 			<img class="contact-card-image object-fit-cover "
-				[src]=pictureIdToUrl(conversation.picturesIds?.profilePicture) />
+				[src]=pictureIdToUrl(conversation.author.picturesIds?.profilePicture) />
 		</div>
 		<div class="contact-card-text-container">
 			<h6 class="contact-card-overflow-ellispis contact-card-name">
-				{{ conversation.lastname }} {{ conversation.firstname }}
+				{{ conversation.author.lastName }} {{ conversation.author.firstName }}
 			</h6>
 			<p class="contact-card-message contact-card-overflow-ellispis">
-				{{ conversation.last_message }}
+				{{ conversation.notification?.message }}
 			</p>
 		</div>
 		<div class="contact-card-time-container">

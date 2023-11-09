@@ -41,7 +41,7 @@ export class MessageService extends SubscriptionBase {
 			this.chatService.sendMessage(this.conversationUserId!, this.messageToSend).pipe(take(1)).subscribe({
 				next: (sendedMessage) => {
 					this.messages.unshift(sendedMessage);
-					this.chatSocket.sendMessage(sendedMessage.message, this.conversationUserId!);
+					this.chatSocket.sendMessage(sendedMessage.message, this.conversationUserId!, sendedMessage.id);
 					this.messageToSend = '';
 				},
 			});
@@ -99,7 +99,7 @@ export class MessageService extends SubscriptionBase {
 	}
 
 	private subscribeToSocketMessages(): void {
-		this.subscriptions.push(
+		this.saveSubscription(
 			this.chatSocket.getMessages().subscribe((socketEvent) => {
 				if (this.isEventForCurrentConversation(socketEvent)) {
 					this.addMessageToList(socketEvent);
@@ -109,7 +109,7 @@ export class MessageService extends SubscriptionBase {
 	}
 
 	private subscribeToTypingStatus(): void {
-		this.subscriptions.push(
+		this.saveSubscription(
 			this.chatSocket.getTyping().subscribe((socketEvent) => {
 				if (this.isEventForCurrentConversation(socketEvent)) {
 					this.isTyping = true;
@@ -131,8 +131,9 @@ export class MessageService extends SubscriptionBase {
 		const message: Message = {
 			from_user_id: socketMessage.fromUserId || 'undefined',
 			to_user_id: this.conversationUserId || 'undefined',
-			message: socketMessage.data,
+			message: socketMessage.message,
 			date: new Date(),
+			isViewed: false
 		};
 		this.messages.unshift(message);
 	}

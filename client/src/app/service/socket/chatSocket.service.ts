@@ -10,8 +10,8 @@ export class ChatSocketService extends SocketService {
 		super('/chat');
 	}
 
-	sendMessage(message: string, toUserId: string) {
-		this.emit('new message', {message: message, toUserId: toUserId});
+	sendMessage(message: string, toUserId: string, id?: string) {
+		this.emit('new message', {message: message, toUserId: toUserId, id});
 	}
 
 	getMessages() {

@@ -29,6 +29,8 @@
 		<h1>
 			{{profile.username}}
 			<span class="user-subtitle">({{profile.firstName}} {{profile.lastName}})</span>
+			<span *ngIf="!isConnected" class="user-dot diconnected-user-dot"></span>
+			<span *ngIf="isConnected" class="user-dot connected-user-dot"></span>
 		</h1>
 		<div class="user-card-detail">
 			<mat-icon> place</mat-icon>
@@ -146,3 +148,4 @@
 	</div>
 
 </form>
+<p>{{ isConnected }}</p>

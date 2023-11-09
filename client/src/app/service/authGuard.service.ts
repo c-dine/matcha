@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
+import { connectionSocketService } from './socket/connectionSocket.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,6 +16,7 @@ export class AuthGuard {
         private router: Router,
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
+		private connectionSocket: connectionSocketService,
     ) {}
 
 	async canActivate(): Promise<boolean> {
@@ -28,6 +30,7 @@ export class AuthGuard {
 		}
 		this.chatSocket.connect();
 		this.activitySocket.connect();
+		this.connectionSocket.connect();
 		return true;
 	}
 }

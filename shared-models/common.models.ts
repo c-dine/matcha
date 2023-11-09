@@ -58,9 +58,9 @@ export interface User {
 
 export interface Notification {
 	id?: string;
-	isViewed?: boolean;
-	from?: number;
-	to?: number;
+	is_viewed?: boolean;
+	from_user_id?: string;
+	to_user_id?: string;
 	type?: string;
 	date?: Date;
 }

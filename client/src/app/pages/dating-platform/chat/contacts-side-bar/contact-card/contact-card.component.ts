@@ -22,7 +22,9 @@ export class ContactCardComponent {
 	}
 
 	getTimeBeforeLastMessage() {
-		let time = Math.abs(new Date(this.conversation.latest_date).getTime() - new Date().getTime());
+		if (!this.conversation.notification)
+			return "";
+		let time = Math.abs(new Date(this.conversation.notification.date).getTime() - new Date().getTime());
 		return this.printTime(time);
 	}
 }

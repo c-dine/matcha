@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS "fake_report" (
 
 CREATE TABLE IF NOT EXISTS "messages" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "is_viewed" BOOLEAN DEFAULT FALSE,
     "from_user_id" UUID NOT NULL,
     "to_user_id" UUID NOT NULL,
     "message" VARCHAR(510) NOT NULL,

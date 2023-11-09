@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
-import { Output, EventEmitter } from '@angular/core';
 import { Conversation } from '@shared-models/chat.models';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-chat-match-bar',
@@ -14,7 +14,8 @@ export class ChatMatchBarComponent {
 	matchs!: Conversation[];
 
 	constructor(
-		private router: Router
+		private router: Router,
+		private snackBar: MatSnackBar,
 	) {}
 
 	pictureIdToPictureUrl(id: string| undefined) {
@@ -22,6 +23,11 @@ export class ChatMatchBarComponent {
 	}
 
 	getProfilePictureUrl(userId: string | undefined): string {
+		if(!userId) return "";
+		this.snackBar.open(userId, "Close", {
+			duration: 4000,
+			panelClass: "error-snackbar"
+		});
 		return getFirebasePictureUrl(userId);
 	}
 

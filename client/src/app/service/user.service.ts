@@ -4,6 +4,7 @@ import { environment } from '@environment/environment';
 import { BehaviorSubject, Observable, firstValueFrom, map, tap } from 'rxjs';
 import { GeoCoordinate, ProfileFilters, UserList, User } from "@shared-models/user.model.js"
 import { buildHttpParams } from '../utils/http.utils';
+import { Conversation } from '@shared-models/chat.models';
 
 @Injectable({
   providedIn: 'root'
@@ -64,8 +65,8 @@ export class UserService {
 		});
 	}
 
-	getMatchs(): Observable<UserList> {
-		return this.http.get<UserList>(`${environment.apiUrl}/user/matchs`);
+	getMatchs(): Observable<Conversation[]> {
+		return this.http.get<Conversation[]>(`${environment.apiUrl}/user/matchs`);
 	}
 
 	updateUser(updatedUser: User): Observable<User> {
