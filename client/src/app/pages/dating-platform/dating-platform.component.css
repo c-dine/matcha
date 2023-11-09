@@ -23,6 +23,7 @@
 	.page-content-container {
 		width: 100% !important;
 		padding: 1px;
+		min-height: 100%;
 	}
 }
 
@@ -44,5 +45,6 @@
     }
 	.page-content-container {
 		width: 70vw;
+		min-height: 100%;
 	}
 }
