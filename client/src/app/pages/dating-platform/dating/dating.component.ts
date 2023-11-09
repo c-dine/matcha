@@ -51,7 +51,6 @@ export class DatingComponent implements OnInit {
 
 	onDatingButtonClick(buttonName: string) {
 		if (buttonName === 'like') {
-			console.log('like')
 			this.likeService.likeProfile(this.matchingProfiles[0]).pipe(take(1)).subscribe();
 		}
 		else if (buttonName === 'dislike' && this.matchingProfiles[0].id) {

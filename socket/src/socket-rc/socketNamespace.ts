@@ -25,7 +25,6 @@ class SocketNamespace {
 
 	handleConnection(socket) {
 		const userId = socket.handshake.query.userId;
-		console.log(`user connected to ${this.namespace}`);
 		this.connectedUsers.set(userId, {
 			id: socket.id,
 			socket: socket,
@@ -45,7 +44,6 @@ class SocketNamespace {
 	}
 
 	handleDisconnect(userId) {
-		console.log(`user disconnected of ${this.namespace}`);
 		this.connectedUsers.delete(userId);
 	}
 

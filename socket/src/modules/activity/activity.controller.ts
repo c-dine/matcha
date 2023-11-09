@@ -6,9 +6,7 @@ activityController.event('new activity', (arg) => {
 	try {
 		activityController.emitTo('new activity', arg);
 	}
-	catch (e){
-		console.log(e.message);
-	}
+	catch (e) {	}
 });
 
 export default activityController;
