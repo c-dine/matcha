@@ -205,9 +205,7 @@ export class UserService {
 				latitude: coordinates.latitude,
 				longitude: coordinates.longitude
 			}
-		} catch (error: any) {
-			console.error("Can't locate user.")
-		}
+		} catch (error: any) { }
 	}
 
 	async getMatchs(userId: string): Promise<UserList> {

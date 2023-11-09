@@ -16,7 +16,6 @@ export function authenticationHandler(req: Request, res: Response, next: NextFun
 		req.userId = (decoded as any)?.userId;
 		next();
     } catch (error) {
-        console.error('Authentication error:', error);
 		next(new CustomError('Authentication error.', 401));
     }
 };

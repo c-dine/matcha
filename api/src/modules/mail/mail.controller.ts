@@ -18,7 +18,6 @@ mailController.post("/resetPassword", async (req: Request, res: Response, next: 
 		res.status(200).json({ message: "Reset password mail successfully sent." });
 		next();
 	} catch (error: any) {
-		console.error(`Error while sending reset password email: ${error}.`);
 		error.message = error.message || `Error while sending reset password email.`;
 		next(error);
 	}

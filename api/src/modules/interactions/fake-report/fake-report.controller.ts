@@ -12,7 +12,6 @@ fakeReportController.get("/", async (req: Request, res: Response, next: NextFunc
 		res.status(200).json({ data: blacklist });
 		next();
 	} catch (error: any) {
-		console.error(`Error while fetching fake report list: ${error}.`);
 		error.message = `Error while fetching fake report list.`;
 		next(error);
 	}
@@ -30,7 +29,6 @@ fakeReportController.post("/", async (req: Request, res: Response, next: NextFun
 		});
 		next();
 	} catch (error: any) {
-		console.error(`Error while reporting profile: ${error}.`);
 		error.message = `Error while reporting profile.`;
 		next(error);
 	}
@@ -47,7 +45,6 @@ fakeReportController.delete("/:targetUserId", async (req: Request, res: Response
 		});
 		next();
 	} catch (error: any) {
-		console.error(`Error while deleting report: ${error}.`);
 		error.message = `Error while deleting report.`;
 		next(error);
 	}

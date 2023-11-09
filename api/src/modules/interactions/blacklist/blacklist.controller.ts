@@ -12,7 +12,6 @@ blacklistController.get("/", async (req: Request, res: Response, next: NextFunct
 		res.status(200).json({ data: blacklist });
 		next();
 	} catch (error: any) {
-		console.error(`Error while fetching blacklist: ${error}.`);
 		error.message = `Error while fetching blacklist.`;
 		next(error);
 	}
@@ -30,7 +29,6 @@ blacklistController.post("/", async (req: Request, res: Response, next: NextFunc
 		});
 		next();
 	} catch (error: any) {
-		console.error(`Error while blacklisting: ${error}.`);
 		error.message = `Error while blacklisting.`;
 		next(error);
 	}
@@ -47,7 +45,6 @@ blacklistController.delete("/:targetUserId", async (req: Request, res: Response,
 		});
 		next();
 	} catch (error: any) {
-		console.error(`Error while unblacklisting: ${error}.`);
 		error.message = `Error while unblacklisting.`;
 		next(error);
 	}
