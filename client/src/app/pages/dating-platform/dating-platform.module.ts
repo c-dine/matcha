@@ -34,8 +34,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { SettingsComponent } from './settings/settings.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 import { ChatTypingMessageComponent } from './chat/conversation/typing-message/chat-typing-message.component';
 import { LottieModule } from 'ngx-lottie';
 
@@ -62,6 +63,7 @@ export function playerFactory() {
 		UserListComponent,
 		UserListFiltersComponent,
 		SettingsComponent,
+		InteractiveMapComponent
 	],
 	imports: [
 		CommonModule,

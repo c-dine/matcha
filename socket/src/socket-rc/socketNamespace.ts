@@ -44,7 +44,6 @@ class SocketNamespace {
 	}
 
 	handleDisconnect(userId) {
-		console.log(`user disconnected of ${this.namespace}`);
 		this.connectedUsers.delete(userId);
 	}
 

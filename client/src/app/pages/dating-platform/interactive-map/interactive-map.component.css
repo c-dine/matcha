@@ -1,0 +1,48 @@
+.interactive-map-container {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+}
+
+.map-container {
+	width: 100%;
+	height: 100%;
+}
+
+.user-popup {
+	border-radius: 5px;
+	border: solid thin white;
+	padding: 5px;
+	background-color: var(--primary-lighter-color);
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.popup-user-details {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+:host::ng-deep .popup-user-name {
+	font-weight: 700 !important;
+	color: black;
+}
+
+:host::ng-deep li {
+	display: none !important;
+}
+
+:host::ng-deep .rounded-circle-container {
+	width: 40px !important;
+	height: 40px !important;
+}
+
+:host::ng-deep .popup-picture {
+	width: 40px !important;
+	height: 40px !important;
+}

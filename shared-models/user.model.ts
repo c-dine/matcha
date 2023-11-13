@@ -30,6 +30,14 @@ export interface AuthenticatedUser extends User {
 	}
 }
 
+export interface MapUser {
+	id: string,
+	location: GeoCoordinate,
+	username: string,
+	fameRate: number,
+	pictureId: string
+}
+
 export interface NewUser extends User {
 	password: string
 }
@@ -52,6 +60,13 @@ export interface NavbarProfile {
 export interface GeoCoordinate {
 	latitude: number;
 	longitude: number;
+}
+
+export interface MapGeoCoordinates {
+	topLatitude: number,
+	bottomLatitude: number,
+	rightLongitude: number,
+	leftLongitude: number
 }
 
 export interface ProfileFilters {

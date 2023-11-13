@@ -1,7 +1,8 @@
 .profile-pictures-container {
 	display: flex;
 	gap: 10px;
-	align-items: end;
+	align-items: flex;
+	overflow: auto;
 }
 
 .additionnal-pictures-container {
@@ -12,11 +13,14 @@
 .additionnal-picture-container {
 	width: 130px;
 	height: 150px;
+	overflow: auto !important;
 }
 
 .profile-picture-container {
 	width: 150px;
+	min-width: 150px;
 	height: 170px;
+	overflow: auto !important;
 }
 
 .picture-center-icon {

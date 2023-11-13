@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { UserModel } from "../../model/user.model.js";
-import { GeoCoordinate, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/user.model.js"
+import { GeoCoordinate, MapGeoCoordinates, MapUser, ProfileFilters, ProfileFiltersRequest, UserList } from "@shared-models/user.model.js"
 import { env } from "../../config/config.js";
 import { User } from "@shared-models/user.model.js";
 import { Conversation } from "@shared-models/chat.models.js";
@@ -118,6 +118,21 @@ export class UserService {
 		};
 	}
 
+	async getMapList(mapCoordinates: MapGeoCoordinates, userId: string) {
+		const currentUserProfile = await this.getUserById(userId);
+		const users = await this.userModel.getMapUsers(mapCoordinates, currentUserProfile);
+		return users.map(user => ({
+			id: user.id,
+			location: {
+				latitude: user.user_given_location_latitude ? user.user_given_location_latitude : user.location_latitude,
+				longitude: user.user_given_location_longitude ? user.user_given_location_longitude : user.location_longitude
+			},
+			username: user.username,
+			fameRate: user.fame_rate,
+			pictureId: user.picture_id
+		} as MapUser));
+	}
+
 	async getMatchingProfiles(userId: string, filters: ProfileFilters): Promise<UserList> {
 		const currentUserProfile = await this.getUserById(userId);
 		if (!currentUserProfile?.id)
@@ -160,8 +175,8 @@ export class UserService {
 				birth_date: updatedData.birthDate || undefined,
 				sexual_preferences: updatedData.sexualPreferences || undefined,
 				biography: updatedData.biography || undefined,
-				user_given_location_latitude: updatedData.userGivenLocation?.latitude || undefined,
-				user_given_location_longitude: updatedData.userGivenLocation?.longitude || undefined,
+				user_given_location_latitude: updatedData.userGivenLocation?.latitude || null,
+				user_given_location_longitude: updatedData.userGivenLocation?.longitude || null,
 				is_profile_filled: true
 		});
 
@@ -191,9 +206,7 @@ export class UserService {
 				latitude: coordinates.latitude,
 				longitude: coordinates.longitude
 			}
-		} catch (error: any) {
-			console.error("Can't locate user.")
-		}
+		} catch (error: any) { }
 	}
 
 	async getMatchs(userId: string): Promise<{data: Conversation[]}> {

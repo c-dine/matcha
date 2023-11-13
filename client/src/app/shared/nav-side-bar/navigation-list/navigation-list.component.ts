@@ -19,6 +19,11 @@ export class NavigationListComponent {
       iconName: "groupe"
     },
     {
+      title: 'Interactive map',
+      path: '/app/interactiveMap',
+      iconName: "map"
+    },
+    {
       title: 'Chat',
       path: '/app/chat',
       iconName: "chat"

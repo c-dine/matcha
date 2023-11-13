@@ -7,7 +7,6 @@ export async function connectToDatabase(req: Request, res: Response, next: NextF
 		req.dbClient = await dbPool.connect();
         next();
     } catch (error) {
-        console.error('Error connecting to database:', error);
         next(new CustomError('Internal server error', 500));
     }
 };

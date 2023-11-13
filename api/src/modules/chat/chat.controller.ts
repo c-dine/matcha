@@ -16,7 +16,6 @@ chatController.get("/messages/:id", async (req: Request, res: Response, next: Ne
 		res.status(200).json({ data: messages as Message[] || null });
 		next();
 	} catch (error: any) {
-		console.error(`Error while fetching messages: ${error}.`);
 		error.message = `Error while fetching messages.`;
 		next(error);
 	}
@@ -31,7 +30,6 @@ chatController.get("/conversations", async (req: Request<any, any, any, { id: st
 		res.status(200).json(conversations);
 		next();
 	} catch (error: any) {
-		console.error(`Error while fetching conversations: ${error}.`);
 		error.message = `Error while fetching conversations.`;
 		next(error);
 	}
@@ -47,7 +45,6 @@ chatController.post("/message/:id", async (req: Request, res: Response, next: Ne
 		res.status(200).json({ data: message as Message || null });
 		next();
 	} catch (error: any) {
-		console.error(`Error while creating message: ${error}.`);
 		error.message = `Error while creating message.`;
 		next(error);
 	}

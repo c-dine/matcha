@@ -28,9 +28,7 @@ class SocketServer {
 
 	listen(port: number) {
 		this.initializeControllers();
-		this.httpServer.listen(port, () => {
-			console.log(`Server started on port ${port}`);
-		});
+		this.httpServer.listen(port, () => { });
 	}
 
 	private initializeControllers() {

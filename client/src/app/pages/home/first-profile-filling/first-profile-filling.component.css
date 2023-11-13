@@ -2,12 +2,15 @@
 	display: flex;
 	flex-direction: column;
 	height: calc(100% - 4px) !important;
+	width: 100vw !important;
+	overflow: auto;
 }
 
 .first-profile-filling-subpage {
 	display: flex;
 	flex-direction: column;
 	max-width: 800px;
+	width: 100%;
 }
 
 h1 {

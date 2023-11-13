@@ -35,7 +35,6 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 			}
 		});
 	} catch (error: any) {
-		console.error(`Error while creating user: ${error}`);
 		error.message = "Username or email already taken."; 
 		next(error);
 	}
@@ -61,7 +60,6 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		})
 		next();
 	} catch (error: any) {
-		console.error(`Error while logging in: ${error}`);
 		error.message = error.message || "Error while logging in."; 
 		next(error);
 	}
@@ -92,7 +90,6 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 		});
 		next();
 	} catch (error: any) {
-		console.error(`Error while refreshing access token: ${error}`);
 		error.message = "Authentication error."; 
 		next(error);
 	}
@@ -109,7 +106,6 @@ authController.post("/resetPassword", async (req: Request, res: Response, next: 
 		res.status(200).json({ message: "Password successfully reset."});
 		next();
 	} catch (error: any) {
-		console.error(`Error while reseting password: ${error}`);
 		error.message = error.message || "Error while reseting password."; 
 		next(error);
 	}
@@ -126,7 +122,6 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 		res.status(200).json({ message: "Email successfully verified."});
 		next();
 	} catch (error: any) {
-		console.error(`Error while verifying email: ${error}`);
 		error.message = "Error while verifying email."; 
 		next(error);
 	}
@@ -149,7 +144,6 @@ authController.put("/updatePassword", async (req: Request, res: Response, next: 
 		res.status(200).json({ message: "Password successfully updated."});
 		next();
 	} catch (error: any) {
-		console.error(`Error while updating password: ${error}`);
 		error.message = error.message || "Error while updating password.";
 		next(error);
 	}

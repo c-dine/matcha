@@ -7,6 +7,7 @@ import { DatingPlatformComponent } from './dating-platform.component';
 import { AuthGuard } from 'src/app/service/authGuard.service';
 import { UserListComponent } from './user-list/user-list.component';
 import { SettingsComponent } from './settings/settings.component';
+import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 
 const routes: Routes = [
   { 
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'dating', component: DatingComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'userList', component: UserListComponent },
+      { path: 'interactiveMap', component: InteractiveMapComponent },
       { path: 'settings', component: SettingsComponent }
     ],
     canActivate: [AuthGuard]

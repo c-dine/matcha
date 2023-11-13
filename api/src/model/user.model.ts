@@ -1,6 +1,6 @@
 import { PoolClient } from "pg";
 import { ModelBase } from "./base.js";
-import { GeoCoordinate, ProfileFilters, User, UserListFilters } from "@shared-models/user.model.js";
+import { GeoCoordinate, ProfileFilters, MapGeoCoordinates, User, UserListFilters } from "@shared-models/user.model.js";
 
 export class UserModel extends ModelBase {
 
@@ -47,6 +47,8 @@ export class UserModel extends ModelBase {
 					${isCurrentUser ? `
 					"user".user_given_location_latitude,
 					"user".user_given_location_longitude,
+					"user".location_longitude,
+					"user".location_latitude,
 					"user".email,` : ""}
 					currentUserLike.is_liked,
 					likedCurrentUser.is_liked as liked_current_user,
@@ -310,6 +312,44 @@ export class UserModel extends ModelBase {
 		`;
 	}
 
+	async getMapUsers(mapCoordinates: MapGeoCoordinates, currentUser: user) {
+		const query = this.getMapUsersQuery(currentUser);
+		const values = [
+			mapCoordinates.topLatitude,
+			mapCoordinates.bottomLatitude,
+			mapCoordinates.rightLongitude,
+			mapCoordinates.leftLongitude
+		];
+		const result = await this.dbClient.query(query, values);
+		return result.rows;
+	}
+
+	getMapUsersQuery(currentUser: user) {
+		return `
+			SELECT
+				"user".username,
+				"user".location_latitude,
+				"user".location_longitude,
+				"user".user_given_location_latitude,
+				"user".user_given_location_longitude,
+				"user".id,
+				"user".fame_rate,
+				(SELECT picture.id FROM picture WHERE picture.user_id = "user".id and is_profile_picture=true) as picture_id
+			FROM "user"
+			WHERE (
+				(
+					"user".location_latitude < $1 AND "user".location_latitude > $2 AND "user".location_longitude < $3 AND "user".location_longitude > $4 AND "user".user_given_location_latitude IS NULL
+				)
+				OR
+				(
+					"user".user_given_location_latitude < $1 AND "user".user_given_location_latitude > $2 AND "user".user_given_location_longitude < $3 AND "user".user_given_location_longitude > $4
+				)
+			)
+				  AND "user".id <> '${currentUser.id}'
+				  ${this.getSexualProfileFiltersQuery(currentUser)}
+		`;
+	}
+	
 	async getMatchs(userId: string) {
 		const query = this.getMatchsQuery();
 		const result = await this.dbClient.query(query, [userId]);
