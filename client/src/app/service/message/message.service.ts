@@ -6,6 +6,8 @@ import { ChatSocketService } from '../socket/chatSocket.service';
 import { MessageError, MessageErrorCode } from './message.error';
 import { SubscriptionBase } from 'src/app/shared/subscriptionBase/subscription-base.component';
 import { limits } from '@environment/database_limits';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,6 +22,7 @@ export class MessageService extends SubscriptionBase {
 		private chatService: ChatService,
 		private chatSocket: ChatSocketService,
 		private messageError: MessageError,
+		private router: Router,
 	) {
 		super();
 		this.setupSocketSubscriptions();
@@ -32,6 +35,9 @@ export class MessageService extends SubscriptionBase {
 			next: (messages) => {
 				this.messages = messages;
 			},
+			error: (err: HttpErrorResponse) => {
+				this.navigateDependingOnErrorStatus(err.status);
+			}
 		});
 	}
 
@@ -44,6 +50,9 @@ export class MessageService extends SubscriptionBase {
 					this.chatSocket.sendMessage(sendedMessage.message, this.conversationUserId!, sendedMessage.id);
 					this.messageToSend = '';
 				},
+				error: (err: HttpErrorResponse) => {
+					this.navigateDependingOnErrorStatus(err.status);
+				}
 			});
 		}
 		catch (error: any) {
@@ -71,6 +80,15 @@ export class MessageService extends SubscriptionBase {
 
 	private isOverMaxMessageLength(): boolean {
 		return this.messageToSend.length > limits.MESSAGE_MAX_LENGTH;
+	}
+
+	private navigateDependingOnErrorStatus(errorStatus: number) {
+		if (errorStatus === 403) {
+			this.router.navigate(["app/chat"]);
+		}
+		else if (errorStatus === 404) {
+			this.router.navigate(["404"]);
+		}
 	}
 
 	sendTyping(): void {

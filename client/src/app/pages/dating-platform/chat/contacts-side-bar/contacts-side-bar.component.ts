@@ -31,13 +31,13 @@ export class ContactsSideBarComponent {
 	}
 
 	async ngOnInit() {
-		await this.handleRouteParams();
+		await this.loadRouteParams();
 		await this.loadConversations();
 		await this.loadMatchs();
 		this.processConversationsBasedOnRoute();
 	}
 
-	private async handleRouteParams() {
+	private async loadRouteParams() {
 		this.route.paramMap.subscribe((params: ParamMap) => {
 			this.routeUserId = params.get('id');
 		});
@@ -56,7 +56,7 @@ export class ContactsSideBarComponent {
 	}
 
 	private processConversationsBasedOnRoute() {
-		if (this.routeUserId && !this.conversationsHasUserId(this.routeUserId)) {
+		if (this.routeUserId && !this.conversationsHasUserId(this.routeUserId, this.conversations)) {
 			this.addMatchToConversations();
 		}
 		this.filterAndRemoveExistingMatchs();
@@ -75,8 +75,8 @@ export class ContactsSideBarComponent {
 		});
 	}
 
-	private conversationsHasUserId(userId: string): boolean {
-		return this.conversations.some((conversation) => conversation.author.id === userId);
+	private conversationsHasUserId(userId: string, conversations: Conversation[]): boolean {
+		return conversations.some((conversation) => conversation.author.id === userId);
 	}
 
 	navigateToUserConversation(userId: string | undefined) {

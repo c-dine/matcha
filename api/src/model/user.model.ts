@@ -362,11 +362,22 @@ export class UserModel extends ModelBase {
 			WHERE 
 				"like".target_user_id = $1
 			AND "like".is_liked = true 
-			AND "like".user_id 
-			IN (
+			AND "like".user_id IN (
 				SELECT currentUserMatchs.target_user_id 
 				FROM "like" AS currentUserMatchs
 				WHERE currentUserMatchs.user_id = $1 AND currentUserMatchs.is_liked = true
+			)
+			AND matchedUser.id NOT IN (
+				SELECT DISTINCT 
+				CASE 
+				  WHEN "blacklist".user_id = matchedUser.id AND "blacklist".target_user_id = $1 THEN "blacklist".user_id
+				  ELSE "blacklist".target_user_id
+				END AS id
+			  FROM "blacklist"
+			  WHERE 
+				("blacklist".user_id = matchedUser.id AND "blacklist".target_user_id = $1)
+				OR
+				("blacklist".user_id = $1 AND "blacklist".target_user_id = matchedUser.id)			  
 			);
 		`
 		return query;

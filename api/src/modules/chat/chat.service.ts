@@ -1,14 +1,17 @@
 import { PoolClient } from "pg";
 import { MessageModel } from "../../model/message.model.js";
 import { Message, Conversation } from "@shared-models/chat.models.js";
+import { BlacklistService } from '../interactions/blacklist/blacklist.service.js';
 
 export class ChatService {
 	dbClient: PoolClient;
 	messageModel: MessageModel;
+	blacklistService: BlacklistService
 
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
 		this.messageModel = new MessageModel(this.dbClient);
+		this.blacklistService = new BlacklistService(this.dbClient);
 	}
 
 	async getMessage(notificationId: string): Promise<Message> {
@@ -41,5 +44,22 @@ export class ChatService {
 			is_viewed: true 
 		}
 		) as Promise<Message>
+	}
+
+	async isEitherUserBlacklisted(userId: string, currentUserId: string) {
+		return await this.isUserBlacklistedByCurrentUser(currentUserId, userId)
+			|| await this.isCurrentUserBlacklistedByUser(currentUserId, userId);
+	}
+
+	async isUserBlacklistedByCurrentUser(userId: string, currentUserId: string) {
+		const userList = await this.blacklistService.getList(currentUserId);
+		console.log(userList);
+		return userList.some(el => el.targetUserId === userId);
+	}
+
+	async isCurrentUserBlacklistedByUser(userId: string, currentUserId: string) {
+		const userList = await this.blacklistService.getListWhereCurrentUserIsTarget(currentUserId);
+		console.log(userList);
+		return userList.some(el => el.targetUserId === userId);
 	}
 }

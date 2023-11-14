@@ -36,9 +36,24 @@ export class MessageModel extends ModelBase {
 				END = u.id
 			  LEFT JOIN "picture" p ON u.id = p.user_id AND p.is_profile_picture = true
 			WHERE
-			  m.to_user_id = $1
-			  OR
-			  m.from_user_id = $1
+			(
+				m.to_user_id = $1
+			OR
+				m.from_user_id = $1
+			)
+			AND
+				u.id NOT IN (
+					SELECT DISTINCT 
+					CASE 
+					WHEN "blacklist".user_id = u.id AND "blacklist".target_user_id = $1 THEN "blacklist".user_id
+					ELSE "blacklist".target_user_id
+					END AS id
+					FROM "blacklist"
+					WHERE 
+						("blacklist".user_id = u.id AND "blacklist".target_user_id = $1)
+						OR
+						("blacklist".user_id = $1 AND "blacklist".target_user_id = u.id)
+				)
 		  )
 		  SELECT
 			json_agg(
@@ -86,3 +101,4 @@ export class MessageModel extends ModelBase {
 		return query;
 	}
 }
+	
