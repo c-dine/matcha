@@ -34,7 +34,7 @@ export interface NavbarProfile {
 	username?: string;
 	profilePictureUrl?: string;
 	likesNb?: number;
-	matchesNb?: number;
+	matchsNb?: number;
 	fameRate?: number;
 }
 

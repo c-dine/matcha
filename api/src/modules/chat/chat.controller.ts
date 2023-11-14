@@ -27,7 +27,7 @@ chatController.get("/conversations", async (req: Request<any, any, any, { id: st
 		const conversations = (await chatService.getConversations(req.userId))?.data?.sort(
 			(a, b) => new Date(b.notification?.date).getTime() - new Date(a.notification?.date).getTime()
 		);
-		res.status(200).json(conversations);
+		res.status(200).json({data: conversations ? conversations : []});
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching conversations.`;

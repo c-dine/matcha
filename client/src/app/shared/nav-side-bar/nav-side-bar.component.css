@@ -2,10 +2,10 @@
 	min-width: 200px;
 	width: 15vw;
 	height: calc(100vh - 45px);
-    background-color: white;
-    overflow-y: auto;
+	background-color: white;
+	overflow-y: auto;
 	-ms-overflow-style: none;
-	scrollbar-width: none; 
+	scrollbar-width: none;
 }
 
 .nav-side-bar-container::-webkit-scrollbar {

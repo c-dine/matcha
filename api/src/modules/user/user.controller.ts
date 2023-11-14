@@ -73,10 +73,7 @@ userController.get("/matchs", async (req: Request<any, any, any, ProfileFiltersR
 	try {
 		const userService = new UserService(req.dbClient);
 		const matchingProfiles = await userService.getMatchs(req.userId);
-		// if (!matchingProfiles.data)
-		// 	matchingProfiles.data = [];
-		console.log(typeof matchingProfiles.data)
-		res.status(200).json({data: matchingProfiles.data});
+		res.status(200).json({data: matchingProfiles.data ? matchingProfiles.data : []});
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching matched profiles.`;

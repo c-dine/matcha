@@ -57,9 +57,9 @@ export class UserModel extends ModelBase {
 					(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_user_id = "user".id) AS view_count,
 					(SELECT COUNT(*) FROM "like" AS matchCount WHERE matchCount.target_user_id = "user".id AND matchCount.is_liked = true AND matchCount.user_id IN (
 						SELECT matchedUser.id
-						FROM "like" AS currentUserMatches
-						LEFT JOIN "user" AS matchedUser ON matchedUser.id = currentUserMatches.target_user_id
-						WHERE currentUserMatches.user_id = "user".id AND currentUserMatches.is_liked = true
+						FROM "like" AS currentUserMatchs
+						LEFT JOIN "user" AS matchedUser ON matchedUser.id = currentUserMatchs.target_user_id
+						WHERE currentUserMatchs.user_id = "user".id AND currentUserMatchs.is_liked = true
 					)) AS match_count,
 					MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 					STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
@@ -301,9 +301,9 @@ export class UserModel extends ModelBase {
 				(SELECT COUNT(*) FROM "like" AS dislikeCount WHERE dislikeCount.target_user_id = "user".id AND dislikeCount.is_liked = false) AS other_dislike_count,
 				(SELECT COUNT(*) FROM "like" AS matchCount WHERE matchCount.target_user_id = "user".id AND matchCount.is_liked = true AND matchCount.user_id IN (
 						SELECT matchedUser.id
-						FROM "like" AS currentUserMatches
-						LEFT JOIN "user" AS matchedUser ON matchedUser.id = currentUserMatches.target_user_id
-						WHERE currentUserMatches.user_id = "user".id AND currentUserMatches.is_liked = true
+						FROM "like" AS currentUserMatchs
+						LEFT JOIN "user" AS matchedUser ON matchedUser.id = currentUserMatchs.target_user_id
+						WHERE currentUserMatchs.user_id = "user".id AND currentUserMatchs.is_liked = true
 						)) AS match_count,
 				(SELECT COUNT(*) FROM view AS viewCount WHERE viewCount.target_user_id = "user".id) AS view_count,
 				(SELECT AVG(view_count_per_user) FROM (SELECT target_user_id, COUNT(*) as view_count_per_user FROM "view" GROUP BY target_user_id) AS view_count_per_user_subquery) AS average_views
@@ -364,9 +364,9 @@ export class UserModel extends ModelBase {
 			AND "like".is_liked = true 
 			AND "like".user_id 
 			IN (
-				SELECT currentUserMatches.target_user_id 
-				FROM "like" AS currentUserMatches
-				WHERE currentUserMatches.user_id = $1 AND currentUserMatches.is_liked = true
+				SELECT currentUserMatchs.target_user_id 
+				FROM "like" AS currentUserMatchs
+				WHERE currentUserMatchs.user_id = $1 AND currentUserMatchs.is_liked = true
 			);
 		`
 		return query;

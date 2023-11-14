@@ -77,7 +77,6 @@ class SocketNamespace {
 		const fromUserId = arg.fromUserId;
 
 		const fromUser = this.connectedUsers.get(fromUserId);
-		console.log(this.connectedUsers.has(toUserId))
 		fromUser.socket.emit(eventName, {
 			id: arg.id,
 			fromUserId,

@@ -2,6 +2,10 @@
 	min-width: 200px;
 	width: 15vw;
 	height: calc(100vh - 45px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 .notifications-side-bar-container-padding {

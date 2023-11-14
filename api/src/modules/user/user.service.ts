@@ -210,9 +210,7 @@ export class UserService {
 	}
 
 	async getMatchs(userId: string): Promise<{data: Conversation[]}> {
-		const matchs = await this.userModel.getMatchs(userId);
-		console.log(matchs)
-		return matchs//await this.userModel.getMatchs(userId);
+		return await this.userModel.getMatchs(userId);
 	}
 
 }

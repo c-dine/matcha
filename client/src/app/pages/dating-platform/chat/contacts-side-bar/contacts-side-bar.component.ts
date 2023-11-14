@@ -59,7 +59,7 @@ export class ContactsSideBarComponent {
 		if (this.routeUserId && !this.conversationsHasUserId(this.routeUserId)) {
 			this.addMatchToConversations();
 		}
-		this.filterAndRemoveExistingMatches();
+		this.filterAndRemoveExistingMatchs();
 	}
 
 	private addMatchToConversations() {
@@ -69,8 +69,8 @@ export class ContactsSideBarComponent {
 		}
 	}
 
-	private filterAndRemoveExistingMatches() {
-		this.matchs = this.matchs.filter((match) => {
+	private filterAndRemoveExistingMatchs() {
+		this.matchs = this.matchs?.filter((match) => {
 			return !this.conversations.some((conversation) => conversation.author.id === match.author.id) && match.author.id !== this.routeUserId;
 		});
 	}

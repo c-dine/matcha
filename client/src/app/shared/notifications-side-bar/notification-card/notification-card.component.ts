@@ -71,7 +71,6 @@ export class NotificationCardComponent {
 			|| this.notification.notification.isViewed
 			|| this.notification.notification.from_user_id === this.currentUser?.id)
 			return;
-		console.log(this.notification.notification?.isViewed)
 		this.chatService.viewMessage(this.notification.notification.id)
 		.pipe(take(1)).subscribe({
 			next: () => {
@@ -88,9 +87,5 @@ export class NotificationCardComponent {
 			return this.notification.notification?.isViewed
 			|| this.notification.notification.from_user_id === this.currentUser?.id;
 		}
-	}
-
-	logNotif() {
-		console.log(this.notification)
 	}
 }

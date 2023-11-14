@@ -112,7 +112,6 @@ export class ModelBase {
 		let updateQuery = "";
 
 		for (const [index, key] of Object.keys(data).entries()) {
-			console.log(key)
 			updateQuery += updateQuery.length ? ", " : "";
 			updateQuery += `${key} = $${index + 1 + startIndex}`;
 		}

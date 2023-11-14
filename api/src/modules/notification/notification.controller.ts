@@ -19,7 +19,7 @@ notificationController.get("/notifications", async (req: Request, res: Response,
 				(a, b) => new Date(b.notification.date).getTime() - new Date(a.notification.date).getTime()
 			)
 		notifications?.forEach(el => el.notification.date = new Date(el.notification.date));
-		res.status(200).json(notifications);
+		res.status(200).json({data: notifications ? notifications : []});
 		next();
 		
 	} catch (error: any) {
