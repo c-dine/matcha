@@ -3,6 +3,7 @@ import { Response, Request } from 'express';
 import { ChatService } from './chat.service.js';
 import { Message } from '@shared-models/chat.models.js';
 import { CustomError } from '../../utils/error.util.js';
+import { UserService } from '../user/user.service.js';
 
 export const chatController = express();
 
@@ -11,8 +12,11 @@ export const chatController = express();
 chatController.get("/messages/:id", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const chatService = new ChatService(req.dbClient);
-		// return 404 if user id do not exist
-		console.log(await chatService.isEitherUserBlacklisted(req.userId, req.params.id));
+		const userService = new UserService(req.dbClient);
+		
+		if (await !userService.getUserById(req.params.id)) {
+			throw new CustomError('Not Found.', 404);
+		}
 		if (await chatService.isEitherUserBlacklisted(req.userId, req.params.id)) {
 			throw new CustomError('Forbidden.', 403);
 		}
@@ -44,6 +48,10 @@ chatController.get("/conversations", async (req: Request<any, any, any, { id: st
 chatController.post("/message/:id", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		// verifier que les utilisateurs ont bien match et que l'utilisateur existe pour qu'ils puissent s'envoyer des messages
+		const userService = new UserService(req.dbClient);
+		if (await !userService.getUserById(req.id)) {
+			throw new CustomError('Not Found.', 404);
+		}
 		const chatService = new ChatService(req.dbClient);
 		const body = req.body;
 		if (await chatService.isEitherUserBlacklisted(req.userId, req.params.id)) {

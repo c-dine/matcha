@@ -6,7 +6,7 @@ import { BlacklistService } from '../interactions/blacklist/blacklist.service.js
 export class ChatService {
 	dbClient: PoolClient;
 	messageModel: MessageModel;
-	blacklistService: BlacklistService
+	blacklistService: BlacklistService;
 
 	constructor(dbClient: PoolClient) {
 		this.dbClient = dbClient;
