@@ -37,6 +37,8 @@
     "@ionic/angular-toolkit": "latest",
     "@types/jasmine": "~4.3.0",
     "@types/js-cookie": "^3.0.3",
+    "angular-calendar": "^0.31.0",
+    "date-fns": "^2.30.0",
     "jasmine-core": "~4.5.0",
     "js-cookie": "^3.0.5",
     "karma": "~6.4.0",

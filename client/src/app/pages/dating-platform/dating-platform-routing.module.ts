@@ -8,6 +8,7 @@ import { AuthGuard } from 'src/app/service/authGuard.service';
 import { UserListComponent } from './user-list/user-list.component';
 import { SettingsComponent } from './settings/settings.component';
 import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
+import { DatePlannerComponent } from './date-planner/date-planner.component';
 
 const routes: Routes = [
   { 
@@ -21,7 +22,8 @@ const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
       { path: 'userList', component: UserListComponent },
       { path: 'interactiveMap', component: InteractiveMapComponent },
-      { path: 'settings', component: SettingsComponent }
+      { path: 'settings', component: SettingsComponent },
+      { path: 'datePlanner', component: DatePlannerComponent }
     ],
     canActivate: [AuthGuard]
   },

@@ -1,0 +1,40 @@
+<div class="date-planner-header-container">
+
+	<div mwlCalendarPreviousView 
+		[view]="view"
+		[(viewDate)]="viewDate"
+		(viewDateChange)="viewDateChange.next(viewDate)"
+		class="date-change-item">
+		<mat-icon>keyboard_arrow_left</mat-icon>
+	</div>
+
+	<div>
+		<h3>{{ viewDate | date:'EEEE, MMMM dd' }}{{ getDaySuffix(viewDate.getDate()) }}{{ viewDate | date:' YYYY' }}</h3>
+		<div class="date-view-container">
+			<div (click)="viewChange.emit(CalendarView.Month)"
+				[class.active]="view === CalendarView.Month"
+				class="date-view-item">
+				Month
+			</div>
+			<div (click)="viewChange.emit(CalendarView.Week)"
+				[class.active]="view === CalendarView.Week"
+				class="date-view-item">
+				Week
+			</div>
+			<div (click)="viewChange.emit(CalendarView.Day)"
+				[class.active]="view === CalendarView.Day"
+				class="date-view-item">
+				Day
+			</div>
+		</div>
+	</div>
+	
+	<div mwlCalendarNextView
+		[view]="view"
+		[(viewDate)]="viewDate"
+		(viewDateChange)="viewDateChange.next(viewDate)"
+		class="date-change-item">
+		<mat-icon>keyboard_arrow_right</mat-icon>
+	</div>
+
+</div>

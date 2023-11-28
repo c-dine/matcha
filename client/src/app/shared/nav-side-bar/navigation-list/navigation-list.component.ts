@@ -24,6 +24,11 @@ export class NavigationListComponent {
       iconName: "map"
     },
     {
+      title: 'Date planner',
+      path: '/app/datePlanner',
+      iconName: "date_range"
+    },
+    {
       title: 'Chat',
       path: '/app/chat',
       iconName: "chat"

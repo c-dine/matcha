@@ -1,0 +1,16 @@
+::ng-deep .page-content-container {
+	max-height: 100% !important;
+	overflow: auto !important;
+}
+
+::ng-deep .cal-month-view {
+	min-width: 400px;
+	overflow: auto;
+}
+
+.date-planner-container {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	overflow-y: auto;
+}

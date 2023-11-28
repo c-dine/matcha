@@ -1,0 +1,24 @@
+<date-planner-header [(view)]="view" [(viewDate)]="viewDate">
+</date-planner-header>
+
+<div [ngSwitch]="view" class="cal-month-view">
+  <mwl-calendar-month-view
+    *ngSwitchCase="'month'"
+    [viewDate]="viewDate"
+    [events]="events"
+    [activeDayIsOpen]="true"
+  >
+  </mwl-calendar-month-view>
+  <mwl-calendar-week-view
+    *ngSwitchCase="'week'"
+    [viewDate]="viewDate"
+    [events]="events"
+  >
+  </mwl-calendar-week-view>
+  <mwl-calendar-day-view
+    *ngSwitchCase="'day'"
+    [viewDate]="viewDate"
+    [events]="events"
+  >
+  </mwl-calendar-day-view>
+</div>

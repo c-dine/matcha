@@ -39,6 +39,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 import { ChatTypingMessageComponent } from './chat/conversation/typing-message/chat-typing-message.component';
 import { LottieModule } from 'ngx-lottie';
+import { DatePlannerComponent } from './date-planner/date-planner.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { DatePlannerHeaderComponent } from './date-planner/date-planner-header/date-planner-header.component';
 
 export function playerFactory() {
   return import('lottie-web');
@@ -63,7 +67,9 @@ export function playerFactory() {
 		UserListComponent,
 		UserListFiltersComponent,
 		SettingsComponent,
-		InteractiveMapComponent
+		InteractiveMapComponent,
+		DatePlannerComponent,
+		DatePlannerHeaderComponent
 	],
 	imports: [
 		CommonModule,
@@ -90,6 +96,10 @@ export function playerFactory() {
 		MatTabsModule,
 		MatCheckboxModule,
 		LottieModule.forRoot({ player: playerFactory }),
+		CalendarModule.forRoot({
+			provide: DateAdapter,
+			useFactory: adapterFactory,
+		  }),
 	]
 })
 export class DatingPlatformModule { }
