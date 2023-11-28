@@ -11,4 +11,9 @@ export class DatePlannerComponent {
 	view: CalendarView = CalendarView.Week;
 	viewDate: Date = new Date();
 	events: CalendarEvent[] = [];
+	openedWindow: "addEvent" | "editEvent" | null = null;
+
+	addEvent() {
+		this.openedWindow = "addEvent";
+	}
 }

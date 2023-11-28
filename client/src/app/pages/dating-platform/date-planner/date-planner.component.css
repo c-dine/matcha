@@ -1,16 +1,57 @@
 ::ng-deep .page-content-container {
-	max-height: 100% !important;
+	height: 100% !important;
+}
+
+.date-planner-container {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	height: 100%;
+}
+
+.date-planner-calendar {
+	display: grid;
+	grid-template-columns: repeat(100, 1fr);
+	grid-template-rows: repeat(100, 1fr);
+	grid-column: 1 / 11;
+	width: 100%;
+	height: 100%;
 	overflow: auto !important;
+}
+
+.add-event-button {
+	color: gray;
+	width: 100%;
+	justify-content: right;
+	align-items: start;
+	display: flex;
+	cursor: pointer;
+	margin-top: 10px; 
+	grid-column: 90 / 98;
+	grid-row: 1 / 3;
+}
+
+date-planner-header {
+	grid-column: 1 / 101;
+	grid-row: 3 / 15;
+	min-height: 100px;
+	overflow: auto;
+	cursor: pointer;
 }
 
 ::ng-deep .cal-month-view {
 	min-width: 400px;
 	overflow: auto;
+	grid-column: 1 / 101;
+	grid-row: 15 / 101;
 }
 
-.date-planner-container {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	overflow-y: auto;
+.split-date-planner-calendar {
+	grid-column: 1 / 8;
+}
+
+.opened-window-container {
+	grid-column: 8 / 11;
+  	margin-left: 5px;
+	background-color: white;
+	border-radius: 10px 0px 0px 10px;
 }
