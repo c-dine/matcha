@@ -1,0 +1,41 @@
+<div class="add-event-container">
+	<h1 class="dialog-title">Add an event</h1>
+    <div>
+        <form [formGroup]="newEventForm" (ngSubmit)="onSubmit()">
+
+            <mat-form-field appearance="outline">
+                <mat-label for="title">Title</mat-label>
+                <input matInput type="text" id="title" formControlName="title" required>
+				<mat-error *ngIf="newEventForm.get('title')?.invalid && newEventForm.get('title')?.touched">
+					Please enter a valid title.
+				</mat-error>
+            </mat-form-field>
+
+			<mat-form-field appearance="outline">
+                <mat-label for="start">Start</mat-label>
+				<input matInput name="start" type="datetime-local" formControlName="start">
+			</mat-form-field>
+
+			<mat-form-field appearance="outline">
+				<mat-label for="end">End</mat-label>
+				<input matInput name="end" type="datetime-local" formControlName="end">
+			</mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label for="username">Guest username</mat-label>
+                <input matInput type="text" id="username" formControlName="username" required>
+				<mat-error *ngIf="newEventForm.get('username')?.invalid && newEventForm.get('username')?.touched">
+					Please enter a valid username.
+				</mat-error>
+            </mat-form-field>
+        
+            <div class="button-group">
+                <button (click)="onCancel()" class="custom-button cancel-button">Cancel</button>
+                <button class="custom-button submit-button">Create event</button>
+            </div>
+        
+        </form>
+  
+    </div>
+
+</div>

@@ -10,6 +10,7 @@ import { chatController } from './modules/chat/chat.controller.js';
 import { viewController } from './modules/interactions/view/view.controller.js';
 import { likeController } from './modules/interactions/like/like.controller.js';
 import { notificationController } from './modules/notification/notification.controller.js';
+import { eventController } from './modules/interactions/event/event.controller.js';
 
 export const routes: { [route: string]: Router } = {
     "/auth": authController,
@@ -23,4 +24,5 @@ export const routes: { [route: string]: Router } = {
 	"/like": likeController,
 	"/view": viewController,
 	"/notification": notificationController,
+	"/event": eventController,
 }

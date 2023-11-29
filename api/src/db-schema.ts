@@ -80,3 +80,13 @@ interface notification {
 	type?: string;
 	date?: Date;
 }
+
+interface event {
+	id: string,
+	user_id: string,
+	target_user_id: string,
+	date: Date,
+	title: string,
+	start_date: Date,
+	end_date: Date
+}

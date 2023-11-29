@@ -1,4 +1,3 @@
-import { ProfilePicturesIds } from "./picture.model";
 import { NotificationWithAuthor } from "./notification.model";
 
 export interface Message {

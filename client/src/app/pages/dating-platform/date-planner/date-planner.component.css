@@ -27,7 +27,8 @@
 	cursor: pointer;
 	margin-top: 10px; 
 	grid-column: 90 / 98;
-	grid-row: 1 / 3;
+	grid-row: 3 / 5;
+	z-index: 3;
 }
 
 date-planner-header {
@@ -51,7 +52,14 @@ date-planner-header {
 
 .opened-window-container {
 	grid-column: 8 / 11;
-  	margin-left: 5px;
-	background-color: white;
-	border-radius: 10px 0px 0px 10px;
+	height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.opened-window {
+	width: 85%;
+	height: 92%;
+	max-height: unset;
 }

@@ -16,4 +16,8 @@ export class DatePlannerComponent {
 	addEvent() {
 		this.openedWindow = "addEvent";
 	}
+
+	closeWindow() {
+		this.openedWindow = null;
+	}
 }

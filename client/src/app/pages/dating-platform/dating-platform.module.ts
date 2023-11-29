@@ -43,6 +43,8 @@ import { DatePlannerComponent } from './date-planner/date-planner.component';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { DatePlannerHeaderComponent } from './date-planner/date-planner-header/date-planner-header.component';
+import { DatePlannerAddEventComponent } from './date-planner/date-planner-add-event/date-planner-add-event.component';
+import { DatePlannerDisplayEventComponent } from './date-planner/date-planner-display-event/date-planner-display-event.component';
 
 export function playerFactory() {
   return import('lottie-web');
@@ -69,7 +71,9 @@ export function playerFactory() {
 		SettingsComponent,
 		InteractiveMapComponent,
 		DatePlannerComponent,
-		DatePlannerHeaderComponent
+		DatePlannerHeaderComponent,
+		DatePlannerAddEventComponent,
+		DatePlannerDisplayEventComponent
 	],
 	imports: [
 		CommonModule,

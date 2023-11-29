@@ -5,3 +5,10 @@ export interface Interaction extends Partial<User> {
     targetUserId: string;
     date: Date;
 }
+
+export interface Event extends Interaction {
+	id?: string,
+	start?: Date,
+	end?: Date,
+	title?: string
+}

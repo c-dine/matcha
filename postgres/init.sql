@@ -103,6 +103,18 @@ CREATE TABLE IF NOT EXISTS "notification" (
     FOREIGN KEY ("to_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "event" (
+    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "user_id" UUID NOT NULL,
+    "target_user_id" UUID NOT NULL,
+    "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "title" VARCHAR(510) NOT NULL,
+    "start_date" TIMESTAMP NOT NULL,
+    "end_date" TIMESTAMP NOT NULL,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("target_user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE OR REPLACE FUNCTION calculate_distance(lat1 float, lon1 float, lat2 float, lon2 float, units varchar)
 RETURNS float AS $dist$
     DECLARE
