@@ -40,7 +40,11 @@
 						(closedWindow)="closeWindow()"
 						(deletedEvent)="deleteEvent($event)"
 						[event]="displayedEvent"></date-planner-display-event>
-			<date-planner-add-event *ngIf="openedWindow === 'addEvent'" (closedWindow)="closeWindow()"></date-planner-add-event>
+			<date-planner-add-event
+						*ngIf="openedWindow === 'addEvent'"
+						(closedWindow)="closeWindow()"
+						(addedEvent)="addEvent($event)"
+						></date-planner-add-event>
 		</div>
 	</div>
 

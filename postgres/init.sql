@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS "event" (
     "target_user_id" UUID NOT NULL,
     "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "title" VARCHAR(510) NOT NULL,
+    "location" VARCHAR(510) NOT NULL,
     "start_date" TIMESTAMP NOT NULL,
     "end_date" TIMESTAMP NOT NULL,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE,

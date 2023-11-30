@@ -30,7 +30,15 @@ export class EventService {
 	}
 
 	addEvent(event: Event) {
-		return this.http.post<Event>(`${environment.apiUrl}/event/`, { event });
+		return this.http.post<Event>(`${environment.apiUrl}/event/`, { event }).pipe(
+			map(
+				event => ({
+					...event,
+					start: new Date(event.start || ""),
+					end: new Date(event.end || "")
+				})
+			)
+		);
 	}
 
 	deleteEvent(eventId: string) {

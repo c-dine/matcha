@@ -2,6 +2,12 @@
 	width: 100%;
 }
 
+.subtitle-text {
+	color: grey;
+	font-size: 14px;
+	font-weight: 500;
+}
+
 .close-container {
 	display: flex;
 	justify-content: right;

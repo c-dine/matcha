@@ -6,6 +6,8 @@ import { UserModel } from "../../../model/user.model.js";
 import { CustomError } from "../../../utils/error.util.js";
 import { ModelBase } from "../../../model/base.js";
 import { LikeService } from "../like/like.service.js";
+import { UserService } from "../../user/user.service.js";
+import { PictureService } from "../../picture/picture.service.js";
 
 export class EventService extends InteractionsService {
 
@@ -23,6 +25,7 @@ export class EventService extends InteractionsService {
 			end: event.end_date,
 			title: event.title,
 			date: new Date(event.date),
+			eventLocation: event.location
 		}
 	}
 
@@ -43,6 +46,30 @@ export class EventService extends InteractionsService {
 			targetUserId: event.user_id === userId ? event.target_user_id : event.user_id,
 			username: event.username
 		} as Event));
+	}
+
+	async addElement(
+		userId: string,
+		targetUserId: string,
+		additionnalData?: { [column: string]: any }
+	): Promise<Event> {
+		const userService = new UserService(this.dbClient);
+		const pictureService = new PictureService(this.dbClient);
+		const associatedUser = (await userService.getUsers([ { id: targetUserId } ]))[0];
+		const addedEvent = await this.interactionsModel.create({
+			target_user_id: targetUserId,
+			user_id: userId,
+			...additionnalData
+		});
+		return {
+			...this.formatEvent(addedEvent),
+			profilePicId: (await pictureService.getProfilePictures(targetUserId)).profilePicture || undefined,
+			username: associatedUser.username,
+			lastName: associatedUser.lastName,
+			firstName: associatedUser.firstName,
+			targetUserId: targetUserId,
+			date: new Date()
+		}
 	}
 
 	async deleteEvent(userId: string, eventId: string): Promise<void> {

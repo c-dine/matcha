@@ -10,7 +10,8 @@ import { EventService } from 'src/app/service/event.service';
 	styleUrls: ['./date-planner-add-event.component.css', '../../../../styles/dialog.css', '../../../../styles/buttons.css']
 })
 export class DatePlannerAddEventComponent {
-	@Output() closedWindow = new EventEmitter<Event | null>();
+	@Output() closedWindow = new EventEmitter<null>();
+	@Output() addedEvent = new EventEmitter<Event>();
 
 	constructor(
 		private snackBar: MatSnackBar,
@@ -21,6 +22,7 @@ export class DatePlannerAddEventComponent {
 		start: new FormControl<Date>(new Date(), Validators.required),
 		end: new FormControl<Date>(new Date(), Validators.required),
 		title: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+		eventLocation: new FormControl('', [Validators.required, Validators.maxLength(50)]),
 		username: new FormControl('', Validators.required),
     });
 
@@ -36,9 +38,12 @@ export class DatePlannerAddEventComponent {
 		this.eventService.addEvent({
 			...formValue,
 			start: new Date(formValue.start),
-			end: new Date(formValue.end)
+			end: new Date(formValue.end),
 		}).subscribe({
-			next: () => { this.onCancel() },
+			next: (event) => {
+				this.addedEvent.emit(event);
+				this.onCancel();
+			},
 			error: () => { }
 		});
 	}

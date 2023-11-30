@@ -24,18 +24,19 @@ eventController.post("/", async (req: Request, res: Response, next: NextFunction
 		const newEvent = req.body.event as Event;
 		const eventService = new EventService(req.dbClient);
 		const targetUserId = await eventService.getMatchedUserIdFromUsernameOrThrow(newEvent.username, req.userId);
-		const eventedUser = await eventService.addElement(
+		const addedEvent = await eventService.addElement(
 			req.userId,
 			targetUserId,
 			{
 				title: newEvent.title,
+				location: newEvent.eventLocation,
 				start_date: newEvent.start,
 				end_date: newEvent.end
 			}
 		);
 
 		res.status(201).json({ 
-			data: eventedUser,
+			data: addedEvent,
 			message: "Event successfully created."
 		});
 		next();

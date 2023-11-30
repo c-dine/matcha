@@ -24,6 +24,7 @@ export class EventModel extends ModelBase {
 				event.start_date,
 				event.end_date,
 				event.title,
+				event.location,
 				"user".username,
 				picture.id as profile_pic_id
 			FROM event

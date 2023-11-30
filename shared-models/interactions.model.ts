@@ -10,5 +10,6 @@ export interface Event extends Interaction {
 	id?: string,
 	start?: Date,
 	end?: Date,
-	title?: string
+	title?: string,
+	eventLocation?: string
 }

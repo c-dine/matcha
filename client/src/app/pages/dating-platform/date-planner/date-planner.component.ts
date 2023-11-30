@@ -33,6 +33,11 @@ export class DatePlannerComponent {
 		this.openedWindow = "addEvent";
 	}
 
+	addEvent(event: Event) {
+		this.calendarEvents = [...this.calendarEvents || [], event as CalendarEvent];
+		this.events?.push(event);
+	}
+
 	deleteEvent(eventId: string) {
 		this.calendarEvents = this.calendarEvents?.filter(event => event.id !== eventId);
 		this.events = this.events?.filter(event => event.id !== eventId);

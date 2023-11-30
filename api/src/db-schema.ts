@@ -88,5 +88,6 @@ interface event {
 	date: Date,
 	title: string,
 	start_date: Date,
-	end_date: Date
+	end_date: Date,
+	location: string
 }
