@@ -63,3 +63,12 @@ date-planner-header {
 	height: 92%;
 	max-height: unset;
 }
+
+@media screen and (max-width: 1200px) {
+	.split-date-planner-calendar {
+		display: none;
+	}
+	.opened-window-container {
+		grid-column: 1 / 11;
+	}
+}
