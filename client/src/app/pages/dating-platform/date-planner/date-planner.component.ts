@@ -36,6 +36,8 @@ export class DatePlannerComponent {
 	addEvent(event: Event) {
 		this.calendarEvents = [...this.calendarEvents || [], event as CalendarEvent];
 		this.events?.push(event);
+		this.openedWindow = 'displayEvent';
+		this.displayedEvent = event;
 	}
 
 	deleteEvent(eventId: string) {

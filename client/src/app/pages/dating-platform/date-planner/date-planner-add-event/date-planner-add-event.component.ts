@@ -35,17 +35,21 @@ export class DatePlannerAddEventComponent {
 			return;
 		}
 		const formValue = this.newEventForm.getRawValue();
+		const {start, end} = this.getCorrectDates(formValue.start, formValue.end);
 		this.eventService.addEvent({
 			...formValue,
-			start: new Date(formValue.start),
-			end: new Date(formValue.end),
+			start,
+			end,
 		}).subscribe({
-			next: (event) => {
-				this.addedEvent.emit(event);
-				this.onCancel();
-			},
+			next: (event) => this.addedEvent.emit(event) ,
 			error: () => { }
 		});
+	}
+
+	getCorrectDates(start: Date, end: Date) {
+		start = new Date(start);
+		end = new Date(end);
+		return start > end ? { start: end, end: start } : { start, end }; 
 	}
 
 	onCancel() {

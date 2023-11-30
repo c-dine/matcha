@@ -22,6 +22,11 @@ eventController.get("/", async (req: Request<any, any, any, { start: string, end
 eventController.post("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const newEvent = req.body.event as Event;
+		if (new Date(newEvent.start) > new Date(newEvent.end)) {
+			const tmpStart = newEvent.start;
+			newEvent.start = newEvent.end;
+			newEvent.end = tmpStart;
+		}
 		const eventService = new EventService(req.dbClient);
 		const targetUserId = await eventService.getMatchedUserIdFromUsernameOrThrow(newEvent.username, req.userId);
 		const addedEvent = await eventService.addElement(
