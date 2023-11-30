@@ -1,7 +1,7 @@
-<div class="date-planner-container">
+<div class="date-planner-container" *ngIf="calendarEvents">
 
 	<div class="date-planner-calendar" [class.split-date-planner-calendar]="!!openedWindow">
-		<div class="add-event-button" (click)="addEvent()">
+		<div class="add-event-button" (click)="openAddEventWindow()">
 			<mat-icon>add</mat-icon>
 		</div>
 		
@@ -12,20 +12,23 @@
 			<mwl-calendar-month-view
 				*ngSwitchCase="'month'"
 				[viewDate]="viewDate"
-				[events]="events"
+				[events]="calendarEvents"
 				[activeDayIsOpen]="true"
+				(eventClicked)="displayEvent($event)"
 			>
 			</mwl-calendar-month-view>
 			<mwl-calendar-week-view                                  
 				*ngSwitchCase="'week'"
 				[viewDate]="viewDate"
-				[events]="events"
+				[events]="calendarEvents"
+				(eventClicked)="displayEvent($event)"
 			>
 			</mwl-calendar-week-view>
 			<mwl-calendar-day-view
 				*ngSwitchCase="'day'"
 				[viewDate]="viewDate"
-				[events]="events"
+				[events]="calendarEvents"
+				(eventClicked)="displayEvent($event)"
 			>
 			</mwl-calendar-day-view>
 		</div>
@@ -33,7 +36,10 @@
 
 	<div class="opened-window-container" *ngIf="!!openedWindow">
 		<div class="rounded-box opened-window">
-			<date-planner-display-event *ngIf="openedWindow === 'editEvent'" (closedWindow)="closeWindow()"></date-planner-display-event>
+			<date-planner-display-event *ngIf="openedWindow === 'displayEvent'"
+						(closedWindow)="closeWindow()"
+						(deletedEvent)="deleteEvent($event)"
+						[event]="displayedEvent"></date-planner-display-event>
 			<date-planner-add-event *ngIf="openedWindow === 'addEvent'" (closedWindow)="closeWindow()"></date-planner-add-event>
 		</div>
 	</div>

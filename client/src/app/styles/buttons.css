@@ -38,6 +38,11 @@
     color: var(--primary-text-color);
 }
 
+.red-button {
+    background-color: var(--error-color);
+    color: white
+}
+
 button:disabled {
 	background-color: var(--primary-lighter-color);
 	color: black;

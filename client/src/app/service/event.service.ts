@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { Event } from '@shared-models/interactions.model';
 import { buildHttpParams } from '../utils/http.utils';
+import { map } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -17,7 +18,15 @@ export class EventService {
 		const params = buildHttpParams({ start: start.toString(), end: end.toString() });
 		return this.http.get<Event[]>(`${environment.apiUrl}/event`, {
 			params
-		});
+		}).pipe(
+			map(
+				events => events.map(event => ({
+					...event,
+					start: new Date(event.start || ""),
+					end: new Date(event.end || "")
+				}))
+			)
+		);
 	}
 
 	addEvent(event: Event) {

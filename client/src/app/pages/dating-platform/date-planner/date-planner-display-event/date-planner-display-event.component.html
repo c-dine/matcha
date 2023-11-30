@@ -1,0 +1,18 @@
+<div class="display-event-container" *ngIf="event">
+
+	<div class="close-container">
+		<mat-icon (click)="onCancel()">close</mat-icon>
+	</div>
+	<div class="picture-container">
+		<div class="rounded-circle-container" (click)="navigateToProfile()">
+			<img [src]="getFirebasePictureUrl(event.profilePicId)" class="rounded-circle-image">
+		</div>
+	</div>
+	<h1 class="dialog-title">{{event.title}}</h1>
+	<h3>from {{event.start | date:'HH:mm'}} to {{event.end | date:'HH:mm'}}</h3>
+	<h3>with <a (click)="navigateToProfile()">{{event.username}}</a></h3>
+
+	<div class="button-group">
+		<button class="custom-button red-button" (click)="deleteEvent()">Delete event</button>
+	</div>
+</div>

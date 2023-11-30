@@ -10,9 +10,7 @@ import { EventService } from 'src/app/service/event.service';
 	styleUrls: ['./date-planner-add-event.component.css', '../../../../styles/dialog.css', '../../../../styles/buttons.css']
 })
 export class DatePlannerAddEventComponent {
-	@Input() event!: Event;
-
-	@Output() closedWindow = new EventEmitter<null>();
+	@Output() closedWindow = new EventEmitter<Event | null>();
 
 	constructor(
 		private snackBar: MatSnackBar,

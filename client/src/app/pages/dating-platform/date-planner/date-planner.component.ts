@@ -1,47 +1,52 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { Component } from "@angular/core";
+import { Event } from "@shared-models/interactions.model";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
-import { firstValueFrom } from "rxjs";
 import { EventService } from "src/app/service/event.service";
 
 @Component({
 	selector: 'app-date-planner',
 	templateUrl: './date-planner.component.html',
-	changeDetection: ChangeDetectionStrategy.OnPush,
 	styleUrls: ['./date-planner.component.css']
 })
 export class DatePlannerComponent {
 	view: CalendarView = CalendarView.Week;
 	viewDate: Date = new Date();
-	events: CalendarEvent[] = [];
-	openedWindow: "addEvent" | "editEvent" | null = null;
+
+	calendarEvents: CalendarEvent[] | undefined = undefined;
+	events: Event[] = [];
+	
+	openedWindow: "addEvent" | "displayEvent" | null = null;
+	displayedEvent: Event | undefined = undefined;
 
 	constructor(
 		private eventService: EventService
 	) { }
 
 	async ngOnInit() {
-		this.eventService.getEvents(
-			this.getStartOfPeriod(),
-			this.getEndOfPeriod()
-		).subscribe(events => {
-			this.events = events.map(event => ({
-				...event,
-				start: new Date(event.start as Date),
-				end: new Date(event.end as Date),
-			} as CalendarEvent))
+		this.eventService.getEvents(this.getStartOfPeriod(), this.getEndOfPeriod()).subscribe(events => {
+			this.calendarEvents = events as CalendarEvent[]
+			this.events = events;
 		});
 	}
 
-	addEvent() {
+	openAddEventWindow() {
 		this.openedWindow = "addEvent";
+	}
+
+	deleteEvent(eventId: string) {
+		this.calendarEvents = this.calendarEvents?.filter(event => event.id !== eventId);
+		this.events = this.events?.filter(event => event.id !== eventId);
 	}
 
 	closeWindow() {
 		this.openedWindow = null;
 	}
 
-	handleDateClick(day: { date: Date; events: CalendarEvent[] }): void {
+	displayEvent(event: any) {
+		this.displayedEvent = this.events.find(event_ => event_.id === event.event.id);
+		this.openedWindow = 'displayEvent';
 	}
+
 
 	private getStartOfPeriod(): Date {
 		const date = new Date(this.viewDate);
