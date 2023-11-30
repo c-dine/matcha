@@ -34,7 +34,12 @@ export class DatePlannerAddEventComponent {
 			});
 			return;
 		}
-		this.eventService.addEvent(this.newEventForm.getRawValue()).subscribe({
+		const formValue = this.newEventForm.getRawValue();
+		this.eventService.addEvent({
+			...formValue,
+			start: new Date(formValue.start),
+			end: new Date(formValue.end)
+		}).subscribe({
 			next: () => { this.onCancel() },
 			error: () => { }
 		});

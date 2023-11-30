@@ -22,7 +22,7 @@ export class EventService extends InteractionsService {
 			start: event.start_date,
 			end: event.end_date,
 			title: event.title,
-			date: event.date,
+			date: new Date(event.date),
 		}
 	}
 

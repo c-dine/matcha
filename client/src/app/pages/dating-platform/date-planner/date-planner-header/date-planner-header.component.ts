@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CalendarView } from 'angular-calendar';
-import { EventService } from 'src/app/service/event.service';
 
 @Component({
 	selector: 'date-planner-header',

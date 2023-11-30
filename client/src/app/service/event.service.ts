@@ -14,14 +14,13 @@ export class EventService {
 	) { }
 
 	getEvents(start: Date, end: Date) {
-		const params = buildHttpParams({ start, end });
+		const params = buildHttpParams({ start: start.toString(), end: end.toString() });
 		return this.http.get<Event[]>(`${environment.apiUrl}/event`, {
 			params
 		});
 	}
 
 	addEvent(event: Event) {
-		console.log("ok")
 		return this.http.post<Event>(`${environment.apiUrl}/event/`, { event });
 	}
 
