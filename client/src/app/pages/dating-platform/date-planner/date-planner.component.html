@@ -5,7 +5,7 @@
 			<mat-icon>add</mat-icon>
 		</div>
 		
-		<date-planner-header [(view)]="view" [(viewDate)]="viewDate">
+		<date-planner-header (updateEvents)="getEvents()" [(view)]="view" [(viewDate)]="viewDate">
 		</date-planner-header>
 
 		<div [ngSwitch]="view" class="cal-month-view">

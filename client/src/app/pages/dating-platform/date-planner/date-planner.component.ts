@@ -22,7 +22,11 @@ export class DatePlannerComponent {
 		private eventService: EventService
 	) { }
 
-	async ngOnInit() {
+	ngOnInit() {
+		this.getEvents();
+	}
+
+	getEvents() {
 		this.eventService.getEvents(this.getStartOfPeriod(), this.getEndOfPeriod()).subscribe(events => {
 			this.calendarEvents = events as CalendarEvent[]
 			this.events = events;

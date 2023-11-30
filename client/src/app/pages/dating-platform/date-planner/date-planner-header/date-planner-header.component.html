@@ -4,7 +4,9 @@
 		[view]="view"
 		[(viewDate)]="viewDate"
 		(viewDateChange)="viewDateChange.next(viewDate)"
-		class="date-change-item">
+		class="date-change-item"
+		(click)="getEvents()"
+		>
 		<mat-icon>keyboard_arrow_left</mat-icon>
 	</div>
 
@@ -13,17 +15,23 @@
 		<div class="date-view-container">
 			<div (click)="viewChange.emit(CalendarView.Month)"
 				[class.active]="view === CalendarView.Month"
-				class="date-view-item">
+				class="date-view-item"
+				(click)="getEvents()"
+				>
 				Month
 			</div>
 			<div (click)="viewChange.emit(CalendarView.Week)"
 				[class.active]="view === CalendarView.Week"
-				class="date-view-item">
+				class="date-view-item"
+				(click)="getEvents()"
+				>
 				Week
 			</div>
 			<div (click)="viewChange.emit(CalendarView.Day)"
 				[class.active]="view === CalendarView.Day"
-				class="date-view-item">
+				class="date-view-item"
+				(click)="getEvents()"
+				>
 				Day
 			</div>
 		</div>
@@ -33,7 +41,9 @@
 		[view]="view"
 		[(viewDate)]="viewDate"
 		(viewDateChange)="viewDateChange.next(viewDate)"
-		class="date-change-item">
+		class="date-change-item"
+		(click)="getEvents()"
+		>
 		<mat-icon>keyboard_arrow_right</mat-icon>
 	</div>
 

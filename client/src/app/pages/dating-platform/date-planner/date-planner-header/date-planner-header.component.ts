@@ -17,6 +17,8 @@ export class DatePlannerHeaderComponent {
 
 	@Output() viewDateChange = new EventEmitter<Date>();
 
+	@Output() updateEvents = new EventEmitter();
+
 	CalendarView = CalendarView;
 
 	getDaySuffix(day: number): string {
@@ -35,7 +37,7 @@ export class DatePlannerHeaderComponent {
 		}
 	}
 
-	changeViewDate() {
-
+	getEvents() {
+		this.updateEvents.emit();
 	}
 }
