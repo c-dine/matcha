@@ -1,7 +1,7 @@
 import { Message } from './chat.models';
 import { UserProfile } from './profile.model';
 
-export type ActivityTypes = "like" | "unlike" | "dislike" | "view" | "match";
+export type ActivityTypes = "like" | "unlike" | "dislike" | "view" | "match" | "date" | "date deleted";
 
 export interface Activity {
 	id?: string;

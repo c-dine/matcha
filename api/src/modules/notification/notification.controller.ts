@@ -7,7 +7,7 @@ import { NotificationWithAuthor } from "@shared-models/notification.model.js";;
 export const notificationController = express();
 
 const isActivityType = (input: string) => {
-	return ["like", "unlike", "dislike", "view", "match"].includes(input);
+	return ["like", "unlike", "dislike", "view", "match", "date", "date deleted"].includes(input);
 }
 
 notificationController.get("/notifications", async (req: Request, res: Response, next: NextFunction) => {

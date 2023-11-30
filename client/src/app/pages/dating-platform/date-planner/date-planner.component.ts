@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { Event } from "@shared-models/interactions.model";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { EventService } from "src/app/service/event.service";
+import { NotificationService } from "src/app/service/notification.service";
 
 @Component({
 	selector: 'app-date-planner',
@@ -19,7 +20,8 @@ export class DatePlannerComponent {
 	displayedEvent: Event | undefined = undefined;
 
 	constructor(
-		private eventService: EventService
+		private eventService: EventService,
+		private notificationService: NotificationService
 	) { }
 
 	ngOnInit() {
@@ -38,6 +40,7 @@ export class DatePlannerComponent {
 	}
 
 	addEvent(event: Event) {
+		this.notificationService.sendNewActivity('date', event.targetUserId);
 		this.calendarEvents = [...this.calendarEvents || [], event as CalendarEvent];
 		this.events?.push(event);
 		this.openedWindow = 'displayEvent';
@@ -45,6 +48,7 @@ export class DatePlannerComponent {
 	}
 
 	deleteEvent(eventId: string) {
+		this.notificationService.sendNewActivity('date deleted', this.events.find(event => event.id === eventId)?.targetUserId || "");
 		this.calendarEvents = this.calendarEvents?.filter(event => event.id !== eventId);
 		this.events = this.events?.filter(event => event.id !== eventId);
 	}
