@@ -15,10 +15,8 @@ export const env = {
 }
 
 export const mailConfig = {
-	clientId: process.env.MAIL_CLIENT_ID,
-	secret: process.env.MAIL_SECRET,
-	refreshToken: process.env.MAIL_TOKEN,
-	email: process.env.EMAIL
+	email: process.env.EMAIL,
+	appPassword: process.env.MAIL_APP_PASSWORD
 }
 
 export const firebaseConfig: ServiceAccount = {

@@ -10,10 +10,10 @@ mailController.post("/resetPassword", async (req: Request, res: Response, next: 
 		const email = req.body.email;  
 		const mailService = new MailService();
 		const userService = new UserService(req.dbClient);
-		const linkedUser = (await userService.getUsers([{ email }], [ "id" ]))[0];
+		const linkedUser = (await userService.getUsers([{ email }], [ "id", "username" ]))[0];
 
 		if (linkedUser)
-			await mailService.sendResetPasswordMail(email, linkedUser.id);
+			await mailService.sendResetPasswordMail(email, linkedUser.id, linkedUser.username);
 
 		res.status(200).json({ message: "Reset password mail successfully sent." });
 		next();

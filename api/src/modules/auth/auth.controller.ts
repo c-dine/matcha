@@ -47,7 +47,6 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		const loggedUser = await authService.getLoggedUser(userAuthData);
 		const accessToken = authService.getNewToken(loggedUser.id, encryptionConfig.accessSecret, ACCESS_TOKEN_TIMEOUT);
 		const refreshToken = authService.getNewToken(loggedUser.id, encryptionConfig.refreshSecret, REFRESH_TOKEN_TIMEOUT);
-
 		res.status(200).json({
 			message: "Successfully logged in.",
 			data: {

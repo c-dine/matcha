@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dial
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { AuthService } from "src/app/service/auth.service";
+import { firstValueFrom } from 'rxjs'
 
 @Component({
     selector: 'app-reset-password',
@@ -28,7 +29,7 @@ export class ResetPasswordDialogComponent {
 		private authService: AuthService,
 	) {}
 
-	onSubmit() {
+	async onSubmit() {
 		if (this.resetPasswordForm.invalid)	return;
 		if (this.resetPasswordForm.get('password')?.getRawValue() !== this.resetPasswordForm.get('passwordConfirmation')?.getRawValue()) {
 			this.snackBar.open("Password don't match.", "Close", {
@@ -38,7 +39,7 @@ export class ResetPasswordDialogComponent {
 			return;
 		}
 		this.passwordReset = true;
-		this.authService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue());
+		await firstValueFrom(this.authService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue()));
 	}
 
 	goBackToLoginDialog() {

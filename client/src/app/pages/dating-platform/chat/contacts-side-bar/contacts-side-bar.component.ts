@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Conversation } from '@shared-models/chat.models';
 import { ChatService } from 'src/app/service/chat.service';
 import { Output, EventEmitter } from '@angular/core';
-import { firstValueFrom, take } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { UserService } from 'src/app/service/user.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
