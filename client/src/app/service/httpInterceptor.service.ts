@@ -49,7 +49,7 @@ export class HttpInterceptorService implements HttpInterceptor {
 							duration: 4000,
 							panelClass: 'success-snackbar'
 						});
-					event = event.clone({ body: event.body.data });
+					event = event.clone({ body: event.body?.data });
 				}
 				return event;
 			})

@@ -249,7 +249,6 @@ export class UserModel extends ModelBase {
 			'K')`
 		let fameRateDelta = `ABS("user".fame_rate - ${currentUser.fame_rate})`
 		let matchingFormula = `${commonTagscount} + 1 / (${distance} + ${fameRateDelta} + 1)`
-
 		return `SELECT
 			"user".username,
 			"user".last_name,
@@ -274,7 +273,7 @@ export class UserModel extends ModelBase {
 
 	async getUserFameRate(userId: string): Promise<number> {
 		const query = this.getFameRateQuery(userId);
-		const result = (await this.dbClient.query(query)).rows[0];
+		const result = (await this.dbClient.query(query))?.rows[0];
 		
 		const fameRateWithoutMalus = (
 			(Number(result.other_like_count) / (Number(result.other_dislike_count) + Number(result.other_like_count) || 1)) * 2

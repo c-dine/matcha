@@ -38,7 +38,7 @@ export interface MapUser {
 	pictureId: string
 }
 
-export interface NewUser extends User {
+export interface NewUser extends Partial<User> {
 	password: string
 }
 

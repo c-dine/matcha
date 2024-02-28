@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { LoginDialogMode } from '../login-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -52,4 +53,3 @@ export class LoginComponent {
         this.changedDialogMode.emit("passwordRecovery");
     }
 }
-  

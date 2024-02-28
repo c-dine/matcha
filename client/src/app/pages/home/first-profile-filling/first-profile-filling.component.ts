@@ -39,7 +39,7 @@ export class FirstProfileFillingComponent {
 			birthDate: new FormControl<Date | undefined>(undefined, [Validators.required, dateIsPastDateValidator(), ageValidator(18)])
 		}),
 		personnalProfile: new FormGroup({
-			biography: new FormControl<string>('', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
+			biography: new FormControl<string>('', [ Validators.maxLength(500) ]),
 			tags: new FormControl<string[]>([]),
 		}),
 	});

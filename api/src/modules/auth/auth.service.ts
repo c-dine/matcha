@@ -7,6 +7,8 @@ import { encryptionConfig } from "../../config/config.js";
 import { CustomError } from "../../utils/error.util.js";
 import { UserModel } from "../../model/user.model.js";
 import { UserService } from "../user/user.service.js";
+import { MailService } from "../mail/mail.service.js";
+import { randomUUID } from "crypto";
 
 export class AuthService {
 
@@ -110,4 +112,16 @@ export class AuthService {
 		return !!updatedUsers[0];
 	}
 
+	// Passport auth, return user id
+	async upsertPassportUser(user: { email: string, firstName: string, lastName: string }): Promise<string> {
+		let connectedUserId = (await this.userModel.findMany([ { email: user.email } ], ["id"]))[0]?.id
+		if (connectedUserId)
+			return connectedUserId;
+		connectedUserId = (await this.createUser({
+			...user,
+			password: randomUUID(),
+			username: user.firstName + user.lastName + randomUUID().slice(0, 20)
+		})).id;
+		return connectedUserId;
+	}
 }

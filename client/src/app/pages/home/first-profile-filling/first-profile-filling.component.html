@@ -23,6 +23,9 @@
 						<input matInput formControlName="birthDate" [matDatepicker]="picker">
 						<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
 						<mat-datepicker #picker></mat-datepicker>
+						<mat-error *ngIf="profileForm.get('sexualProfile.birthDate')?.invalid && profileForm.get('sexualProfile.birthDate')?.touched">
+							You have to be over 18.
+						</mat-error>
 					</mat-form-field>
 				</div>
 				<div class="form-field">

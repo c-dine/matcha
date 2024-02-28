@@ -10,6 +10,7 @@ import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 import { UserService } from './user.service';
 import { connectionSocketService } from './socket/connectionSocket.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -24,6 +25,7 @@ export class AuthService {
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
 		private connectionSocket: connectionSocketService,
+		private route: ActivatedRoute
 	) { }
 
 	signIn(newUser: NewUser): Observable<AuthenticatedUser> {
@@ -54,16 +56,22 @@ export class AuthService {
 	}
 
 	logout(): void {
-		this.userService.stopTrackingLocationChanges();
-		this.accessTokenSubject.next(undefined);
-		this.removeRefreshToken();
-		this.chatSocket.disconnect();
-		this.activitySocket.disconnect();
-		this.connectionSocket.disconnect();
-		window.location.reload();
+		this.http.get<void>(environment.apiUrl + '/auth/logOut')
+			.subscribe({
+				next: () => {
+					this.userService.stopTrackingLocationChanges();
+					this.accessTokenSubject.next(undefined);
+					this.removeRefreshToken();
+					this.chatSocket.disconnect();
+					this.activitySocket.disconnect();
+					this.connectionSocket.disconnect();
+					window.location.reload();
+				}
+			});
 	}
 
 	async isLoggedIn(): Promise<boolean> {
+		this.checkQueryTokens();
 		if (this.isTokenValid(this.accessTokenSubject.value)) {
 			this.userService.trackUserLocation();
 			return true;
@@ -75,6 +83,18 @@ export class AuthService {
 		this.accessTokenSubject.next(undefined);
 		this.removeRefreshToken();
 		return false;
+	}
+
+	checkQueryTokens() {
+		this.route.queryParams.subscribe(params => {
+			const accessToken = params['accessToken'];
+			const refreshToken = params['refreshToken'];
+		
+			if (accessToken)
+				this.accessTokenSubject.next(accessToken);
+			if (refreshToken)
+				this.setRefreshToken(refreshToken);
+		  });
 	}
 
 	isTokenValid(token?: string): boolean {
@@ -130,5 +150,5 @@ export class AuthService {
 		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
 			verificationToken
 		});
-	}
+	}	
 }

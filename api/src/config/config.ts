@@ -19,6 +19,11 @@ export const mailConfig = {
 	appPassword: process.env.MAIL_APP_PASSWORD
 }
 
+export const passportConfig = {
+	googleClientId: process.env.GOOGLE_CLIENT_ID,
+	googleClientSecret: process.env.GOOGLE_CLIENT_SECRET
+}
+
 export const firebaseConfig: ServiceAccount = {
 	projectId: process.env.FIREBASE_PROJECT_ID,
 	privateKey: process.env.FIREBASE_PRIVATE_KEY,

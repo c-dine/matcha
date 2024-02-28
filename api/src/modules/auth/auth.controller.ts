@@ -7,11 +7,13 @@ import { AuthService } from './auth.service.js';
 import { MailService } from '../mail/mail.service.js';
 import { CustomError } from '../../utils/error.util.js';
 import { UserService } from '../user/user.service.js';
+import passport from 'passport';
+import { GoogleOAuthUser } from '../../passportStrategies/google.js';
 
 export const authController = express();
 
-const ACCESS_TOKEN_TIMEOUT = 15;
-const REFRESH_TOKEN_TIMEOUT = 1200;
+export const ACCESS_TOKEN_TIMEOUT = 15;
+export const REFRESH_TOKEN_TIMEOUT = 1200;
 
 authController.post("/signIn", async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -35,7 +37,7 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 			}
 		});
 	} catch (error: any) {
-		error.message = "Username or email already taken."; 
+		error.message = "Username or email already taken.";
 		next(error);
 	}
 });
@@ -59,7 +61,7 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		})
 		next();
 	} catch (error: any) {
-		error.message = error.message || "Error while logging in."; 
+		error.message = error.message || "Error while logging in.";
 		next(error);
 	}
 });
@@ -89,7 +91,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 		});
 		next();
 	} catch (error: any) {
-		error.message = "Authentication error."; 
+		error.message = "Authentication error.";
 		next(error);
 	}
 });
@@ -102,10 +104,10 @@ authController.post("/resetPassword", async (req: Request, res: Response, next: 
 
 		await authService.resetPassword(resetToken, password);
 
-		res.status(200).json({ message: "Password successfully reset."});
+		res.status(200).json({ message: "Password successfully reset." });
 		next();
 	} catch (error: any) {
-		error.message = error.message || "Error while reseting password."; 
+		error.message = error.message || "Error while reseting password.";
 		next(error);
 	}
 });
@@ -115,13 +117,13 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 		const verificationToken = req.body.verificationToken;
 		const authService = new AuthService(req.dbClient);
 		const emailIsValid = await authService.verifyEmail(verificationToken);
-		
+
 		if (!emailIsValid)
 			throw new Error();
-		res.status(200).json({ message: "Email successfully verified."});
+		res.status(200).json({ message: "Email successfully verified." });
 		next();
 	} catch (error: any) {
-		error.message = "Error while verifying email."; 
+		error.message = "Error while verifying email.";
 		next(error);
 	}
 });
@@ -140,10 +142,40 @@ authController.put("/updatePassword", async (req: Request, res: Response, next: 
 		}
 		await authService.updatePassword(newPassword, userId);
 
-		res.status(200).json({ message: "Password successfully updated."});
+		res.status(200).json({ message: "Password successfully updated." });
 		next();
 	} catch (error: any) {
 		error.message = error.message || "Error while updating password.";
 		next(error);
 	}
+});
+
+// Google strategy
+authController.get('/google',
+	passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+authController.get('/google/callback',
+	passport.authenticate('google', {
+		failureRedirect: '/',
+		failureFlash: 'Invalid Google credentials.'
+	}),
+	(req: Request, res: Response, next: NextFunction) => {
+		try {
+			const authService = new AuthService(req.dbClient);
+			const accessToken = authService.getNewToken((req.user as GoogleOAuthUser).id, encryptionConfig.accessSecret, ACCESS_TOKEN_TIMEOUT);
+			const refreshToken = authService.getNewToken((req.user as GoogleOAuthUser).id, encryptionConfig.refreshSecret, REFRESH_TOKEN_TIMEOUT);
+			return res.redirect(`/fillProfile?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+		} catch (e) {
+			next(e);
+		}
+	}
+);
+
+authController.get('/logOut', (req: Request, res: Response, next: NextFunction) => {
+	req.logout(function(err) {
+		if (err) {
+			return next(err); 
+		}
+		res.status(200).json();
+	});
 });
