@@ -6,15 +6,15 @@ import { FirstProfileFillingComponent } from './pages/home/first-profile-filling
 import { PageNotFoundComponent } from './pages/home/404/404.component';
 
 const routes: Routes = [
-	{ path: '', component: HomeComponent },
-	{ path: '404', component: PageNotFoundComponent },
 	{ path: 'fillProfile', component: FirstProfileFillingComponent },
-	{ path: 'app', component: DatingPlatformComponent, outlet: 'app' },
-	// { path: '**', redirectTo: '/404' }
+	{ path: 'app', loadChildren: () => import('./pages/dating-platform/dating-platform.module').then(m => m.DatingPlatformModule) },
+	{ path: '404', component: PageNotFoundComponent },
+	{ path: '', component: HomeComponent },
+	{ path: '**', redirectTo: "/404" },
 ];
 
 @NgModule({
-	imports: [RouterModule.forRoot(routes)],
+	imports: [RouterModule.forRoot(routes, {enableTracing: true})],
 	exports: [RouterModule]
 })
 export class AppRoutingModule { }

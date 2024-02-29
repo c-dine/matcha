@@ -8,7 +8,8 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './pages/home/home.module';
-import { DatingPlatformModule } from './pages/dating-platform/dating-platform.module';
+import { DatingPlatformRoutingModule } from './pages/dating-platform/dating-platform-routing.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -17,10 +18,11 @@ import { DatingPlatformModule } from './pages/dating-platform/dating-platform.mo
 	],
 	imports: [
 		BrowserModule,
+		BrowserAnimationsModule,
 		HttpClientModule,
 		AppRoutingModule,
 		HomeModule,
-		DatingPlatformModule,
+		DatingPlatformRoutingModule
 	],
 	providers: [
 		AuthService,

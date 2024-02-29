@@ -18,7 +18,6 @@ import { TagInputComponent } from './tag-input/tag-input.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { ProfilePicturesComponent } from './profile-pictures/profile-pictures.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DoubleSliderPopupComponent } from './filters/double-slider-popup/double-slider-popup.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -58,7 +57,6 @@ import { AvatarPictureComponent } from './avatar-picture/avatar-picture.componen
 	MatChipsModule,
 	MatAutocompleteModule,
 	MatProgressSpinnerModule,
-	BrowserAnimationsModule,
 	MatSliderModule,
 	FormsModule,
 	ReactiveFormsModule,

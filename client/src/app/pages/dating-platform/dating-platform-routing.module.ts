@@ -9,11 +9,13 @@ import { UserListComponent } from './user-list/user-list.component';
 import { SettingsComponent } from './settings/settings.component';
 import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 import { DatePlannerComponent } from './date-planner/date-planner.component';
+import { PageNotFoundComponent } from '../home/404/404.component';
 
 const routes: Routes = [
   { 
-    path: 'app', 
+    path: '', 
     component: DatingPlatformComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', component: DatingComponent },
       { path: 'chat', component: ChatComponent },
@@ -23,9 +25,8 @@ const routes: Routes = [
       { path: 'userList', component: UserListComponent },
       { path: 'interactiveMap', component: InteractiveMapComponent },
       { path: 'settings', component: SettingsComponent },
-      { path: 'datePlanner', component: DatePlannerComponent }
-    ],
-    canActivate: [AuthGuard]
+      { path: 'datePlanner', component: DatePlannerComponent },
+],
   },
 ];
 
