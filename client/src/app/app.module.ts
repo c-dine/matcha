@@ -10,7 +10,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './pages/home/home.module';
 import { DatingPlatformRoutingModule } from './pages/dating-platform/dating-platform-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LottieModule } from 'ngx-lottie';
 
+export function playerFactory() {
+	return import('lottie-web');
+}
 
 @NgModule({
 	declarations: [
@@ -22,7 +26,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 		HttpClientModule,
 		AppRoutingModule,
 		HomeModule,
-		DatingPlatformRoutingModule
+		DatingPlatformRoutingModule,
+		LottieModule.forRoot({ player: playerFactory }),
 	],
 	providers: [
 		AuthService,
@@ -35,7 +40,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 		{
 			provide: MAT_DATE_LOCALE, 
 			useValue: 'fr-FR'
-		},		
+		},
 	],
 	bootstrap: [AppComponent]
 })

@@ -45,10 +45,8 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { DatePlannerHeaderComponent } from './date-planner/date-planner-header/date-planner-header.component';
 import { DatePlannerAddEventComponent } from './date-planner/date-planner-add-event/date-planner-add-event.component';
 import { DatePlannerDisplayEventComponent } from './date-planner/date-planner-display-event/date-planner-display-event.component';
+import { playerFactory } from 'src/app/app.module';
 
-export function playerFactory() {
-  return import('lottie-web');
-}
 @NgModule({
 	declarations: [
 		DatingPlatformComponent,
@@ -103,7 +101,7 @@ export function playerFactory() {
 		CalendarModule.forRoot({
 			provide: DateAdapter,
 			useFactory: adapterFactory,
-		  }),
+		}),
 	]
 })
 export class DatingPlatformModule { }

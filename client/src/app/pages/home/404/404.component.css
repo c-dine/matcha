@@ -1,13 +1,9 @@
-.first-profile-filling-page {
+.error404-page {
 	display: flex;
 	flex-direction: column;
-	height: calc(100% - 4px) !important;
-}
-
-.first-profile-filling-subpage {
-	display: flex;
-	flex-direction: column;
-	max-width: 800px;
+	align-items: center;
+	justify-content: center;
+	height: 80%;
 }
 
 h1 {

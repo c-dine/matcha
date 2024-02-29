@@ -22,6 +22,8 @@ import { FirstProfileFillingComponent } from "./first-profile-filling/first-prof
 import { CommonModule } from "@angular/common";
 import { SharedModule } from "src/app/shared/shared.module";
 import { PageNotFoundComponent } from "./404/404.component";
+import { LottieModule } from "ngx-lottie";
+import { playerFactory } from "src/app/app.module";
 
 @NgModule({
 	declarations: [
@@ -50,7 +52,8 @@ import { PageNotFoundComponent } from "./404/404.component";
 		MatProgressBarModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
-		SharedModule
+		SharedModule,
+		LottieModule.forRoot({ player: playerFactory }),
 	]
 })
 export class HomeModule { }
