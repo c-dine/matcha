@@ -6,6 +6,7 @@ import { UserService } from 'src/app/service/user.service';
 import { LikeService } from 'src/app/service/like.service';
 import { take } from 'rxjs';
 import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
+import { AnimationOptions } from 'ngx-lottie';
 
 @Component({
 	selector: 'app-dating',
@@ -17,6 +18,9 @@ export class DatingComponent implements OnInit {
 	matchingProfiles: User[] = [];
 	filters: ProfileFilters = { batchSize: 5, offset: 0 };
 	picturesUrl: string[] = [];
+	options: AnimationOptions = {
+		path: 'https://lottie.host/37ff62b2-f4d8-4944-95ad-8085c464f170/KaVE0hl8N1.json'
+	}
 	picturesIdsToPicturesUrls = picturesIdsToPicturesUrls;
 
 	constructor(

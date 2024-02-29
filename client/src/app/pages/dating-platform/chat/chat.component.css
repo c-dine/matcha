@@ -11,6 +11,7 @@
 
 .matcha-chat-conversation-container {
     grid-column: 10 / 41;
-    height: 100%;
     background-color: white;
+    border-radius: 10px;
+    margin: 15px;
 }

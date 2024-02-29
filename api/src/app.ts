@@ -6,7 +6,7 @@ import { disconnectFromDatabase } from "./middlewares/database.middleware.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 import { authenticationHandler } from "./middlewares/authentication.middleware.js";
 import admin from 'firebase-admin';
-import { env, firebaseConfig, firebaseMetadata, passportConfig } from "./config/config.js";
+import { encryptionConfig, env, firebaseConfig, firebaseMetadata, passportConfig } from "./config/config.js";
 import cors from 'cors';
 import passport from "passport";
 import session from 'express-session';
@@ -28,7 +28,7 @@ bucket.setMetadata(firebaseMetadata);
 app.use(session({
 	resave: false,
 	saveUninitialized: true,
-	secret: 'SECREET'
+	secret: encryptionConfig.accessSecret
 }));
 app.use(passport.initialize());
 app.use(passport.session());
