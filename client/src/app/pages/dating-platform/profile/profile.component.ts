@@ -101,7 +101,7 @@ export class ProfileComponent extends SubscriptionBase {
 			gender: new FormControl<string>(this.currentUser?.gender || "", [Validators.required]),
 			sexualPreferences: new FormControl<string>(this.currentUser?.sexualPreferences || "", [Validators.required]),
 			birthDate: new FormControl<Date | undefined>(this.currentUser?.birthDate, [Validators.required, dateIsPastDateValidator(), ageValidator(18)]),
-			biography: new FormControl<string>(this.currentUser?.biography || "", [Validators.required, Validators.minLength(50), Validators.maxLength(500)]),
+			biography: new FormControl<string>(this.currentUser?.biography || "", [Validators.maxLength(500)]),
 			tags: new FormControl<string[]>(this.currentUser?.tags || []),
 			userGivenLongitude: new FormControl<number>({ value: this.currentUser?.userGivenLocation?.longitude || 0, disabled: !this.currentUser?.userGivenLocation }),
 			userGivenLatitude: new FormControl<number>({ value: this.currentUser?.userGivenLocation?.latitude || 0, disabled: !this.currentUser?.userGivenLocation }),
