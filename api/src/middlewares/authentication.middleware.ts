@@ -28,6 +28,7 @@ export async function authenticationHandler(req: Request, res: Response, next: N
 
 const publicRoutes = [
 	"/auth/logIn",
+	"/auth/logOut",
 	"/auth/signIn",
 	"/auth/refreshAccessToken",
 	"/auth/resetPassword",

@@ -39,7 +39,7 @@ passport.use(new GoogleStrategy({
             firstName: profile.name.givenName,
             lastName: profile.name.familyName
         });
-        return done(null, { ...profile, id: userId });
+        return done(null, { ...profile, id: userId, accessToken });
     } catch (e) {
         done(e, false);
     }

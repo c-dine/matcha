@@ -1,0 +1,11 @@
+<div class="dialog google-library-dialog">
+    <h1 class="dialog-title">Google photos</h1>
+    <div class="google-image-container">
+        <div class="google-image-item" *ngFor="let picture of pictures">
+            <img src={{picture.baseUrl}} class="google-image">
+            <div class="overlay" (click)="addPicture(picture.id, picture.filename)">
+                <div class="overlay-content">+</div>
+            </div>
+        </div>
+    </div>
+</div>

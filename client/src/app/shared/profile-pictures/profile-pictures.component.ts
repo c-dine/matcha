@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '@environment/environment';
 import { DisplayablePicture, DisplayableProfilePictures } from '@shared-models/picture.model';
+import { GoogleLibraryComponent } from '../google-library/google-library.component';
 
 @Component({
 	selector: 'app-profile-pictures',
@@ -18,6 +20,7 @@ export class ProfilePicturesComponent {
 
 	constructor(
 		private snackBar: MatSnackBar,
+		private dialog: MatDialog
 	) { }
 
 	deleteAdditionnalPicture(index: number) {
@@ -29,11 +32,15 @@ export class ProfilePicturesComponent {
 		this.pictures.profilePicture = undefined;
 		this.updatedPictures.emit(this.pictures);
 	}
-
+	
 	uploadPicture(event: any) {
+		this.updatePictures(event.target?.files[0]);
+	}
+	
+	updatePictures(file: File) {
 		if (this.pictures.additionnalPictures.length === 4) return;
 		try {
-			const fileMeta = this.getFileMeta(event);
+			const fileMeta = this.getFileMeta(file);
 			if (!this.pictures.profilePicture)
 				this.pictures.profilePicture = fileMeta;
 			else {
@@ -52,11 +59,19 @@ export class ProfilePicturesComponent {
 		});
 	}
 
-	getFileMeta(event: any): DisplayablePicture {
-		const file = event.target?.files[0];
+	getFileMeta(file: File): DisplayablePicture {
 		if (!file || !file.type.startsWith('image/')) throw new Error();
 		const url = URL.createObjectURL(file);
 
 		return { file, url };
+	}
+
+	openGoogleLibrary() {
+		this.dialog.open(GoogleLibraryComponent, {
+			autoFocus: false
+		}).afterClosed().subscribe(data => {
+			if (data)
+				this.updatePictures(data);
+		});
 	}
 }

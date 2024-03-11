@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { Observable, firstValueFrom } from 'rxjs';
-import { DisplayableProfilePictures, PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model';
+import { DisplayableProfilePictures, GoogleMediaItem, PresignedPictureUrl, ProfilePicturesIds } from '@shared-models/picture.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +50,13 @@ export class PictureService {
 				'Content-Type': "image/jpeg",
 			}
 		});
+	}
+
+	getGooglePhotos(): Observable<GoogleMediaItem[]> {
+		return this.http.get<GoogleMediaItem[]>(`${environment.apiUrl}/picture/googlePhotos`);
+	}
+
+	getGooglePhotoFile(id: string): Observable<ArrayBuffer> {
+		return this.http.get<ArrayBuffer>(`${environment.apiUrl}/picture/googlePhoto/${id}`);
 	}
 }

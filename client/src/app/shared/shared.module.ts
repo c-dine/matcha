@@ -27,6 +27,7 @@ import { TagsPopupComponent } from './filters/tags-popup/tags-popup.component';
 import { ImageSliderComponent } from './image-slider/image-slider.component';
 import { UsersWithActionTableComponent } from './users-with-action-table/users-with-action-table.component';
 import { AvatarPictureComponent } from './avatar-picture/avatar-picture.component';
+import { GoogleLibraryComponent } from './google-library/google-library.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { AvatarPictureComponent } from './avatar-picture/avatar-picture.componen
 	TagsPopupComponent,
 	ImageSliderComponent,
 	UsersWithActionTableComponent,
-	AvatarPictureComponent
+	AvatarPictureComponent,
+	GoogleLibraryComponent
   ],
   imports: [
     CommonModule,

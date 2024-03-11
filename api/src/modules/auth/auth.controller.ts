@@ -152,7 +152,7 @@ authController.put("/updatePassword", async (req: Request, res: Response, next: 
 
 // Google strategy
 authController.get('/google',
-	passport.authenticate('google', { scope: ['profile', 'email'] }));
+	passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/auth/photoslibrary'] }));
 
 authController.get('/google/callback',
 	passport.authenticate('google', {
