@@ -28,3 +28,12 @@ textarea {
 	margin-top: 10px;
 	height: 20vh !important;
 }
+
+:host::ng-deep .google-button {
+	height: 60px;
+	max-width: 310px;
+}
+
+:host::ng-deep .additionnal-pictures-container {
+	align-items: center;
+}

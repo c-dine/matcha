@@ -11,7 +11,8 @@ import { PictureService } from 'src/app/service/picture.service';
 })
 export class GoogleLibraryComponent {
 
-    pictures: GoogleMediaItem[] = [];
+    pictures!: GoogleMediaItem[];
+    isLoading = false;
 
     constructor(
         private pictureService: PictureService,
@@ -19,7 +20,11 @@ export class GoogleLibraryComponent {
     ) {}
 
     ngOnInit() {
-        this.pictureService.getGooglePhotos().subscribe(data => this.pictures = data);
+        this.isLoading = true;
+        this.pictureService.getGooglePhotos().subscribe(data => {
+            this.pictures = data;
+            this.isLoading = false;
+        });
     }
 
     async addPicture(id: string, fileName: string) {

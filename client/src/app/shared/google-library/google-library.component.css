@@ -1,7 +1,8 @@
 .google-library-dialog {
     height: 80vh;
-    min-width: 50vw;
-    max-width: 90vw;
+    min-width: 400px;
+    max-width: 800px;
+    overflow: auto;
 }
 
 .google-image-container {

@@ -1,6 +1,9 @@
 <div class="dialog google-library-dialog">
     <h1 class="dialog-title">Google photos</h1>
-    <div class="google-image-container">
+
+    <app-spinner *ngIf="isLoading"></app-spinner>
+    
+    <div class="google-image-container" *ngIf="!isLoading">
         <div class="google-image-item" *ngFor="let picture of pictures">
             <img src={{picture.baseUrl}} class="google-image">
             <div class="overlay" (click)="addPicture(picture.id, picture.filename)">
