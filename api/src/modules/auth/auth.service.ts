@@ -7,7 +7,6 @@ import { encryptionConfig } from "../../config/config.js";
 import { CustomError } from "../../utils/error.util.js";
 import { UserModel } from "../../model/user.model.js";
 import { UserService } from "../user/user.service.js";
-import { MailService } from "../mail/mail.service.js";
 import { randomUUID } from "crypto";
 
 export class AuthService {
@@ -44,6 +43,7 @@ export class AuthService {
 	async createUser(
 		userData: NewUser
 	): Promise<User> {
+		this.passwordIsValidOrThrow(userData.password);
 		const newUser = await this.userModel.create({
 			username: userData.username,
 			last_name: userData.lastName,
@@ -89,10 +89,17 @@ export class AuthService {
 	}
 
 	async updatePassword(newPassword: string, userId: string) {
+		this.passwordIsValidOrThrow(newPassword);
 		const userModel = new UserModel(this.dbClient);
 		await userModel.updateById(userId, {
 			password: await this.encryptPassword(newPassword)
 		});
+	}
+
+	passwordIsValidOrThrow(password: string) {
+		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+		if (!passwordRegex.test(password))
+			throw new CustomError("Please chose a stronger password.", 400);
 	}
 
 	async verifyEmail(verificationToken: string) : Promise<boolean> {

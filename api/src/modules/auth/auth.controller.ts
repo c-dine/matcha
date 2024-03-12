@@ -2,7 +2,7 @@ import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { encryptionConfig } from '../../config/config.js';
-import { NewUser, User } from '@shared-models/user.model.js'
+import { NewUser } from '@shared-models/user.model.js'
 import { AuthService } from './auth.service.js';
 import { MailService } from '../mail/mail.service.js';
 import { CustomError } from '../../utils/error.util.js';
