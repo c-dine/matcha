@@ -160,8 +160,7 @@ INSERT INTO public.tag (label) VALUES ('Nerd');
 INSERT INTO public.tag (label) VALUES ('Drink');
 INSERT INTO public.tag (label) VALUES ('Party');
 
--- Generate 20 couples of user profiles
--- Générer 20 couples de profils utilisateur
+-- Generate 500 user profiles
 DO $$ 
 DECLARE 
     genders varchar[] := ARRAY['male', 'female', 'undefined'];
@@ -176,13 +175,13 @@ DECLARE
     location_latitude float;
     location_longitude float;
 BEGIN
-    FOR i IN 1..20 LOOP
+    FOR i IN 1..500 LOOP
         -- Set first_name and last_name based on the loop index
-        SELECT first_names[i] INTO f_name;
-        SELECT last_names[i] INTO l_name;
+        SELECT first_names[(i % array_length(first_names, 1)) + 1] INTO f_name;
+        SELECT last_names[(i % array_length(last_names, 1)) + 1] INTO l_name;
         
         -- Create the username from the first letter of first_name and last_name
-        SELECT left(f_name, 1) || l_name INTO u_name;
+        SELECT left(f_name, 1) || l_name || i INTO u_name;
 
         -- Generate a random birth_date between 1970-01-01 and 2003-12-31
         SELECT (to_date('1970-01-01', 'YYYY-MM-DD') + trunc(random() * 12000) * '1 day'::interval) INTO birth_date;

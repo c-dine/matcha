@@ -126,7 +126,7 @@ export class AuthService {
 			return connectedUserId;
 		connectedUserId = (await this.createUser({
 			...user,
-			password: randomUUID(),
+			password: randomUUID() + '1@-!qN',
 			username: user.firstName + user.lastName + randomUUID().slice(0, 20)
 		})).id;
 		return connectedUserId;
