@@ -21,9 +21,14 @@ export class GoogleLibraryComponent {
 
     ngOnInit() {
         this.isLoading = true;
-        this.pictureService.getGooglePhotos().subscribe(data => {
-            this.pictures = data;
-            this.isLoading = false;
+        this.pictureService.getGooglePhotos().subscribe({
+            next: data => {
+                this.pictures = data;
+                this.isLoading = false;
+            },
+            error: () => {
+                this.dialogRef.close();
+            }
         });
     }
 

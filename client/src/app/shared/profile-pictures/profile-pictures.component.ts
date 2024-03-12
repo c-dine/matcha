@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from '@environment/environment';
 import { DisplayablePicture, DisplayableProfilePictures } from '@shared-models/picture.model';
 import { GoogleLibraryComponent } from '../google-library/google-library.component';
+import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
 	selector: 'app-profile-pictures',
@@ -14,14 +15,22 @@ export class ProfilePicturesComponent {
 
 	environment = environment;
 	isLoading = false;
+	isConnectedToGoogle = false;
 
 	@Input() pictures!: DisplayableProfilePictures;
 	@Output() updatedPictures = new EventEmitter<DisplayableProfilePictures>();
 
 	constructor(
 		private snackBar: MatSnackBar,
-		private dialog: MatDialog
+		private dialog: MatDialog,
+		private authService: AuthService
 	) { }
+
+	ngOnInit() {
+		this.authService.isConnectedToGoogle().subscribe({
+			next: (data) => this.isConnectedToGoogle = data
+		});
+	}
 
 	deleteAdditionnalPicture(index: number) {
 		this.pictures.additionnalPictures.splice(index, 1);

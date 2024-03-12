@@ -150,5 +150,9 @@ export class AuthService {
 		return this.http.post<string>(environment.apiUrl + '/auth/verifyEmail', {
 			verificationToken
 		});
-	}	
+	}
+
+	isConnectedToGoogle() {
+		return this.http.get<boolean>(`${environment.apiUrl}/auth/isConnectedWithGoogle`);
+	}
 }

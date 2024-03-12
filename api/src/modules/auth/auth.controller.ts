@@ -173,9 +173,17 @@ authController.get('/google/callback',
 
 authController.get('/logOut', (req: Request, res: Response, next: NextFunction) => {
 	req.logout(function(err) {
-		if (err) {
+		if (err)
 			return next(err); 
-		}
 		res.status(200).json();
 	});
+});
+
+authController.get("/isConnectedWithGoogle", async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		res.status(200).json(req.isAuthenticated());
+		next();
+	} catch (error: any) {
+		next(error);
+	}
 });
