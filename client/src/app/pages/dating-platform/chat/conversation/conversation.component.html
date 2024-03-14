@@ -8,8 +8,8 @@
 					<app-typing-message></app-typing-message>
 				</div>
 				<app-chat-message *ngFor="let message of messageService.messages" [id]="message.id"
-					[message]="message.message" [currentUser]="this.conversationUser?.id !== message.from_user_id"
-					[userProfilePictureSrc]="(this.conversationUser?.id === message.from_user_id) ? getConversationUserProfilePictureUrl() : getCurrentUserProfilePictureUrl()" />
+					[message]="message.message" [isCurrentUser]="this.conversationUser?.id !== message.from_user_id"
+					[user]="(this.conversationUser?.id === message.from_user_id) ? conversationUser : currentUser" />
 			</div>
 		</div>
 

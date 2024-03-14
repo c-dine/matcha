@@ -79,8 +79,9 @@ date-planner-header {
 
 .opened-window {
 	width: 85%;
-	height: 92%;
+	height: calc(100vh - 115px);
 	max-height: unset;
+	margin: 0 10px;
 }
 
 @media screen and (max-width: 1200px) {

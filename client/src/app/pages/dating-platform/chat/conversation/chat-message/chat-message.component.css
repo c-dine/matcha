@@ -46,3 +46,7 @@
 	max-width: 20vw;
 	margin: 0;
 }
+
+:host::ng-deep .round-avatar-image {
+	cursor: pointer;
+}

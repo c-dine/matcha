@@ -141,7 +141,7 @@
 		<ng-container *ngIf="isEditMode" [formGroup]="profileForm">
 			<mat-form-field appearance="outline" *ngIf="isEditMode">
 				<mat-label>Tell the world a bit more about you (max. 500 characters)</mat-label>
-				<textarea matInput formControlName="biography" minlength="50" maxlength="500" name="biography"></textarea>
+				<textarea matInput formControlName="biography" maxlength="500" name="biography"></textarea>
 			</mat-form-field>
 		</ng-container>
 	</div>

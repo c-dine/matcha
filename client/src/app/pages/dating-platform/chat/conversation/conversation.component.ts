@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { take } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
@@ -72,18 +71,6 @@ export class ConversationComponent extends SubscriptionBase implements OnInit, O
 				this.router.navigate(['/404']);
 			}
 		});
-	}
-
-	getCurrentUserProfilePictureUrl(): string {
-		return this.getProfilePictureUrl(this.currentUser);
-	}
-
-	getConversationUserProfilePictureUrl(): string {
-		return this.getProfilePictureUrl(this.conversationUser);
-	}
-
-	private getProfilePictureUrl(user: User | null): string {
-		return getFirebasePictureUrl(user?.picturesIds?.profilePicture);
 	}
 
 	hasConversationSelected(): boolean {

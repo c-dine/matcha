@@ -1,8 +1,8 @@
-<div [ngClass]="currentUser === true ? 'matcha-flex-row-reverse' : 'matcha-flex-row'"
+<div [ngClass]="isCurrentUser === true ? 'matcha-flex-row-reverse' : 'matcha-flex-row'"
 	 class="matcha-conversation-message-container">
-	<img class="round-avatar-image" [src]="userProfilePictureSrc">
+	<img *ngIf="user" [matTooltip]="user.username" class="round-avatar-image" [src]="getFirebasePictureUrl(user.picturesIds?.profilePicture)" (click)="navigateToProfile()">
 	<div
-		[ngClass]="currentUser ? 'chat-bubble-current' : 'chat-bubble'"
+		[ngClass]="isCurrentUser ? 'chat-bubble-current' : 'chat-bubble'"
 		class="matcha-flex-row matcha-flex-align-center matcha-flex-justify-center"
 	>
 		<p class="matcha-conversation-message-text">
