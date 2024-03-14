@@ -3,15 +3,19 @@
     width: 100%;
     height: calc(100vh - 50px);
 	grid-template-columns: repeat(40, 1fr);
+	grid-template-rows: 1fr;
 }
 
-.matcha-chat-side-bar {
+app-contacts-side-bar {
     grid-column: 1 / 10;
+    grid-row: 1;
 }
 
-.matcha-chat-conversation-container {
+app-conversation {
     grid-column: 10 / 41;
+    grid-row: 1;
     background-color: var(--secondary-background-color);
     border-radius: 10px;
     margin: 15px;
+    overflow: hidden;
 }

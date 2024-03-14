@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
 import { UserService } from './user.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User } from '@shared-models/user.model';
 import { Conversation, Message, MessageDto } from '@shared-models/chat.models';
 import { NotificationWithAuthor } from '@shared-models/notification.model';
