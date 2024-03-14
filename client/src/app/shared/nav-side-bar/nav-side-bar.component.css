@@ -2,7 +2,7 @@
 	min-width: 200px;
 	width: 15vw;
 	height: calc(100vh - 45px);
-	background-color: white;
+	background-color: var(--secondary-background-color);
 	overflow-y: auto;
 	-ms-overflow-style: none;
 	scrollbar-width: none;

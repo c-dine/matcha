@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-chat-message',
   templateUrl: './chat-message.component.html',
-  styleUrls: ['./chat-message.component.css']
+  styleUrls: ['./chat-message.component.css', '../../../../../styles/picture.css']
 })
 export class ChatMessageComponent {
   @Input()

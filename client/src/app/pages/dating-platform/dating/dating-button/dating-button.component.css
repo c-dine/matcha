@@ -13,7 +13,7 @@
 }
 
 .dating-button-container-color {
-	background-color: #F7F7FF;
+	background-color: var(--background-color);
 	border: solid 1px #D9C5FF;
 }
 

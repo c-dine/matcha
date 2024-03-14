@@ -52,7 +52,7 @@
 	border: thin solid white;
 	background-color: var(--primary-medium-color);
 	padding: 5px 10px;
-	color: black;
+	color: var(--primary-text-color);
 }
 
 .user-item-container-details {
@@ -114,4 +114,13 @@ mat-icon {
 
 ::ng-deep .ngx-pagination a:hover {
 	border-radius: 20px !important;
+	background: var(--secondary-background-color) !important;
+}
+
+::ng-deep .ngx-pagination a {
+	color: var(--primary-text-color) !important;
+}
+
+::ng-deep .mat-mdc-select-value-text {
+	color: var(--primary-text-color) !important;
 }

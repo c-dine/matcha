@@ -3,7 +3,7 @@
 	padding-left: 1vw;
 	padding-right: 1vw;
 	padding-bottom: 1vh;
-	background-color: white;
+	background-color: var(--secondary-background-color);
 	border-radius: 10px;
 	margin-bottom: 2vh;
 	overflow-y: scroll;
@@ -24,13 +24,13 @@
 	gap: 5vw;
 	border-bottom: dotted 1px #8F90AD;
 	margin-bottom: 1vh;
-	background-color: white;
+	background-color: var(--secondary-background-color);
 }
 
 .notifications-side-bar-box-title {
 	font-size: 12px;
 	font-weight: 600;
-	color: #1c1e4f;
+	color: var(--primary-text-color);
 	margin-bottom: 0px;
 }
 

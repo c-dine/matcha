@@ -40,10 +40,29 @@ date-planner-header {
 }
 
 ::ng-deep .cal-month-view {
+	background-color: var(--secondary-background-color);
 	min-width: 400px;
 	overflow: auto;
 	grid-column: 1 / 101;
 	grid-row: 15 / 101;
+}
+
+::ng-deep .cal-week-view {
+	background-color: var(--secondary-background-color);
+}
+::ng-deep .cal-month-view .cal-day-cell.cal-today {
+	background-color: var(--background-color);
+}
+::ng-deep .cal-week-view .cal-header.cal-today {
+	background-color: var(--background-color);
+}
+
+::ng-deep .cal-week-view .cal-hour-odd  {
+	background-color: var(--background-color);
+}
+
+::ng-deep .cal-week-view .cal-header.cal-weekend span {
+	color: var(--primary-text-color)
 }
 
 .split-date-planner-calendar {

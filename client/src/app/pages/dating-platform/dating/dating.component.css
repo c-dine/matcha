@@ -9,7 +9,7 @@
 .dating-card-container {
 	width: 60%;
 	height: 90%;
-	background-color: white;
+	background-color: var(--secondary-background-color);
 	border-radius: 10px;
 	overflow: hidden;
 }

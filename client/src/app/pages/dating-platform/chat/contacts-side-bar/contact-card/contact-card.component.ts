@@ -6,7 +6,7 @@ import { printTime } from 'src/app/utils/timePrinter.utils';
 @Component({
 	selector: 'app-contact-card',
 	templateUrl: './contact-card.component.html',
-	styleUrls: ['./contact-card.component.css']
+	styleUrls: ['./contact-card.component.css', '../../../../../styles/picture.css']
 })
 export class ContactCardComponent {
 	@Input()

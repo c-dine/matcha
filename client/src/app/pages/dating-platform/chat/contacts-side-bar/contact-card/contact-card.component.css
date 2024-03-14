@@ -7,19 +7,13 @@
 }
 
 .contact-card-activated {
-	background-color: white;
+	background-color: var(--secondary-background-color);
 	border-radius: 10px;
 }
 
 .contact-card-image-cotainer {
     grid-column: 2 / 3;
     grid-row: 2 / 2;
-}
-
-.contact-card-image {
-	height: 4vh;
-	width: 4vh;
-	border-radius: 500px;
 }
 
 .contact-card-text-container {
@@ -41,7 +35,7 @@
 }
 
 .contact-card-name {
-	color: #1c1e4f;
+	color: var(--primary-text-color);
 	font-size: 12px;
 	font-weight: 500;
 	margin-bottom: 0px;

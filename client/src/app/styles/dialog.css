@@ -1,5 +1,6 @@
 .dialog {
     padding: 10px 20px;
+    background-color: var(--secondary-background-color);
 }
 
 .dialog-title {

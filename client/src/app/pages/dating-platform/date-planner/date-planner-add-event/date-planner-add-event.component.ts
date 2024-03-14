@@ -7,7 +7,7 @@ import { EventService } from 'src/app/service/event.service';
 @Component({
 	selector: 'date-planner-add-event',
 	templateUrl: './date-planner-add-event.component.html',
-	styleUrls: ['./date-planner-add-event.component.css', '../../../../styles/dialog.css', '../../../../styles/buttons.css']
+	styleUrls: ['./date-planner-add-event.component.css', '../../../../styles/dialog.css', '../../../../styles/buttons.css', '../../../../styles/form.css']
 })
 export class DatePlannerAddEventComponent {
 	@Output() closedWindow = new EventEmitter<null>();

@@ -29,7 +29,7 @@
 	position: absolute;
 	border-radius: 4px;
 	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-	background-color: white;
+	background-color: var(--secondary-background-color);
 	width: 90%;
 	padding: 10px;
 	left: 0;

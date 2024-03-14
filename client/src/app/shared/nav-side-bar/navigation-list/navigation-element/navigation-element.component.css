@@ -17,10 +17,10 @@
 	align-items: center;
 	justify-content: left;
 	gap: 1vw;
-	color: #1C1E4F;
+	color: var(--primary-text-color);
 	margin-bottom: 15px;
 	height: 35px;
-	background-color: #F5F6FF;
+	background-color: var(--background-color);
 	padding-left: 12px;
 	padding-top: 4px;
 	border-radius: 10px;
@@ -28,7 +28,7 @@
 }
 
 .navigation-element-icon-color-purple {
-	color: #5D5FEF;
+	color: var(--primary-color);;
 }
 
 .navigation-element-text {

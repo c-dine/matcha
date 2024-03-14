@@ -9,7 +9,7 @@ html, body {
 
 body {
 	margin: 0;
-	background-color: #F7F7FF;
+	background-color: var(--background-color);
 	font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
@@ -29,7 +29,7 @@ body {
 
 ::-webkit-scrollbar-thumb
 {
-	background-color: #5D5FEF;
+	background-color: var(--primary-color);;
 	max-height: 10%;
 	border-radius: 10px;
 }

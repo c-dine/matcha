@@ -103,7 +103,7 @@ mat-icon {
     align-items: center;
     justify-content: center;
 	padding: 5px;
-	background-color: var(--primary-lighter-color);
+	background-color: var(--background-color);
 	width:auto;
 }
 
@@ -203,7 +203,6 @@ mat-progress-spinner {
 	background-color: var(--primary-color);
 	border-radius: 50%;
 	padding: 4px;
-	box-shadow: -5px 8px 20px var(--primary-medium-color);
 	background: linear-gradient(205deg, var(--primary-medium-color), var(--primary-color));
 }
 

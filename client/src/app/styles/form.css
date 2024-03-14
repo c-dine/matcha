@@ -3,6 +3,7 @@
 	width: 100%;
 	gap: 20px;
 	margin-bottom: 10px;
+    color: var(--primary-text-color) !important;
 }
 
 label {
@@ -27,4 +28,20 @@ label {
 	--mat-mdc-radio-checked-ripple-color:: var(--primary-color);
 	--mdc-radio-selected-hover-icon-color: var(--primary-color);
 	--mdc-radio-selected-focus-icon-color: var(--primary-color);
+}
+
+::ng-deep .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input  {
+	color: var(--primary-text-color) !important;
+}
+::ng-deep .mat-mdc-form-field, .mat-mdc-floating-label {
+	color: var(--primary-text-color) !important;
+}
+::ng-deep .mdc-tab__text-label {
+	color: var(--primary-text-color) !important;
+}
+::ng-deep .mdc-form-field>label {
+	color: var(--primary-text-color) !important;
+}
+::ng-deep mat-label {
+	color: var(--primary-text-color) !important;
 }

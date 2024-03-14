@@ -35,7 +35,7 @@
 
 .matcha-conversation-message-current {
 	font-size: 12px;
-	background-color: #F7F7FF;
+	background-color: var(--background-color);
 	border-radius: 20px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -46,10 +46,3 @@
 	max-width: 20vw;
 	margin: 0;
 }
-
-.matcha-conversation-message-image {
-	height: 4vh;
-	width: 4vh;
-	border-radius: 500px;
-}
-

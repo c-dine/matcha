@@ -6,7 +6,7 @@
 
 .filters-container {
 	border-radius: 10px;
-	background-color: white;
+	background-color: var(--secondary-background-color);
 	margin: 15px 5px;
 	padding: 15px 0;
 	display: inline-flex;
@@ -14,7 +14,6 @@
 	justify-content: space-evenly;
 	width: 100%;
 	margin-bottom: 0;
-	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
 .filter {

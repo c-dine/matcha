@@ -6,7 +6,7 @@
 }
 
 .dating-resume {
-	color: #1c1e4f;
+	color: var(--primary-text-color);
 	font-size: 12px;
 	font-weight: 400;
 }
@@ -18,7 +18,7 @@
 }
 
 .dating-name {
-	color: #1c1e4f;
+	color: var(--primary-text-color);
 	font-size: 20px;
 	font-weight: bold;
 	margin-bottom: 0px;

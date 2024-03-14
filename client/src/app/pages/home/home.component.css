@@ -44,8 +44,8 @@
 
 .login-button {
     margin-right: 50px;
-    background-color: white;
-    color: black;
+    background-color: var(--secondary-background-color);
+    color: var(--primary-text-color);
 }
 
 .home-top-right-container {

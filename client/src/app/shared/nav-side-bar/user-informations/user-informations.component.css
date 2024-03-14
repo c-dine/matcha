@@ -23,7 +23,7 @@
 	padding-top: 10px;
 	font-weight: bold;
 	font-size: 14px;
-	color: #1C1E4F;
+	color: var(--primary-text-color);
 	margin-bottom: 0px;
 	height: 20px;
 }
@@ -31,7 +31,7 @@
 .nav-user-information-stats-text {
 	font-weight: bold;
 	font-size: 14px;
-	color: #5D5FEF;
+	color: var(--primary-color);;
 	margin-bottom: 0px;
 	height: 20px;
 }

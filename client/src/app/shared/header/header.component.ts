@@ -10,11 +10,27 @@ import { AuthService } from 'src/app/service/auth.service';
 })
 export class HeaderComponent {
 	environment	= environment;
+	isDarkMode: boolean = false;
 
 	constructor(
 		private authService: AuthService,
 		private router: Router
 	) { }
+
+	ngOnInit() {
+		var currentTheme = localStorage.getItem('theme');
+		if (currentTheme)
+			this.isDarkMode = currentTheme === 'dark';
+	}
+
+	toggleDarkMode() {
+		var currentTheme = document.documentElement.getAttribute("color-theme");
+		var targetTheme = "light";
+		if (!(currentTheme === "dark"))
+			targetTheme = "dark";
+		document.documentElement.setAttribute('color-theme', targetTheme)
+		localStorage.setItem('theme', targetTheme);
+	  }
 
 	logOut() {
 		this.authService.logout();
