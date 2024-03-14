@@ -2,8 +2,8 @@
 	<img class="notification-card-image"
 		[src]="getFirebasePictureUrl(notification.author.picturesIds?.profilePicture)" />
 	<div class="notification-card-flex-column notification-card-width-70">
-		<p class="notification-card-name" (click)="navigateToNotification(notification.author.id);viewNotification()">{{
-			notification.author.firstName }} {{ notification.author.lastName }}</p>
+		<p class="notification-card-name truncate" (click)="navigateToNotification(notification.author.id);viewNotification()">{{
+			notification.author.username }}</p>
 		<p class="notification-card-message">new <span class="notification-card-type">{{
 				notification.notification?.message }}</span>.</p>
 	</div>

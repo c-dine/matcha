@@ -111,3 +111,10 @@ h3 {
 	border-color: var(--primary-color);
 	color: var(--primary-color);
 }
+
+.truncate {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 30ch;
+}

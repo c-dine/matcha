@@ -33,7 +33,7 @@
 
 .chat-input-grid {
 	display: grid;
-	grid-template-columns: repeat(20, 1fr);
+	grid-template-columns: repeat(100, 1fr);
 }
 
 .conversation-input {
@@ -45,7 +45,7 @@
 	border-radius: 10px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
-    grid-column: 2 / 19;
+    grid-column: 3 / 95;
 	color: var(--primary-text-color);
 }
 
@@ -65,7 +65,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	grid-column: 19 / 20;
+	grid-column: 95 / 99;
 	cursor: pointer;
 }
 

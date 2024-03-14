@@ -4,8 +4,8 @@
 				[src]=pictureIdToUrl(conversation.author.picturesIds?.profilePicture) />
 		</div>
 		<div class="contact-card-text-container">
-			<h6 class="contact-card-overflow-ellispis contact-card-name">
-				{{ conversation.author.lastName }} {{ conversation.author.firstName }}
+			<h6 class="contact-card-overflow-ellispis contact-card-name truncate">
+				{{ conversation.author.username }}
 			</h6>
 			<p class="contact-card-message contact-card-overflow-ellispis">
 				{{ conversation.notification?.message }}

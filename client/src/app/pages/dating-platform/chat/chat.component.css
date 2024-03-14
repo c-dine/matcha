@@ -17,5 +17,6 @@ app-conversation {
     background-color: var(--secondary-background-color);
     border-radius: 10px;
     margin: 15px;
+    margin-left: 0;
     overflow: hidden;
 }

@@ -1,7 +1,7 @@
 <div class="nav-user-information-container" *ngIf="user">
 	<img class="nav-user-information-image nav-user-information-width" [src]="getFirebasePictureUrl(user.picturesIds?.profilePicture)"/>
-	<h3 class="nav-user-information-name-text nav-user-information-width">{{ user.firstName }} {{ user.lastName }}</h3>
-	<h4 class="nav-user-information-subtitle nav-user-information-width">{{ user.username }}</h4>
+	<h3 class="nav-user-information-name-text nav-user-information-width truncate">{{ user.firstName }}</h3>
+	<h4 class="nav-user-information-subtitle nav-user-information-width truncate">{{ user.username }}</h4>
 	<div class="
 		nav-user-information-stats-container
 		nav-user-information-width

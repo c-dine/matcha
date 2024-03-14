@@ -12,7 +12,7 @@
 	<h3><span class="subtitle-text">at</span> {{event.eventLocation}}</h3>
 	<h3><span class="subtitle-text">from</span> {{event.start | date:'dd/MM/yyyy HH:mm'}}</h3>
 	<h3><span class="subtitle-text">to</span> {{event.end | date:'dd/MM/yyyy HH:mm'}}</h3>
-	<h3><span class="subtitle-text">with </span><a (click)="navigateToProfile()">{{event.username}}</a></h3>
+	<h3 class="truncate"><span class="subtitle-text">with </span><a (click)="navigateToProfile()">{{event.username}}</a></h3>
 
 	<div class="button-group">
 		<button class="custom-button red-button" (click)="deleteEvent()">Delete event</button>

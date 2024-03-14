@@ -19,6 +19,10 @@
 .contact-card-text-container {
     grid-column: 4 / 10;
     grid-row: 2 / 2;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
 }
 
 .contact-card-padding-sides {

@@ -44,6 +44,6 @@
 	height: 4vh;
 	width: 4vh;
 	border-radius: 500px;
-	object-fit: scale-down;
-	border: solid thin var(--primary-color);
+	object-fit: cover;
+	border: solid thin var(--primary-text-color);
 }

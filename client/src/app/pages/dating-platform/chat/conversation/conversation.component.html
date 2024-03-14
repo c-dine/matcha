@@ -16,8 +16,8 @@
 		<div class="conversation-input-container">
 			<form class="flex-row" #sendMessageForm="ngForm" (ngOnSubmit)="messageService.sendMessage()">
 				<div class="chat-input-grid">
-					<input placeholder="send message" class="conversation-input"
-						[(ngModel)]="messageService.messageToSend" name="send message"
+					<input placeholder="Type here..." class="conversation-input"
+						[(ngModel)]="messageService.messageToSend" name="Type here..."
 						(keydown.enter)="messageService.sendMessage()" (focus)="messageService.sendTyping()"
 						(focusout)="messageService.sendStopTyping()" />
 					<div class="conversation-input-button" type="submit" (click)="messageService.sendMessage()">
