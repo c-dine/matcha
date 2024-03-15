@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"location_longitude" FLOAT NULL,
     "user_given_location_latitude" FLOAT NULL,
 	"user_given_location_longitude" FLOAT NULL,
-    "fame_rate" INTEGER DEFAULT 100,
+    "fame_rate" INTEGER DEFAULT 34,
     "is_profile_filled" BOOLEAN DEFAULT FALSE
 );
 
@@ -196,7 +196,7 @@ BEGIN
 
         -- Insérer un utilisateur
         INSERT INTO "user" ("id", "username", "last_name", "first_name", "email", "password", "verified_account", "gender", "birth_date", "sexual_preferences", "biography", "location_latitude", "location_longitude", "fame_rate")
-        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2b$10$NFdgmiKxlmkUdoW7sk/WI.UyedzkJRADZpLDtByV2ci1Bb33P4vAi', TRUE, genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 100);
+        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2b$10$NFdgmiKxlmkUdoW7sk/WI.UyedzkJRADZpLDtByV2ci1Bb33P4vAi', TRUE, genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 34);
 
     END LOOP;
 END $$;
