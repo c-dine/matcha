@@ -71,8 +71,14 @@ export class DatingComponent implements OnInit {
 	private likeSubscribeAndNewActivity() {
 		if (this.matchingProfiles[0].id) {
 			this.likeService.likeProfile(this.matchingProfiles[0]).pipe(take(1)).subscribe();
-			this.activitySocket.newActivity('like', this.matchingProfiles[0].id);
+			this.profileLikedCurrentUser(this.matchingProfiles[0])
+				? this.activitySocket.newActivity('match', this.matchingProfiles[0].id)
+				: this.activitySocket.newActivity('like', this.matchingProfiles[0].id);
 		}
+	}
+
+	private profileLikedCurrentUser(profile: User) {
+		return profile?.likedCurrentUser !== undefined && profile?.likedCurrentUser;
 	}
 
 	private dislikeSubscribeAndNewActivity() {

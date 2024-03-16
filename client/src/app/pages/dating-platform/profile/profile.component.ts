@@ -221,8 +221,9 @@ export class ProfileComponent extends SubscriptionBase {
 		if (this.profile.isLiked !== undefined && this.profile.isLiked)
 			return this.unlikeProfile();
 		await firstValueFrom(this.likeService.likeProfile(this.profile));
-		if (this.profileLikedCurrentUser())
+		if (this.profileLikedCurrentUser()) {
 			this.notificationService.sendNewActivity('match', this.profile?.id);
+		}
 		else
 			this.notificationService.sendNewActivity('like', this.profile?.id);
 		this.updateProfileStats("like");

@@ -148,6 +148,7 @@ export class UserService {
 					profilePicture: user.profile_picture_id,
 					additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
 				},
+				likedCurrentUser: user.liked_current_user === null ? undefined : user.liked_current_user,
 				ditanceKm: user.distance_km
 			}))
 		} 

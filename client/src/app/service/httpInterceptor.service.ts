@@ -11,19 +11,21 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
+import { AuthStateService } from './auth.state';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {
 	constructor(
 		private snackBar: MatSnackBar,
-		private authService: AuthService
+		private authService: AuthService,
+		private authState: AuthStateService
 	) {	}
 
 	intercept(
 		request: HttpRequest<any>,
 		next: HttpHandler
 	): Observable<HttpEvent<any>> {
-		const accessToken = this.authService.getAccessToken();
+		const accessToken = this.authState.getAccessToken();
 
 		return next.handle(accessToken ? this.addTokenToRequest(request, accessToken) : request).pipe(
 			catchError((error: HttpErrorResponse) => {
@@ -35,7 +37,7 @@ export class HttpInterceptorService implements HttpInterceptor {
 					return this.authService.refreshAccessToken().pipe(
 						switchMap(() => {
 							return next.handle(
-								this.addTokenToRequest(request, this.authService.getAccessToken() as string)
+								this.addTokenToRequest(request, this.authState.getAccessToken() as string)
 							);
 						})
 					);

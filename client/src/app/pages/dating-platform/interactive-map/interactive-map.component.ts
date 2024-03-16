@@ -51,7 +51,7 @@ export class InteractiveMapComponent {
 	}
 
 	setView() {
-		this.map.setView(new View({
+		this.map?.setView(new View({
 			center: [
 				this.currentUser?.userGivenLocation?.longitude || this.currentUser?.location?.longitude || 0,
 				this.currentUser?.userGivenLocation?.latitude || this.currentUser?.location?.latitude || 0
@@ -121,7 +121,7 @@ export class InteractiveMapComponent {
 	}
 
 	listenToZoom() {
-		this.map.getView().on('change', () => {
+		this.map?.getView().on('change', () => {
 			this.getOtherUsers();
 			this.updateMap();
 		});

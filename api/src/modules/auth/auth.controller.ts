@@ -172,6 +172,7 @@ authController.get('/google/callback',
 );
 
 authController.get('/logOut', (req: Request, res: Response, next: NextFunction) => {
+	res.clearCookie('refresh');
 	req.logout(function(err) {
 		if (err)
 			return next(err); 

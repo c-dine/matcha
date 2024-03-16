@@ -8,6 +8,7 @@ import { CustomError } from "../../utils/error.util.js";
 import { UserModel } from "../../model/user.model.js";
 import { UserService } from "../user/user.service.js";
 import { randomUUID } from "crypto";
+import { commonPasswords } from "./passwords-list.js";
 
 export class AuthService {
 
@@ -98,7 +99,7 @@ export class AuthService {
 
 	passwordIsValidOrThrow(password: string) {
 		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-		if (!passwordRegex.test(password))
+		if (!passwordRegex.test(password) || commonPasswords.has(password))
 			throw new CustomError("Please chose a stronger password.", 400);
 	}
 

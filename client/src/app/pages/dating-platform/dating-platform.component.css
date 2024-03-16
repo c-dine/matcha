@@ -6,7 +6,7 @@
 		z-index: 3;
 	}
 	.pages-container {
-		height: calc(100vh - 45px);
+		height: calc(100vh - 50px);
 		display: block;
 		margin-top: 45px;
 	}

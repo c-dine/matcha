@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environment/environment';
-import { Observable, map, take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { ActivityTypes, NotificationWithAuthor, NotificationDto } from '@shared-models/notification.model';
 import { ActivitySocketService } from './socket/activitySocket.service';
 import { User } from '@shared-models/user.model';

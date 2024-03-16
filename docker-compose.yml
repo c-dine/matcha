@@ -9,6 +9,8 @@ services:
       - api
     networks:
       - app-network
+    env_file:
+      - .env
     volumes:
       - socket_node_modules:/app/node_modules
       - ./socket/src/:/app/src/

@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AuthenticatedUser, User, NewUser } from '@shared-models/user.model'
 import { environment } from '@environment/environment';
-import Cookies from 'js-cookie';
 import { map, tap } from 'rxjs/operators';
 import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 import { UserService } from './user.service';
 import { connectionSocketService } from './socket/connectionSocket.service';
 import { ActivatedRoute } from '@angular/router';
+import { AuthStateService } from './auth.state';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthService {
-
-	private accessTokenSubject: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
 	constructor(
 		private http: HttpClient,
@@ -25,7 +23,8 @@ export class AuthService {
 		private chatSocket: ChatSocketService,
 		private activitySocket: ActivitySocketService,
 		private connectionSocket: connectionSocketService,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private authState: AuthStateService
 	) { }
 
 	signIn(newUser: NewUser): Observable<AuthenticatedUser> {
@@ -50,9 +49,9 @@ export class AuthService {
 
 	setSession(user: AuthenticatedUser) {
 		this.userService.trackUserLocation();
-		this.setRefreshToken(user.token.refresh || "");
+		this.authState.setRefreshToken(user.token.refresh || "")
 		this.userService.setCurrentUserSubject(user as User);
-		this.accessTokenSubject.next(user.token.access);
+		this.authState.setAccessToken(user.token.access);
 	}
 
 	logout(): void {
@@ -60,8 +59,8 @@ export class AuthService {
 			.subscribe({
 				next: () => {
 					this.userService.stopTrackingLocationChanges();
-					this.accessTokenSubject.next(undefined);
-					this.removeRefreshToken();
+					this.authState.setAccessToken(undefined);
+					this.authState.removeRefreshToken();
 					this.chatSocket.disconnect();
 					this.activitySocket.disconnect();
 					this.connectionSocket.disconnect();
@@ -72,16 +71,16 @@ export class AuthService {
 
 	async isLoggedIn(): Promise<boolean> {
 		this.checkQueryTokens();
-		if (this.isTokenValid(this.accessTokenSubject.value)) {
+		if (this.isTokenValid(this.authState.getAccessToken())) {
 			this.userService.trackUserLocation();
 			return true;
 		}
-		if (this.getRefreshToken() && await firstValueFrom(this.refreshAccessToken())) {
+		if (this.authState.getRefreshToken() && await firstValueFrom(this.refreshAccessToken())) {
 			this.userService.trackUserLocation();
 			return true;
 		}
-		this.accessTokenSubject.next(undefined);
-		this.removeRefreshToken();
+		this.authState.setAccessToken(undefined);
+		this.authState.removeRefreshToken();
 		return false;
 	}
 
@@ -91,9 +90,9 @@ export class AuthService {
 			const refreshToken = params['refreshToken'];
 		
 			if (accessToken)
-				this.accessTokenSubject.next(accessToken);
+				this.authState.setAccessToken(accessToken);
 			if (refreshToken)
-				this.setRefreshToken(refreshToken);
+				this.authState.setRefreshToken(refreshToken);
 		  });
 	}
 
@@ -106,27 +105,11 @@ export class AuthService {
 		return false;
 	}
 
-	setRefreshToken(token: string) {
-		Cookies.set("refreshToken", token);
-	}
-
-	removeRefreshToken() {
-		Cookies.remove("refreshToken");
-	}
-
-	getRefreshToken(): string | undefined {
-		return Cookies.get("refreshToken");
-	}
-
-	getAccessToken(): string | undefined {
-		return this.accessTokenSubject.value;
-	}
-
 	refreshAccessToken() {
-		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.getRefreshToken() })
+		return this.http.post<AuthenticatedUser>(environment.apiUrl + '/auth/refreshAccessToken', { refreshToken: this.authState.getRefreshToken() })
 			.pipe(
 				tap((authenticatedUser: AuthenticatedUser) => {
-					this.accessTokenSubject.next(authenticatedUser.token.access);
+					this.authState.setAccessToken(authenticatedUser.token.access);
 					this.userService.setCurrentUserSubject(authenticatedUser as User);
 				})
 			);

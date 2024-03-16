@@ -1,5 +1,7 @@
 import { SocketServer } from './socketServer.js';
 import { SocketRoutes } from './socketRouter.js';
+import jwt from 'jsonwebtoken';
+import { encryptionConfig } from '../config/config.js';
 
 class SocketNamespace {
 	private static server = new SocketServer();
@@ -18,6 +20,16 @@ class SocketNamespace {
 
 	connect() {
 		const server = SocketNamespace.server;
+		server.io.of(this.namespace).use((socket, next) => {
+			try {
+				const accessToken = socket.handshake.auth.token;
+				if (!accessToken) throw new Error();
+				jwt.verify(accessToken, encryptionConfig.accessSecret);
+				next();
+			} catch {
+				next(new Error('not authorized'));
+			}
+		})
 		server.io.of(this.namespace).on('connection', (socket) => {
 			this.handleConnection(socket);
 		});
@@ -52,7 +64,6 @@ class SocketNamespace {
 	}
 
 	emitTo(eventName: string, arg: any) {
-		// envoyer a tous
 		const toUserId = arg.toUserId;
 		const fromUserId = arg.fromUserId;
 

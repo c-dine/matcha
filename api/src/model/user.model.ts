@@ -213,14 +213,15 @@ export class UserModel extends ModelBase {
 				currentUser
 		)}
 			WHERE "user".id != '${currentUser.id}'
-			AND "user".gender = '${currentUser.sexual_preferences}'
+			AND "user".gender IN ('${currentUser.sexual_preferences}', 'undefined')
 			AND "user".sexual_preferences = '${currentUser.gender}'
 			AND "user".id NOT IN (SELECT target_user_id FROM "like" WHERE user_id = '${currentUser.id}')
 			GROUP BY
 				"user".id,
 				"user".username,
 				"user".last_name,
-				"user".first_name
+				"user".first_name,
+				likedCurrentUser.is_liked
 			ORDER BY
 				matching_rate DESC
 			LIMIT $${paramNb++} OFFSET $${paramNb++};`;
@@ -259,6 +260,7 @@ export class UserModel extends ModelBase {
 			"user".sexual_preferences,
 			"user".biography,
 			"user".fame_rate,
+			likedCurrentUser.is_liked as liked_current_user,
 			MAX(CASE WHEN picture.is_profile_picture THEN picture.id::TEXT END) AS profile_picture_id,
 			STRING_AGG(DISTINCT(CASE WHEN NOT picture.is_profile_picture THEN picture.id::text END), ',') AS additionnal_pictures_ids,
 			STRING_AGG(DISTINCT(tag.label)::TEXT, ',') AS tags,
@@ -268,7 +270,8 @@ export class UserModel extends ModelBase {
 		LEFT JOIN tag ON tag.id IN (
 			SELECT tag_id FROM user_tag_asso WHERE user_id = "user".id
 		)
-		LEFT JOIN picture ON picture.user_id = "user".id`
+		LEFT JOIN picture ON picture.user_id = "user".id
+		LEFT JOIN "like" AS likedCurrentUser ON likedCurrentUser.target_user_id = '${currentUser.id}' AND likedCurrentUser.user_id = "user".id`
 	}
 
 	async getUserFameRate(userId: string): Promise<number> {
