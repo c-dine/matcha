@@ -1,8 +1,20 @@
-.interactive-map-container {
-	width: 100%;
-	height: 100%;
-	display: flex;
+
+@media screen and (min-width: 1200px) {
+	.interactive-map-container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+	}
 }
+
+@media screen and (max-width: 1200px) {
+	.interactive-map-container {
+		width: 100vw;
+		height: calc(100vh - 50px);
+		display: flex;
+	}
+}
+
 
 .map-container {
 	width: 100%;

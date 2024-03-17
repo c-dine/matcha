@@ -38,12 +38,25 @@
     overflow: hidden;
 }
 
-.contact-card-name {
-	color: var(--primary-text-color);
-	font-size: 12px;
-	font-weight: 500;
-	margin-bottom: 0px;
-	height: 15px;
+@media screen and (min-width: 600px) {
+	.contact-card-name {
+		color: var(--primary-text-color);
+		font-size: 12px;
+		font-weight: 500;
+		margin-bottom: 0px;
+		height: 15px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.contact-card-name {
+		color: var(--primary-text-color);
+		font-size: 12px;
+		font-weight: 500;
+		margin-bottom: 0px;
+		height: 15px;
+		width: 100%;
+	}
 }
 
 .contact-card-message {

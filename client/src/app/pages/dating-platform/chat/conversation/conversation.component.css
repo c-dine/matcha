@@ -45,7 +45,7 @@
 	border-radius: 10px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
-    grid-column: 3 / 95;
+	grid-column: 3 / 95;
 	color: var(--primary-text-color);
 }
 
@@ -71,15 +71,43 @@
 
 .conversation-input-icon {
 	font-size: 20px;
-	color: var(--primary-color);;
+	color: var(--primary-color);
+	;
 }
 
 .lottie_container {
 	display: grid;
+	width: 100%;
 	height: calc(100% - 60px);
 	grid-template-columns: repeat(10, 1fr);
 }
 
-.lottie_grid_position {
-	grid-column: 4 / 12;
+@media screen and (min-width: 1000px) {
+	.lottie-image {
+		width: 60%;
+	}
+
+	.lottie_grid_position {
+		grid-column: 2 / 10;
+	}
+}
+
+@media screen and (max-width: 1000px) and (min-width: 600px) {
+	.lottie-image {
+		width: 80%;
+	}
+
+	.lottie_grid_position {
+		grid-column: 2 / 10;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.lottie-image {
+		width: 90%;
+	}
+
+	.lottie_grid_position {
+		grid-column: 2 / 10;
+	}
 }

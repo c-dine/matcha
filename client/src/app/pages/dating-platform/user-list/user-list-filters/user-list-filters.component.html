@@ -1,7 +1,12 @@
-<div class="filters-settings-container">
-
+<div  *ngIf="isMobile" id="filter-button-drawer" class="button-drawer-container">
+	<button class="custom-button" (click)="toggleMenu()">
+		Filters and settings
+	</button>
+</div>
+<div id="filters-settings-container" class="filters-settings-container">
+	<a (click)="toggleMenu()" *ngIf="isMobile" class="close"></a>
+	<div *ngIf="isMobile" class="filter-label">Filters</div>
 	<div class="filters-container">
-
 		<div class="filter">
 			<span class="filter-label">Tags</span>
 			<app-tags-popup [label]="filters.tags?.length ? filters.tags?.length + ' tags' : 'None'"
@@ -40,6 +45,7 @@
 
 	</div>
 
+	<div *ngIf="isMobile" class="filter-label">Settings</div>
 	<div class="settings-container">
 
 		<div class="setting">
