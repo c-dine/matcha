@@ -64,6 +64,7 @@ mat-icon {
 	grid-row: 1 / 2;
 	grid-column: 1 / 6;
 }
+
 .user-details-container {
 	grid-row: 2 / 10;
 	grid-column: 1 / 6;
@@ -186,12 +187,14 @@ mat-icon {
 		grid-template-columns: 4fr 4fr 1fr;
 		grid-template-rows: repeat(autofill, 40px);
 		padding-left: 50px;
+		height: 30vh;
 	}
 	
 	.password-label {
 		grid-row: 5 / 6;
 		grid-column: 1 / 11;
 	}
+
 	.password-container {
 		grid-row: 6 / 9;
 		grid-column: 1 / 11;
@@ -199,6 +202,7 @@ mat-icon {
 		grid-template-columns: 3fr 3fr 1fr;
 		grid-template-rows: repeat(autofill, 40px);
 		padding-left: 50px;
+		height: 30vh;
 	}
 
 	.views-history-label {
@@ -208,6 +212,7 @@ mat-icon {
 	.views-history-container {
 		grid-row: 10 / 13;
 		grid-column: 1 / 11;
+		height: 30vh;
 	}
 	
 	.blacklists-label {
@@ -217,14 +222,17 @@ mat-icon {
 	.blacklists-container {
 		grid-row: 14 / 17;
 		grid-column: 1 / 11;
+		height: 30vh;
 	}
 	
 	.likes-history-label {
 		grid-row: 17 / 18;
 		grid-column: 1 / 11;
 	}
+
 	.likes-history-container {
 		grid-row: 18 / 21;
 		grid-column: 1 / 11;
+		height: 30vh;
 	}
 }

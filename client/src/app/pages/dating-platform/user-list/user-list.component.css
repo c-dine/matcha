@@ -18,20 +18,19 @@
 	}
 }
 
-
 .spinner-container {
 	height: 50vh;
 }
 
 .user-list-filter-bar {
-    width: 100%;
+	width: 100%;
 }
 
 .user-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	width: 100%;
-  	gap: 20px;
+	gap: 20px;
 	flex-grow: 1;
 	overflow-y: auto;
 }
@@ -42,7 +41,7 @@
 	border-radius: 30px;
 	background-size: cover;
 	background-position: center;
-	color: white;	
+	color: white;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -74,18 +73,18 @@
 }
 
 .user-item-username {
-    font-size: 20px;
-    font-weight: 600;
-    display: flex;
-    justify-content: left;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    text-align: left;
+	font-size: 20px;
+	font-weight: 600;
+	display: flex;
+	justify-content: left;
+	word-break: break-word;
+	overflow-wrap: break-word;
+	text-align: left;
 }
 
 .user-item-distance {
-    font-size: 14px;
-    font-weight: 600;
+	font-size: 14px;
+	font-weight: 600;
 }
 
 .user-item-fame {
@@ -137,4 +136,3 @@ mat-icon {
 ::ng-deep .mat-mdc-select-value-text {
 	color: var(--primary-text-color) !important;
 }
-

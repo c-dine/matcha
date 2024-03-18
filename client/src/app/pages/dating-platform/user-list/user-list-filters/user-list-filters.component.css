@@ -48,11 +48,13 @@
 @media screen and (max-width: 800px) {
 	.filters-settings-container {
 		position: absolute;
-		padding: 15px 5px;
+		top: 45px;
+		left: 0px;
+		padding-top: 15px;
 		display: none;
 		flex-direction: column;
 		width: 100%;
-		height: calc(100vh - 80px);
+		height: calc(100vh - 60px);
 		background-color: var(--secondary-background-color);
 	}
 
