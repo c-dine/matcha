@@ -90,6 +90,13 @@ export class UserService {
 		return !!this.currentUserSubject.value?.isProfileFilled;
 	}
 
+	async userHasValidatedProfile(): Promise<boolean> {
+		if (this.currentUserSubject.value === null)
+			await firstValueFrom(this.getUserProfile());
+		console.log(this.currentUserSubject.value)
+		return !!this.currentUserSubject.value?.verifiedAccount;
+	}
+
 	// GPS Tracking
 
 	trackUserLocation() {

@@ -18,6 +18,7 @@ export interface User {
 	picturesIds?: ProfilePicturesIds;
 	stats?: ProfileStats;
 	isProfileFilled?: boolean;
+	verifiedAccount?: boolean;
 
 	isLiked?: boolean;
 	likedCurrentUser?: boolean;
