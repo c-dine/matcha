@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   socket:
     container_name: matcha_socket
@@ -12,7 +11,6 @@ services:
     env_file:
       - .env
     volumes:
-      - socket_node_modules:/app/node_modules
       - ./socket/src/:/app/src/
       - ./shared-models/:/app/src/shared-models/
 
@@ -24,7 +22,6 @@ services:
     networks:
       - app-network
     volumes:
-      - client_node_modules:/app/node_modules
       - ./client/src/:/app/src/
       - ./shared-models/:/app/src/shared-models/
 
@@ -42,7 +39,6 @@ services:
       - .db.env
       - .env
     volumes:
-      - api_node_modules:/app/node_modules
       - ./api/src/:/app/src/
       - ./shared-models/:/app/src/shared-models/
 
@@ -94,6 +90,3 @@ networks:
 
 volumes:
   postgres_data:
-  client_node_modules:
-  api_node_modules:
-  socket_node_modules:
