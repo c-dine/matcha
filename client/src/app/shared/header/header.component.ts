@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@environment/environment';
 import { AuthService } from 'src/app/service/auth.service';
+import { NotificationStateService } from 'src/app/service/notification-state.service';
 
 @Component({
 	selector: 'app-header',
@@ -14,7 +15,8 @@ export class HeaderComponent {
 
 	constructor(
 		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private notificationStateService: NotificationStateService,
 	) { }
 
 	ngOnInit() {
@@ -66,5 +68,9 @@ export class HeaderComponent {
 			(menu as HTMLElement).style.top = '45px';
 			(menu as HTMLElement).style.overflow = 'auto';
 		}
+	}
+
+	get notificationsCount() {
+		return this.notificationStateService.notificationsCount;
 	}
 }

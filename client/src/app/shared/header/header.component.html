@@ -19,7 +19,10 @@
 		<div class="logout-link" (click)="logOut()">log out</div>
 		
 		<div class="toggle-button-container notification-menu-icon" (click)="toggleNotificationsMenu()">
-			<mat-icon>notifications_active</mat-icon>
+			<mat-icon *ngIf="notificationsCount > 0" matBadgeSize="small" [matBadge]="notificationsCount" matBadgeColor="primary">
+				notifications_active
+			</mat-icon>
+			<mat-icon *ngIf="notificationsCount === 0" matBadgeSize="small">notifications_active</mat-icon>
 		</div>
 
 	</div>
