@@ -6,11 +6,13 @@ import { encryptionConfig } from '../config/config.js';
 class SocketNamespace {
 	private static server = new SocketServer();
 	private connectedUsers: Map<string, any>;
+	private disconnectedUsers: Map<string, Date>;
 	private events: Map<string, (...args: any[]) => void>;
 
 	constructor(public namespace: string = '/') {
 		this.namespace = namespace;
 		this.connectedUsers = new Map<string, any>();
+		this.disconnectedUsers = new Map<string, Date>();
 		this.events = new Map<string, (...args: any[]) => void>();
 	}
 
@@ -41,6 +43,7 @@ class SocketNamespace {
 			id: socket.id,
 			socket: socket,
 		});
+		this.disconnectedUsers.delete(userId);
 
 		this.setupSocketEvents(socket);
 
@@ -56,6 +59,7 @@ class SocketNamespace {
 	}
 
 	handleDisconnect(userId) {
+		this.disconnectedUsers.set(userId, new Date());
 		this.connectedUsers.delete(userId);
 	}
 
@@ -93,7 +97,7 @@ class SocketNamespace {
 			fromUserId,
 			toUserId,
 			date: new Date(),
-			message: (this.connectedUsers.has(toUserId)) ? "connected" : "not connected",
+			message: (this.connectedUsers.has(toUserId)) ? "connected" : this.disconnectedUsers.get(toUserId),
 		});
 	}
 

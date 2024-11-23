@@ -30,6 +30,7 @@
 			<span class="user-subtitle">({{profile.firstName}} {{profile.lastName}})</span>
 			<span *ngIf="!isConnected" class="user-dot diconnected-user-dot"></span>
 			<span *ngIf="isConnected" class="user-dot connected-user-dot"></span>
+			<h6 *ngIf="!isConnected && lastConnectionString.length">connected {{lastConnectionString}} ago</h6>
 		</h1>
 		<div class="user-card-detail">
 			<mat-icon> place</mat-icon>

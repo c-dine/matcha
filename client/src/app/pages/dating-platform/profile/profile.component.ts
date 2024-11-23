@@ -18,6 +18,7 @@ import { ViewService } from 'src/app/service/view.service';
 import { SubscriptionBase } from 'src/app/shared/subscriptionBase/subscription-base.component';
 import { getFirebasePictureUrl } from 'src/app/utils/picture.utils';
 import { getAge } from 'src/app/utils/profil.utils';
+import { printTime } from 'src/app/utils/timePrinter.utils';
 import { ageValidator, dateIsPastDateValidator } from 'src/app/validators/custom-validators';
 
 @Component({
@@ -32,6 +33,7 @@ export class ProfileComponent extends SubscriptionBase {
 	environment = environment;
 	profile: User | null = null;
 	isConnected: boolean = false;
+	lastConnectionString = "";
 
 	profileForm!: FormGroup;
 	pictures!: DisplayableProfilePictures;
@@ -319,7 +321,12 @@ export class ProfileComponent extends SubscriptionBase {
 
 	private listentIfUserConnected() {
 		const sub = this.connectionSocket.getisConnected().subscribe({
-			next: (resp) => this.isConnected = (resp.message) === "connected",
+			next: (resp) => {
+				const isConnected = resp.message === "connected";
+				this.isConnected = isConnected;
+				if (!isConnected && resp.message)
+					this.lastConnectionString = printTime(Date.now() - new Date(resp.message).getTime());
+			},
 		})
 		this.saveSubscription(sub);
 	}
