@@ -12,4 +12,5 @@ export interface Event extends Interaction {
 	end?: Date,
 	title?: string,
 	eventLocation?: string
+	userId?: string,
 }

@@ -7,9 +7,9 @@ export const fakeReportController = express();
 fakeReportController.get("/", async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const fakeReport = new FakeReportService(req.dbClient);
-		const blacklist = await fakeReport.getList(req.userId);
+		const fakeReportList = await fakeReport.getList(req.userId);
 
-		res.status(200).json({ data: blacklist });
+		res.status(200).json({ data: fakeReportList });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching fake report list.`;
@@ -21,10 +21,10 @@ fakeReportController.post("/", async (req: Request, res: Response, next: NextFun
 	try {
 		const targetUserId = req.body.targetUserId;
 		const fakeReport = new FakeReportService(req.dbClient);
-		const blacklistedUser = await fakeReport.addElement(req.userId, targetUserId);
+		const fakelistedUser = await fakeReport.addElement(req.userId, targetUserId);
 
 		res.status(201).json({ 
-			data: blacklistedUser,
+			data: fakelistedUser,
 			message: "Report successfully sent."
 		});
 		next();

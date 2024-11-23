@@ -4,7 +4,6 @@ import { Event } from "@shared-models/interactions.model.js";
 import { EventModel } from "../../../model/event.model.js";
 import { UserModel } from "../../../model/user.model.js";
 import { CustomError } from "../../../utils/error.util.js";
-import { ModelBase } from "../../../model/base.js";
 import { LikeService } from "../like/like.service.js";
 import { UserService } from "../../user/user.service.js";
 import { PictureService } from "../../picture/picture.service.js";
@@ -25,6 +24,8 @@ export class EventService extends InteractionsService {
 			end: event.end_date,
 			title: event.title,
 			date: new Date(event.date),
+			userId: event.user_id,
+			targetUserId: event.target_user_id,
 			eventLocation: event.location
 		}
 	}

@@ -6,6 +6,8 @@ import { PictureService } from '../picture/picture.service.js';
 import { env } from '../../config/config.js';
 import { GeoCoordinate, MapGeoCoordinates, ProfileFilters, ProfileFiltersRequest, User } from '@shared-models/user.model.js';
 import { ViewService } from '../interactions/view/view.service.js';
+import { BlacklistService } from '../interactions/blacklist/blacklist.service.js';
+import { CustomError } from '../../utils/error.util.js';
 
 export const userController = express();
 
@@ -13,8 +15,14 @@ userController.get("/userProfile", async (req: Request<any, any, any, { id: stri
 	try {
 		const userService = new UserService(req.dbClient);
 		const viewService = new ViewService(req.dbClient);
+		
 		await userService.getAndUpdateFameRate(req.query?.id || req.userId);
 		const profile = await userService.getFullProfile(req.userId, req.query?.id);
+		const blacklistService = new BlacklistService(req.dbClient);	
+
+		if (await blacklistService.hasBlacklistBetweenUsers(req.userId, profile.id)) {
+			throw new CustomError("You are blacklisted by this user.", 403);
+		}
 
 		if (req.query?.id)
 			await viewService.addElement(req.userId, req.query.id);
@@ -31,8 +39,10 @@ userController.get("/userList", async (req: Request<any, any, any, ProfileFilter
 		const userService = new UserService(req.dbClient);
 		const filters: ProfileFilters = userService.formatUserFilters(req.query);
 		const userList = await userService.getUserList(filters, req.userId);
+		const blacklistService = new BlacklistService(req.dbClient);
+		const userListWithoutBlacklisers = await blacklistService.excludeCombinedBlacklistFromUserList(userList, req.userId);
 
-		res.status(200).json({ data: userList });
+		res.status(200).json({ data: userListWithoutBlacklisers });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching user list.`;
@@ -45,8 +55,13 @@ userController.get("/mapUsers", async (req: Request<any, any, any, ProfileFilter
 		const userService = new UserService(req.dbClient);
 		const mapGeoCoordinates: MapGeoCoordinates = req.query as unknown as MapGeoCoordinates;
 		const userList = await userService.getMapList(mapGeoCoordinates, req.userId);
+		const blacklistService = new BlacklistService(req.dbClient);
+		const blacklisters = await blacklistService.getListWhereCurrentUserIsTarget(req.userId);
+		const userListWithoutBlacklisers = userList.filter(
+			user => !blacklisters.some(blacklister => blacklister.targetUserId === user.id)
+		);
 
-		res.status(200).json({ data: userList });
+		res.status(200).json({ data: userListWithoutBlacklisers });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching user list.`;
@@ -60,8 +75,10 @@ userController.get("/matchingProfiles", async (req: Request<any, any, any, Profi
 		const userService = new UserService(req.dbClient);
 		const filters: ProfileFilters = userService.formatUserFilters({...req.query, batchSize: batchSize});
 		const matchingProfiles = await userService.getMatchingProfiles(req.userId, filters);
+		const blacklistService = new BlacklistService(req.dbClient);
+		const matchingProfilesWithoutBlacklisers = await blacklistService.excludeCombinedBlacklistFromUserList(matchingProfiles, req.userId);
 
-		res.status(200).json({ data: matchingProfiles });
+		res.status(200).json({ data: matchingProfilesWithoutBlacklisers });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching matching profiles.`;
@@ -73,7 +90,20 @@ userController.get("/matchs", async (req: Request<any, any, any, ProfileFiltersR
 	try {
 		const userService = new UserService(req.dbClient);
 		const matchingProfiles = await userService.getMatchs(req.userId);
-		res.status(200).json({data: matchingProfiles.data ? matchingProfiles.data : []});
+		if (!matchingProfiles.data) {
+			return res.status(200).json({ data: [] });
+		}
+		const blacklistService = new BlacklistService(req.dbClient);
+		const currentUserBlacklisters = await blacklistService.getListWhereCurrentUserIsTarget(req.userId);
+		const matchsWithoutBlacklisters = matchingProfiles.data.filter(
+			match => !currentUserBlacklisters.some(blacklister =>
+				blacklister.id === match.author.id
+				|| blacklister.id === match.notification?.from_user_id
+				|| blacklister.id === match.notification?.to_user_id
+			)
+		);
+
+		res.status(200).json({ data: matchsWithoutBlacklisters });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching matched profiles.`;

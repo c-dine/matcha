@@ -2,7 +2,8 @@ import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import { NotificationService } from './notification.service.js';
 import { CustomError } from '../../utils/error.util.js'
-import { NotificationWithAuthor } from "@shared-models/notification.model.js";;
+import { NotificationWithAuthor } from "@shared-models/notification.model.js";import { BlacklistService } from '../interactions/blacklist/blacklist.service.js';
+;
 
 export const notificationController = express();
 
@@ -18,10 +19,16 @@ notificationController.get("/notifications", async (req: Request, res: Response,
 			?.sort(
 				(a, b) => new Date(b.notification.date).getTime() - new Date(a.notification.date).getTime()
 			)
-		notifications?.forEach(el => el.notification.date = new Date(el.notification.date));
-		res.status(200).json({data: notifications ? notifications : []});
+		if (!notifications) {
+			res.status(200).json({data: []});
+			next();
+			return;
+		}
+		const blacklistService = new BlacklistService(req.dbClient);
+		const notificationsWithoutBlacklist = await blacklistService.excludeCombinedBlacklistFromNotifications(notifications, req.userId);
+		notificationsWithoutBlacklist?.forEach(el => el.notification.date = new Date(el.notification.date));
+		res.status(200).json({data: notificationsWithoutBlacklist});
 		next();
-		
 	} catch (error: any) {
 		error.message = `Error while fetching notifications.`;
 		next(error);
@@ -33,6 +40,11 @@ notificationController.post("/", async (req: Request, res: Response, next: NextF
 	try {
 		const notificationService = new NotificationService(req.dbClient);
 		const body = req.body;
+		const blacklistService = new BlacklistService(req.dbClient);
+
+		if (await blacklistService.hasBlacklistBetweenUsers(req.userId, body.toUserId)) {
+			throw new CustomError("You are blacklisted by this user.", 403);
+		}
 		if (body.fromUserId !== req.userId) {
 			throw new CustomError("Forbidden.", 403);
 		}
@@ -53,6 +65,11 @@ notificationController.put("/view", async (req: Request, res: Response, next: Ne
 	try {
 		const notificationService = new NotificationService(req.dbClient);
 		const body = req.body;
+		const blacklistService = new BlacklistService(req.dbClient);
+
+		if (await blacklistService.hasBlacklistBetweenUsers(req.userId, body.toUserId)) {
+			throw new CustomError("You are blacklisted by this user.", 403);
+		}
 		if (!body.id) {
 			throw new CustomError("Bad Request.", 400);
 		}

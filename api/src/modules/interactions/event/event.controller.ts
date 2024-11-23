@@ -2,6 +2,8 @@ import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import { EventService } from './event.service.js';
 import { Event } from '@shared-models/interactions.model.js';
+import { BlacklistService } from '../blacklist/blacklist.service.js';
+import { CustomError } from '../../../utils/error.util.js';
 
 export const eventController = express();
 
@@ -10,8 +12,10 @@ eventController.get("/", async (req: Request<any, any, any, { start: string, end
 		const eventService = new EventService(req.dbClient);
 		const timeFrame: { start: Date, end: Date } = { start: new Date(req.query.start), end: new Date(req.query.end) }
 		const eventList = await eventService.getAllEvents(req.userId, timeFrame);
+		const blacklistService = new BlacklistService(req.dbClient);
+		const eventListWithoutBlacklist = await blacklistService.excludeBlacklistFromEventList(eventList, req.userId);
 
-		res.status(200).json({ data: eventList });
+		res.status(200).json({ data: eventListWithoutBlacklist });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching event.`;
@@ -29,6 +33,10 @@ eventController.post("/", async (req: Request, res: Response, next: NextFunction
 		}
 		const eventService = new EventService(req.dbClient);
 		const targetUserId = await eventService.getMatchedUserIdFromUsernameOrThrow(newEvent.username, req.userId);
+		const blacklistService = new BlacklistService(req.dbClient);
+		if (await blacklistService.hasBlacklistBetweenUsers(req.userId, targetUserId)) {
+			throw new CustomError("You are blacklisted by this user.", 403);
+		}
 		const addedEvent = await eventService.addElement(
 			req.userId,
 			targetUserId,
