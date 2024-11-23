@@ -4,8 +4,8 @@
 	</button>
 </div>
 <div id="filters-settings-container" class="filters-settings-container">
-	<a (click)="toggleMenu()" *ngIf="isMobile" class="close"></a>
-	<div *ngIf="isMobile" class="filter-label">Filters</div>
+	<a (click)="toggleMenu()" *ngIf="isMobile" class="close"><mat-icon>close</mat-icon></a>
+	<div *ngIf="isMobile" class="filter-label filter-label-mobile">Filters</div>
 	<div class="filters-container">
 		<div class="filter">
 			<span class="filter-label">Tags</span>
@@ -45,7 +45,7 @@
 
 	</div>
 
-	<div *ngIf="isMobile" class="filter-label">Settings</div>
+	<div *ngIf="isMobile" class="filter-label filter-label-mobile"><br>Settings<br></div>
 	<div class="settings-container">
 
 		<div class="setting">

@@ -21,7 +21,7 @@ export class UserListFiltersComponent {
 	isFilterMenuOpen!: Boolean;
 
 	ngOnInit() {
-		if (window.screen.width <= 800) {
+		if (window.innerWidth <= 800) {
 			this.isMobile = true;
 			this.isFilterMenuOpen = false;
 		} else {
@@ -33,7 +33,7 @@ export class UserListFiltersComponent {
 	@HostListener('window:resize', ['$event'])
 	onResize(event: any) {
 		const menu = document.getElementById('filters-settings-container');
-		if (event.target.innerWidth <= 800) {
+		if (window.innerWidth <= 800) {
 			this.isMobile = true;
 			this.isFilterMenuOpen = false;
 			(menu as any).style.display = 'none';
@@ -112,7 +112,7 @@ export class UserListFiltersComponent {
 // constructor() { }
 
 // ngOnInit() {
-// 	if (window.screen.width <= 600) {
+// 	if (window.innerWidth <= 600) {
 // 		this.isMobile = true
 // 		this.isSideBarOpen = false;
 // 	} else {
