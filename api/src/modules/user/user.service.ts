@@ -6,7 +6,6 @@ import { User } from "@shared-models/user.model.js";
 import { Conversation } from "@shared-models/chat.models.js";
 
 export class UserService {
-
 	dbClient: PoolClient;
 	userModel: UserModel;
 

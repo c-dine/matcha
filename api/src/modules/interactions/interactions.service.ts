@@ -58,6 +58,7 @@ export class InteractionsService {
 		return interactionList.map(datedProfileIdsList => {
 			const originUser = originUsers.find(user => user.id === datedProfileIdsList.user_id);
 			return {
+				id: userId,
 				profilePicId: targetProfilePictures.find(pic => pic.userId === originUser.id)?.id || undefined,
 				username: originUser.username,
 				lastName: originUser.lastName,

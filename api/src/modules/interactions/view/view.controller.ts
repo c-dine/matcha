@@ -1,6 +1,7 @@
 import express, { NextFunction } from 'express';
 import { Response, Request } from 'express';
 import { ViewService } from './view.service.js';
+import { BlacklistService } from '../blacklist/blacklist.service.js';
 
 export const viewController = express();
 
@@ -8,8 +9,10 @@ viewController.get("/self", async (req: Request, res: Response, next: NextFuncti
 	try {
 		const viewService = new ViewService(req.dbClient);
 		const viewsList = await viewService.getList(req.userId);
+		const blacklistService = new BlacklistService(req.dbClient);
+		const viewsListWithoutBlacklist = await blacklistService.excludeBlacklistFromInteractionList(viewsList, req.userId);
 
-		res.status(200).json({ data: viewsList });
+		res.status(200).json({ data: viewsListWithoutBlacklist });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching views list.`;
@@ -21,8 +24,10 @@ viewController.get("/others", async (req: Request, res: Response, next: NextFunc
 	try {
 		const viewService = new ViewService(req.dbClient);
 		const viewsList = await viewService.getListWhereCurrentUserIsTarget(req.userId);
+		const blacklistService = new BlacklistService(req.dbClient);
+		const viewsListWithoutBlacklist = await blacklistService.excludeBlacklistFromInteractionList(viewsList, req.userId);
 
-		res.status(200).json({ data: viewsList });
+		res.status(200).json({ data: viewsListWithoutBlacklist });
 		next();
 	} catch (error: any) {
 		error.message = `Error while fetching views list.`;
