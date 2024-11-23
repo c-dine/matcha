@@ -37,6 +37,12 @@ export class UserService {
 			firstValueFrom(this.getUserProfile());
 		return this.currentUserSubject.asObservable();
 	}
+	
+	async getCurrentUserValue(): Promise<User | null> {
+		if (!this.currentUserSubject.value)
+			await firstValueFrom(this.getUserProfile());
+		return this.currentUserSubject.value
+	}
 
 	getUserProfile(userId?: string): Observable<User | null> {
 		const params = userId ? buildHttpParams({ id: userId}) : undefined;
@@ -97,7 +103,6 @@ export class UserService {
 	async userHasValidatedProfile(): Promise<boolean> {
 		if (this.currentUserSubject.value === null)
 			await firstValueFrom(this.getUserProfile());
-		console.log(this.currentUserSubject.value)
 		return !!this.currentUserSubject.value?.verifiedAccount;
 	}
 

@@ -7,6 +7,7 @@ import { LikeService } from 'src/app/service/like.service';
 import { take } from 'rxjs';
 import { ActivitySocketService } from 'src/app/service/socket/activitySocket.service';
 import { AnimationOptions } from 'ngx-lottie';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-dating',
@@ -27,6 +28,7 @@ export class DatingComponent implements OnInit {
 		private userService: UserService,
 		private likeService: LikeService,
 		private activitySocket: ActivitySocketService,
+		private snackbar: MatSnackBar,
 	) { }
 
 	ngOnInit() {
@@ -55,7 +57,14 @@ export class DatingComponent implements OnInit {
 		this.isLoading = false;
 	}
 
-	onDatingButtonClick(buttonName: string) {
+	async onDatingButtonClick(buttonName: string) {
+		if (!(await this.userService.getCurrentUserValue())?.picturesIds?.profilePicture) {
+			this.snackbar.open("You need to upload a profile picture to be able to like.", 'Close', {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
+			return;
+		}
 		if (buttonName === 'like') {
 			this.likeSubscribeAndNewActivity();
 		}
