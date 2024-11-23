@@ -1,6 +1,8 @@
 .dialog {
-    padding: 10px 20px;
+    padding: 20px 30px;
     background-color: var(--secondary-background-color);
+	overflow: auto;
+	max-height: 80vh;
 }
 
 .dialog-title {

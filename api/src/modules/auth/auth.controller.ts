@@ -37,6 +37,7 @@ authController.post("/signIn", async (req: Request, res: Response, next: NextFun
 			}
 		});
 	} catch (error: any) {
+		error.statusCode = 403;
 		error.message = "Username or email already taken.";
 		next(error);
 	}
@@ -61,6 +62,7 @@ authController.post("/logIn", async (req: Request, res: Response, next: NextFunc
 		})
 		next();
 	} catch (error: any) {
+		error.statusCode = 401;
 		error.message = error.message || "Error while logging in.";
 		next(error);
 	}
@@ -107,6 +109,7 @@ authController.post("/resetPassword", async (req: Request, res: Response, next: 
 		res.status(200).json({ message: "Password successfully reset." });
 		next();
 	} catch (error: any) {
+		error.statusCode = 403;
 		error.message = error.message || "Error while reseting password.";
 		next(error);
 	}
@@ -123,6 +126,7 @@ authController.post("/verifyEmail", async (req: Request, res: Response, next: Ne
 		res.status(200).json({ message: "Email successfully verified." });
 		next();
 	} catch (error: any) {
+		error.statusCode = 403;
 		error.message = "Error while verifying email.";
 		next(error);
 	}

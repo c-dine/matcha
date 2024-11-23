@@ -126,7 +126,8 @@ userController.put("/", async (req: Request, res: Response, next: NextFunction) 
 		res.status(200).json({ data: { ...updatedProfileData, id: updatedProfile.id }, message: "Profile successfully updated." });
 		next();
 	} catch (error: any) {
-		error.message = `Error while updating user profile.`;
+		error.statusCode = 403;
+		error.message = `Error: username or email already taken.`;
 		next(error);
 	}
 });

@@ -39,7 +39,8 @@ export class ResetPasswordDialogComponent {
 			return;
 		}
 		this.passwordReset = true;
-		await firstValueFrom(this.authService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue()));
+		await firstValueFrom(this.authService.resetPassword(this.data.resetToken, this.resetPasswordForm.get('password')?.getRawValue()))
+		.catch(() => {});
 	}
 
 	goBackToLoginDialog() {

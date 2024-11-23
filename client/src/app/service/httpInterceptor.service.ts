@@ -59,10 +59,11 @@ export class HttpInterceptorService implements HttpInterceptor {
 	}
 
 	displayAndThrowError(error: HttpErrorResponse) {
-		this.snackBar.open(error.error.error, 'Close', {
-			duration: 4000,
-			panelClass: "error-snackbar"
-		});
+		if (error.error.error?.length)
+			this.snackBar.open(error.error.error, 'Close', {
+				duration: 4000,
+				panelClass: "error-snackbar"
+			});
 		return throwError(() => error);
 	}
 
