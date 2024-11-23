@@ -1,7 +1,7 @@
 <div class="dating-description-container">
 	<div class="dating-flex-row gap-10 dating-width-90">
 		<div class="dating-flex-column dating-width-80">
-			<h3 class="dating-name">{{ firstName }} {{ lastName }}</h3>
+			<h3 class="dating-name" (click)="goToProfile()">{{ firstName }} {{ lastName }}</h3>
 			<div class="dating-flex-row">
 				<mat-icon class="dating-card-description-location-icon">location_on</mat-icon>
 				<p class="dating-location">{{ distance | number : '1.1-1' }} km from you</p>
