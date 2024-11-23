@@ -6,6 +6,7 @@ import { ChatSocketService } from './socket/chatSocket.service';
 import { ActivitySocketService } from './socket/activitySocket.service';
 import { connectionSocketService } from './socket/connectionSocket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationStateService } from './notification-state.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -19,6 +20,7 @@ export class AuthGuard {
 		private activitySocket: ActivitySocketService,
 		private connectionSocket: connectionSocketService,
 		private snackBar: MatSnackBar,
+		private notificationStateService: NotificationStateService,
     ) {}
 
 	async canActivate(): Promise<boolean> {
@@ -41,6 +43,7 @@ export class AuthGuard {
 		this.chatSocket.connect();
 		this.activitySocket.connect();
 		this.connectionSocket.connect();
+		this.notificationStateService.initializeNotifications();
 		return true;
 	}
 }

@@ -28,6 +28,7 @@ import { ImageSliderComponent } from './image-slider/image-slider.component';
 import { UsersWithActionTableComponent } from './users-with-action-table/users-with-action-table.component';
 import { AvatarPictureComponent } from './avatar-picture/avatar-picture.component';
 import { GoogleLibraryComponent } from './google-library/google-library.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { GoogleLibraryComponent } from './google-library/google-library.componen
 	MatSliderModule,
 	FormsModule,
 	ReactiveFormsModule,
-	MatInputModule
+	MatInputModule,
+	MatBadgeModule
   ],
   exports: [
     HeaderComponent,
@@ -76,7 +78,7 @@ import { GoogleLibraryComponent } from './google-library/google-library.componen
 	TagsPopupComponent,
 	ImageSliderComponent,
 	UsersWithActionTableComponent,
-	AvatarPictureComponent
+	AvatarPictureComponent,
   ]
 })
 export class SharedModule { }
