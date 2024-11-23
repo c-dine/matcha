@@ -2,8 +2,9 @@ import { PoolClient } from "pg";
 import { InteractionsService } from "../interactions.service.js";
 import { UserList } from "@shared-models/user.model.js";
 import { NotificationWithAuthor } from "@shared-models/notification.model.js";
-import { Blacklist, Like } from "@shared-models/common.models.js";
+import { Blacklist } from "@shared-models/common.models.js";
 import { Event, Interaction } from '@shared-models/interactions.model.js';
+import { Conversation } from "@shared-models/chat.models.js";
 
 export class BlacklistService extends InteractionsService {
 
@@ -66,6 +67,29 @@ export class BlacklistService extends InteractionsService {
 			)
 		);
 		return interactionsWithoutBlacklist;
+	}
+
+	async excludeBlacklistFromConversationList(conversationList: Conversation[], currentUserId: string): Promise<Conversation[]> {
+		const combinedBlacklist = await this.combineBlacklists(currentUserId);
+		const conversationsWithoutBlacklist = conversationList.filter(
+			conversation => !combinedBlacklist.some(
+				blacklistUser =>
+					blacklistUser.targetUserId === conversation.notification?.from_user_id
+					|| blacklistUser.targetUserId === conversation.notification?.to_user_id
+			)
+		);
+		return conversationsWithoutBlacklist;
+	}
+
+	async excludeBlacklistFromMatchList(matchList: Conversation[], currentUserId: string): Promise<Conversation[]> {
+		const combinedBlacklist = await this.combineBlacklists(currentUserId);
+		const matchesWithoutBlacklist = matchList.filter(
+			match => !combinedBlacklist.some(blacklistUser =>
+				blacklistUser.targetUserId === match.author.id
+				|| blacklistUser.id === match.author.id
+			)
+		);
+		return matchesWithoutBlacklist;
 	}
 
 	private async combineBlacklists(currentUserId: string): Promise<Blacklist[]> {

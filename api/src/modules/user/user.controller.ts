@@ -94,14 +94,8 @@ userController.get("/matchs", async (req: Request<any, any, any, ProfileFiltersR
 			return res.status(200).json({ data: [] });
 		}
 		const blacklistService = new BlacklistService(req.dbClient);
-		const currentUserBlacklisters = await blacklistService.getListWhereCurrentUserIsTarget(req.userId);
-		const matchsWithoutBlacklisters = matchingProfiles.data.filter(
-			match => !currentUserBlacklisters.some(blacklister =>
-				blacklister.id === match.author.id
-				|| blacklister.id === match.notification?.from_user_id
-				|| blacklister.id === match.notification?.to_user_id
-			)
-		);
+		const matchsWithoutBlacklisters = await blacklistService
+			.excludeBlacklistFromMatchList(matchingProfiles.data, req.userId);
 
 		res.status(200).json({ data: matchsWithoutBlacklisters });
 		next();

@@ -13,5 +13,5 @@ export interface MessageDto {
 	message: string;
 }
 
-export interface Conversation extends NotificationWithAuthor{
+export interface Conversation extends NotificationWithAuthor {
 }

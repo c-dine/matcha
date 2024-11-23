@@ -4,6 +4,7 @@ import { GeoCoordinate, MapGeoCoordinates, MapUser, ProfileFilters, ProfileFilte
 import { env } from "../../config/config.js";
 import { User } from "@shared-models/user.model.js";
 import { Conversation } from "@shared-models/chat.models.js";
+import { LikeService } from "../interactions/like/like.service.js";
 
 export class UserService {
 	dbClient: PoolClient;
@@ -53,27 +54,27 @@ export class UserService {
 		}
 	}
 
-	async getUserById(userId: string): Promise<user | undefined>  {
+	async getUserById(userId: string): Promise<user | undefined> {
 		return (await this.userModel.findMany([{
 			id: userId
 		}]))[0];
 	}
 
 	async getUsers(
-		whereQuery: { [ key: string ]: any }[],
+		whereQuery: { [key: string]: any }[],
 		select?: string[]
 	) {
 		const users = (
 			await this.userModel.findMany(whereQuery,
-			select
-		));
+				select
+			));
 		return users.map(this.formatUser);
 	}
 
-	async  getFullProfile(currentUserId: string, requestedUserId?: string): Promise<User | undefined> {
+	async getFullProfile(currentUserId: string, requestedUserId?: string): Promise<User | undefined> {
 		const currentUser = await this.getUserById(currentUserId);
 		if (!requestedUserId && !currentUser?.id) return undefined;
-		const requestedProfile = 
+		const requestedProfile =
 			await this.userModel.getFullProfile(requestedUserId || currentUser.id, currentUser);
 		return {
 			...this.formatUser(requestedProfile as user),
@@ -100,21 +101,21 @@ export class UserService {
 		const userlist = await this.userModel.getUserList(filters, currentUserProfile);
 
 		return {
-				totalUserCount: (userlist as any)[0]?.total_user_count || 0,
-				userList: userlist.map(user => ({
-					...this.formatUser(user as user),
-					tags: user.tags?.split(',') || [],
-					picturesIds: {
-						profilePicture: user.profile_picture_id,
-						additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
-					},
-					ditanceKm: user.distance_km,
-					stats: {
-						fameRate: user.fame_rate
-					},
-					isLiked: user.is_liked === null ? undefined : user.is_liked,
-					likedCurrentUser: user.liked_current_user === null ? undefined : user.liked_current_user,
-				}))
+			totalUserCount: (userlist as any)[0]?.total_user_count || 0,
+			userList: userlist.map(user => ({
+				...this.formatUser(user as user),
+				tags: user.tags?.split(',') || [],
+				picturesIds: {
+					profilePicture: user.profile_picture_id,
+					additionnalPicture: user.additionnal_pictures_ids?.split(',') || []
+				},
+				ditanceKm: user.distance_km,
+				stats: {
+					fameRate: user.fame_rate
+				},
+				isLiked: user.is_liked === null ? undefined : user.is_liked,
+				likedCurrentUser: user.liked_current_user === null ? undefined : user.liked_current_user,
+			}))
 		};
 	}
 
@@ -137,7 +138,7 @@ export class UserService {
 		const currentUserProfile = await this.getUserById(userId);
 		if (!currentUserProfile?.id)
 			return undefined;
-		const matchingProfiles = 
+		const matchingProfiles =
 			await this.userModel.getMatchingProfiles(currentUserProfile, filters);
 		return {
 			totalUserCount: matchingProfiles.length,
@@ -151,7 +152,7 @@ export class UserService {
 				likedCurrentUser: user.liked_current_user === null ? undefined : user.liked_current_user,
 				ditanceKm: user.distance_km
 			}))
-		} 
+		}
 	}
 
 	async getAndUpdateFameRate(userId: string): Promise<number> {
@@ -168,17 +169,17 @@ export class UserService {
 		const updatedProfile = await this.userModel.update([{
 			id: userId
 		}], {
-				first_name: updatedData.firstName || undefined,
-				last_name: updatedData.lastName || undefined,
-				email: updatedData.email || undefined,
-				username: updatedData.username || undefined,
-				gender: updatedData.gender || undefined,
-				birth_date: updatedData.birthDate || undefined,
-				sexual_preferences: updatedData.sexualPreferences || undefined,
-				biography: updatedData.biography || undefined,
-				user_given_location_latitude: updatedData.userGivenLocation?.latitude || null,
-				user_given_location_longitude: updatedData.userGivenLocation?.longitude || null,
-				is_profile_filled: true
+			first_name: updatedData.firstName || undefined,
+			last_name: updatedData.lastName || undefined,
+			email: updatedData.email || undefined,
+			username: updatedData.username || undefined,
+			gender: updatedData.gender || undefined,
+			birth_date: updatedData.birthDate || undefined,
+			sexual_preferences: updatedData.sexualPreferences || undefined,
+			biography: updatedData.biography || undefined,
+			user_given_location_latitude: updatedData.userGivenLocation?.latitude || null,
+			user_given_location_longitude: updatedData.userGivenLocation?.longitude || null,
+			is_profile_filled: true
 		});
 
 		return this.formatUser(updatedProfile[0]);
@@ -195,7 +196,7 @@ export class UserService {
 
 	async getLocalhostIpAddress(): Promise<string> {
 		return (await fetch("https://api64.ipify.org\?format\=json")
-				.then(response => response.json())).ip;
+			.then(response => response.json())).ip;
 	}
 
 	async getLocationFromIpAddress(ipAddress: string): Promise<GeoCoordinate> {
@@ -210,7 +211,7 @@ export class UserService {
 		} catch (error: any) { }
 	}
 
-	async getMatchs(userId: string): Promise<{data: Conversation[]}> {
+	async getMatchs(userId: string): Promise<{ data: Conversation[] }> {
 		return await this.userModel.getMatchs(userId);
 	}
 
