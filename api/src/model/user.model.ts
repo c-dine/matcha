@@ -44,6 +44,7 @@ export class UserModel extends ModelBase {
 					"user".biography,
 					"user".fame_rate,
 					"user".is_profile_filled,
+					"user".verified_account,
 					${isCurrentUser ? `
 					"user".user_given_location_latitude,
 					"user".user_given_location_longitude,

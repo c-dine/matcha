@@ -8,7 +8,7 @@ export class NotificationModel extends ModelBase {
 
 	async getNotifications(currentUserId: string) {
 		const query = this.getNotificationsQuery(currentUserId);
-		const result = await this.dbClient.query(query/* , [currentUserId] */);
+		const result = await this.dbClient.query(query);
 		return result.rows[0];
 	}
 
@@ -19,6 +19,7 @@ export class NotificationModel extends ModelBase {
 			GROUP BY u.id;`;
 		return query;
 	}
+
 	private getNotificationsSelectQuery(): string {
 		return `
 		SELECT
