@@ -50,6 +50,7 @@ export class AuthService {
 			last_name: userData.lastName,
 			first_name: userData.firstName,
 			email: userData.email,
+			verified_account: userData.verifiedAccount,
 			password: await this.encryptPassword(userData.password)
 		}, ["id", "last_name", "first_name", "email", "username"]);
 		return newUser ? this.userService.formatUser(newUser) : undefined;
@@ -127,6 +128,7 @@ export class AuthService {
 			return connectedUserId;
 		connectedUserId = (await this.createUser({
 			...user,
+			verifiedAccount: true,
 			password: randomUUID() + '1@-!qN',
 			username: user.firstName + user.lastName + randomUUID().slice(0, 20)
 		})).id;

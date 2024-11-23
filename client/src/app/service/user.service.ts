@@ -75,13 +75,17 @@ export class UserService {
 	}
 
 	updateUser(updatedUser: User): Observable<User> {
-		const currentUser = this.currentUserSubject.value;
-		this.currentUserSubject.next({
-			...currentUser,
-			...updatedUser,
-			isProfileFilled: true
-		});
-		return this.http.put<User>(environment.apiUrl + '/user/', updatedUser);
+		return this.http.put<User>(environment.apiUrl + '/user/', updatedUser)
+			.pipe(
+				tap(() => {
+					const currentUser = this.currentUserSubject.value;
+					this.currentUserSubject.next({
+						...currentUser,
+						...updatedUser,
+						isProfileFilled: true
+					});
+				})
+			);
 	}
 
 	async userHasProfile(): Promise<boolean> {

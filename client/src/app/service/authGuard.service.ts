@@ -26,16 +26,16 @@ export class AuthGuard {
 			this.router.navigate(['']);
 			return false;
 		}
+		if (!(await this.userService.userHasProfile())) {
+			this.router.navigate(['/fillProfile']);
+			return true;
+		}
 		if (!(await this.userService.userHasValidatedProfile())) {
 			this.router.navigate(['']);
 			this.snackBar.open("Please validate your profile by clicking the link you received by mail.", "Close", {
 				duration: 4000,
 				panelClass: "error-snackbar"
 			});
-			return true;
-		}
-		if (!(await this.userService.userHasProfile())) {
-			this.router.navigate(['/fillProfile']);
 			return true;
 		}
 		this.chatSocket.connect();
