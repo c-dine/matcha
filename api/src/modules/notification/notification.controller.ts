@@ -30,6 +30,7 @@ notificationController.get("/notifications", async (req: Request, res: Response,
 		res.status(200).json({data: notificationsWithoutBlacklist});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching notifications.`;
 		next(error);
 	}
@@ -56,6 +57,7 @@ notificationController.post("/", async (req: Request, res: Response, next: NextF
 		res.status(200).json({ data: message as NotificationWithAuthor || null });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while creating notification.`;
 		next(error);
 	}
@@ -84,6 +86,7 @@ notificationController.put("/view", async (req: Request, res: Response, next: Ne
 		res.status(200).json({ data: {message: 'success.'} });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while updating notification.`;
 		next(error);
 	}

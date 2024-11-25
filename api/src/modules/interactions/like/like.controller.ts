@@ -17,6 +17,7 @@ likeController.get("/self", async (req: Request, res: Response, next: NextFuncti
 		res.status(200).json({ data: likesListWithoutBlacklist });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching likes list.`;
 		next(error);
 	}
@@ -32,6 +33,7 @@ likeController.get("/others", async (req: Request, res: Response, next: NextFunc
 		res.status(200).json({ data: likesListWithoutBlacklist });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching likes list.`;
 		next(error);
 	}
@@ -62,6 +64,7 @@ likeController.post("/", async (req: Request, res: Response, next: NextFunction)
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = error.message || `Error while ${isLiked ? "liking" : "disliking"} profile.`;
 		next(error);
 	}
@@ -78,6 +81,7 @@ likeController.delete("/:targetUserId", async (req: Request, res: Response, next
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while unliking profile.`;
 		next(error);
 	}

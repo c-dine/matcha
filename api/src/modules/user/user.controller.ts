@@ -29,6 +29,7 @@ userController.get("/userProfile", async (req: Request<any, any, any, { id: stri
 		res.status(200).json({ data: profile as User || null });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching user profile.`;
 		next(error);
 	}
@@ -45,6 +46,7 @@ userController.get("/userList", async (req: Request<any, any, any, ProfileFilter
 		res.status(200).json({ data: userListWithoutBlacklisers });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching user list.`;
 		next(error);
 	}
@@ -64,6 +66,7 @@ userController.get("/mapUsers", async (req: Request<any, any, any, ProfileFilter
 		res.status(200).json({ data: userListWithoutBlacklisers });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching user list.`;
 		next(error);
 	}
@@ -81,6 +84,7 @@ userController.get("/matchingProfiles", async (req: Request<any, any, any, Profi
 		res.status(200).json({ data: matchingProfilesWithoutBlacklisers });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching matching profiles.`;
 		next(error);
 	}
@@ -100,6 +104,7 @@ userController.get("/matchs", async (req: Request<any, any, any, ProfileFiltersR
 		res.status(200).json({ data: matchsWithoutBlacklisters });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching matched profiles.`;
 		next(error);
 	}
@@ -138,6 +143,7 @@ userController.post("/setTrackingLocation", async (req: Request, res: Response, 
 		res.status(200).json({ date: location });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = '';
 		next(error);
 	}

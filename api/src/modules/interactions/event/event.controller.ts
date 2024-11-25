@@ -18,6 +18,7 @@ eventController.get("/", async (req: Request<any, any, any, { start: string, end
 		res.status(200).json({ data: eventListWithoutBlacklist });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching event.`;
 		next(error);
 	}
@@ -54,6 +55,7 @@ eventController.post("/", async (req: Request, res: Response, next: NextFunction
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = error.message || `Error while creating an event.`;
 		next(error);
 	}
@@ -70,6 +72,7 @@ eventController.delete("/:eventId", async (req: Request, res: Response, next: Ne
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while deleting an event.`;
 		next(error);
 	}

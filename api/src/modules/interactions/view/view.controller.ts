@@ -15,6 +15,7 @@ viewController.get("/self", async (req: Request, res: Response, next: NextFuncti
 		res.status(200).json({ data: viewsListWithoutBlacklist });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching views list.`;
 		next(error);
 	}
@@ -30,6 +31,7 @@ viewController.get("/others", async (req: Request, res: Response, next: NextFunc
 		res.status(200).json({ data: viewsListWithoutBlacklist });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching views list.`;
 		next(error);
 	}

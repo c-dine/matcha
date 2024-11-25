@@ -12,6 +12,7 @@ tagController.get("/", async (req: Request, res: Response, next: NextFunction) =
 		res.status(200).json({ data: tags });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching tags.`;
 		next(error);
 	}

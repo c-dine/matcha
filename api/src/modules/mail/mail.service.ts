@@ -3,6 +3,7 @@ import { encryptionConfig, env, mailConfig } from "../../config/config.js";
 import { generateEncryptedToken } from "../../utils/encryption.util.js";
 import { CustomError } from "../../utils/error.util.js";
 
+  
 export class MailService {
 
 	constructor() { }

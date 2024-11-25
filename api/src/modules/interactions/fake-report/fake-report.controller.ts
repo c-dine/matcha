@@ -12,6 +12,7 @@ fakeReportController.get("/", async (req: Request, res: Response, next: NextFunc
 		res.status(200).json({ data: fakeReportList });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching fake report list.`;
 		next(error);
 	}
@@ -29,6 +30,7 @@ fakeReportController.post("/", async (req: Request, res: Response, next: NextFun
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while reporting profile.`;
 		next(error);
 	}
@@ -45,6 +47,7 @@ fakeReportController.delete("/:targetUserId", async (req: Request, res: Response
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while deleting report.`;
 		next(error);
 	}

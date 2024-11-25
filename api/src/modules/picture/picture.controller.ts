@@ -15,6 +15,7 @@ pictureController.get("/generateUploadUrl", async (req: Request, res: Response, 
 		res.status(200).json(url);
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = "Error while generating picture links."; 
 		next(error);
 	}
@@ -30,6 +31,7 @@ pictureController.get("/googlePhotos", async (req: Request, res: Response, next:
 		res.status(200).json((mediaItems as any).mediaItems);
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = "Error while connecting to google photos."; 
 		next(error);
 	}
@@ -48,6 +50,7 @@ pictureController.get("/googlePhoto/:id", async (req: Request, res: Response, ne
 		res.status(200).json(photo);
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = "Error while fetching google photo."; 
 		next(error);
 	}

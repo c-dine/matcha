@@ -12,6 +12,7 @@ blacklistController.get("/", async (req: Request, res: Response, next: NextFunct
 		res.status(200).json({ data: blacklist });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while fetching blacklist.`;
 		next(error);
 	}
@@ -29,6 +30,7 @@ blacklistController.post("/", async (req: Request, res: Response, next: NextFunc
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while blacklisting.`;
 		next(error);
 	}
@@ -45,6 +47,7 @@ blacklistController.delete("/:targetUserId", async (req: Request, res: Response,
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = `Error while unblacklisting.`;
 		next(error);
 	}

@@ -93,6 +93,7 @@ authController.post("/refreshAccessToken", async (req: Request, res: Response, n
 		});
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 401;
 		error.message = "Authentication error.";
 		next(error);
 	}
@@ -149,6 +150,7 @@ authController.put("/updatePassword", async (req: Request, res: Response, next: 
 		res.status(200).json({ message: "Password successfully updated." });
 		next();
 	} catch (error: any) {
+		error.statusCode = error.statusCode || 400;
 		error.message = error.message || "Error while updating password.";
 		next(error);
 	}
