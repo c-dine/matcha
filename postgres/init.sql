@@ -196,7 +196,7 @@ BEGIN
 
         -- Insérer un utilisateur
         INSERT INTO "user" ("id", "username", "last_name", "first_name", "email", "password", "verified_account", "gender", "birth_date", "sexual_preferences", "biography", "location_latitude", "location_longitude", "fame_rate")
-        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2b$10$NFdgmiKxlmkUdoW7sk/WI.UyedzkJRADZpLDtByV2ci1Bb33P4vAi', TRUE, genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 34);
+        VALUES (uuid_generate_v4(), u_name, l_name, f_name, u_name || '@example.com', '$2a$10$sal7VQb3v6DVK7UA7eGh6O5x4Jd2R7xzbRjnRj8pgjmocZgIhQ6sq', TRUE, genders[1], birth_date, genders[2], 'Biographie de ' || u_name, location_latitude, location_longitude, 34);
 
     END LOOP;
 END $$;
